@@ -14,6 +14,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Next.js's server-only marker is a build-time guard; in tests it's a no-op
+      "server-only": fileURLToPath(new URL("./tests/server-only-stub.ts", import.meta.url)),
     },
   },
 })

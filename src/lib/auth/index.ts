@@ -2,14 +2,15 @@
 // src/app/api/auth/[...all]/route.ts and by server helpers in ./server.ts.
 //
 // Email/password is enabled with email verification REQUIRED — users must click
-// the verify link before login is allowed. Postmark wiring lands in W3; for now
-// the email send callbacks log to console (so dev signups still complete and the
-// user can verify by reading the verify URL from server logs).
+// the verify link before login is allowed. Email send is inline (no jobs runner,
+// per PLAN.md T9): if Postmark fails, the auth flow surfaces the error to the
+// caller — UI shows a retry-able message.
 
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db } from "@/lib/db"
 import { env } from "@/config/env"
+import { sendPasswordResetEmail, sendVerifyEmail } from "@/lib/email"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -24,10 +25,11 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     minPasswordLength: 8,
     sendResetPassword: async ({ user, url }) => {
-      // W3 will swap this for sendPasswordResetEmail() from src/lib/email
-      console.warn(
-        `[auth] sendResetPassword stub for ${user.email}: ${url}`,
-      )
+      await sendPasswordResetEmail({
+        to: user.email,
+        name: user.name,
+        resetUrl: url,
+      })
     },
   },
 
@@ -35,10 +37,11 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      // W3 will swap this for sendVerifyEmail() from src/lib/email
-      console.warn(
-        `[auth] sendVerificationEmail stub for ${user.email}: ${url}`,
-      )
+      await sendVerifyEmail({
+        to: user.email,
+        name: user.name,
+        verifyUrl: url,
+      })
     },
   },
 
