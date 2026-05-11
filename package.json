@@ -19,6 +19,7 @@
     "@base-ui/react": "^1.4.1",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.1.0",
+    "@replit/object-storage": "^1.0.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "better-auth": "^1.6.10",
     "class-variance-authority": "^0.7.1",

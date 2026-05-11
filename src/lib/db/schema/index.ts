@@ -10,3 +10,4 @@
 
 export * from "./auth"
 export * from "./audit_log"
+export * from "./error_log"
