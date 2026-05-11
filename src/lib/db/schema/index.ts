@@ -1,8 +1,12 @@
-// Schema re-export point. W2 fills this with users, sessions, audit_log;
-// later workstreams add notifications, messages, conversations, etc.
+// Schema re-export point. Tables added per workstream:
+//   W2: Better Auth tables (user, session, account, verification) + audit_log
+//   W4: error_log
+//   W6: notifications
+//   W7: conversations, conversation_participants, messages
 //
-// Each table in its own file for parallel-worktree friendliness.
-//
-// Convention: table name plural (`users`), inferred type singular (`User`).
+// Note: Better Auth uses singular table names (user, session, etc.) — that's
+// their convention; our own tables follow our convention (plural: audit_log,
+// notifications, messages, etc.).
 
-export {} // placeholder until W2 adds the first table
+export * from "./auth"
+export * from "./audit_log"
