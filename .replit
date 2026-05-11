@@ -1,0 +1,27 @@
+# Replit configuration for the MLabs template.
+# Per-fork: this file ships as-is. Individual projects rarely need to touch it.
+#
+# Deployment target: Reserved VM (per PLAN.md §2). Autoscale is incompatible
+# with our polling endpoints because each polling request would cold-start.
+
+run = "npm run dev"
+entrypoint = "src/app/page.tsx"
+modules = ["nodejs-20"]
+
+hidden = [".next", "node_modules", ".cache", ".lefthook"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+deploymentTarget = "vm"
+build = ["sh", "-c", "npm install && npm run build"]
+run = ["sh", "-c", "npm start"]
+
+[env]
+# SKIP_ENV_VALIDATION is set during build only; runtime validates fully.
+NEXT_TELEMETRY_DISABLED = "1"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
