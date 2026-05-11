@@ -21,7 +21,11 @@ export type AuditMeta =
   | { kind: "user.password_reset_sent" }
   | { kind: "user.email_changed"; from_email_hash: string }
   | { kind: "user.deleted_anonymized" }
-  | { kind: "session.revoked"; reason: "logout" | "admin" | "password_change" }
+  | { kind: "session.revoked"; reason: "logout" | "admin" | "password_change" | "account_deleted" }
+  | { kind: "user.avatar_changed" }
+  | { kind: "user.avatar_removed" }
+  | { kind: "user.name_changed" }
+  | { kind: "user.admin_notified"; title: string }
 
 export interface AuditOpts {
   actorId: string | null

@@ -1,18 +1,34 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-});
+// W8 additions:
+//   role         — Better Auth additionalField (declared in auth/index.ts with
+//                  input: false so clients cannot self-promote via the
+//                  update-user endpoint). Discriminator: "user" | "admin".
+//   banned_at    — Null = not banned. Set by features/admin banUser action;
+//                  databaseHooks.session.create.before rejects new sessions
+//                  for banned users, and the ban transaction also DELETEs
+//                  all existing session rows so cookies become invalid.
+//   banned_reason — Free-text note from the admin who banned the user.
+export const user = pgTable(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    role: text("role").default("user").notNull(),
+    banned_at: timestamp("banned_at"),
+    banned_reason: text("banned_reason"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("user_role_idx").on(table.role)],
+);
 
 export const session = pgTable(
   "session",

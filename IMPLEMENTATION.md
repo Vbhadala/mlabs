@@ -16,7 +16,7 @@
 | 2 | W2 — Better Auth + Drizzle + audit_log | 2 days | not started | Phases 3, 5, 8 |
 | 3 | W3 — Postmark email wrappers | ½ day | not started | Phase 5 (signup flow) |
 | 4 | W4 — `lib/ui` + `lib/storage` + `lib/logger` | 1 day | not started | Phase 5 |
-| 5 | W5–W8 — features (profile, avatar, notifications, messages, admin) | 3–4 days | not started | Phase 7 |
+| 5 | W5–W8 — features (profile, avatar, notifications, messages, admin) | 3–4 days | **W5 + W6 + W7 + W8 all done (profile, avatar, notifications, messages, admin)** | Phase 7 |
 | 6 | W9 — Claude Code skills | 1–2 days | not started | parallel with everything |
 | 7 | Pre-ship — docs, dark mode QA, polling load test, first-fork dry run | 1 day | not started | v1 ship |
 
