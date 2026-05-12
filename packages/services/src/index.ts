@@ -9,5 +9,9 @@
 //   - @mlabs/services/notifications  — getUnreadCount, listInbox,
 //                                       markAllRead, markRead,
 //                                       createNotification
+//   - @mlabs/services/messages       — openOrCreate1to1, listConversations,
+//                                       listMessages, sendMessage,
+//                                       markConversationRead
 
 export * as notifications from "./notifications"
+export * as messages from "./messages"

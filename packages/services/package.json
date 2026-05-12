@@ -7,7 +7,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./notifications": "./src/notifications/index.ts"
+    "./notifications": "./src/notifications/index.ts",
+    "./messages": "./src/messages/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

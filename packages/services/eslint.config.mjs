@@ -14,13 +14,18 @@ import library from "@mlabs/eslint-config/library"
 // The rule is scoped to src/notifications, src/messages, etc. as those land.
 
 const crossDomainBlocks = [
-  // Add a tuple per domain pair as new domains land. The first entry is
-  // illustrative — single-domain state means there's nothing to block yet,
-  // but the policy is documented so it can be picked up immediately when a
-  // second domain arrives (e.g. messages reaching into audit/).
+  // The patterns block reaching INTO another domain's internals
+  // (`../<other>/<file>`). They still allow reaching the public surface via
+  // `../<other>` (no trailing segment — resolves to the index.ts).
+  //
+  // Add a tuple per domain pair as new domains land.
   {
     files: ["src/notifications/**/*.ts"],
     forbidden: ["../audit/*", "../messages/*", "../users/*"],
+  },
+  {
+    files: ["src/messages/**/*.ts"],
+    forbidden: ["../audit/*", "../notifications/*", "../users/*"],
   },
 ]
 

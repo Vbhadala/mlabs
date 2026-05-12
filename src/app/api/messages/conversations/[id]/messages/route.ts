@@ -1,20 +1,18 @@
 // GET  /api/messages/conversations/[id]/messages?after=<cursor> — thread poll.
 // POST /api/messages/conversations/[id]/messages { body }            — send.
 //
-// Auth: getSession() for GET (401 surfaces a stale session to the bell/inbox
-// without redirect noise); requireUser() for POST (redirects on bad session).
-// Participant check is enforced inside the server modules — non-participant
-// returns "not_found" → 404, never 403 (no enumeration).
+// GET stays route-direct: the cursor-paginated thread listing wants raw
+// query-string handling and the participant check throws ApiError so the
+// route only has to convert errors to responses. POST is op-wrapped — the
+// operation handles validation + permission so the route stays trivial.
 
 import { NextResponse } from "next/server"
-import { getSession, requireUserJSON } from "@/lib/auth/server"
-import {
-  listMessages,
-  sendMessage,
-} from "@/features/messages/server/messages"
-import { MessagesError } from "@/features/messages/server/errors"
-import { logger } from "@/lib/logger"
-import { apiError } from "@/lib/schemas/api-error"
+import { ApiError, isApiError } from "@mlabs/api"
+import { buildContext } from "@mlabs/api/server"
+import { messages } from "@mlabs/services"
+import { db } from "@/lib/db"
+import { getSessionFromHeaders } from "@/lib/auth/server"
+import { sendMessageOp } from "@/server/operations/messages"
 
 export const runtime = "nodejs"
 
@@ -22,62 +20,33 @@ interface RouteContext {
   params: Promise<{ id: string }>
 }
 
-export async function GET(req: Request, ctx: RouteContext) {
-  const session = await getSession()
+export async function GET(req: Request, routeCtx: RouteContext) {
+  const session = await getSessionFromHeaders(req.headers)
   if (!session?.user) {
-    return apiError(401, "auth.unauthenticated", "Sign in required")
+    return ApiError.unauthorized().toResponse()
   }
-  const { id: conversationId } = await ctx.params
+  const u = session.user as { id: string; email: string; role?: string }
+  const role: "user" | "admin" = u.role === "admin" ? "admin" : "user"
+  const ctx = buildContext({
+    headers: req.headers,
+    session: { user: { id: u.id, email: u.email, role } },
+    requestId: req.headers.get("x-request-id") ?? crypto.randomUUID(),
+  })
+
+  const { id: conversationId } = await routeCtx.params
   const url = new URL(req.url)
   const cursor = url.searchParams.get("after")
 
   try {
-    const items = await listMessages({
+    const { items } = await messages.listMessages(db, ctx, {
       conversationId,
-      userId: session.user.id,
       cursor,
     })
     return NextResponse.json({ items })
   } catch (err) {
-    if (err instanceof MessagesError && err.code === "not_found") {
-      return apiError(404, "messages.not_found", "Not found")
-    }
-    logger.error("listMessages failed", {
-      userId: session.user.id,
-      conversationId,
-      message: String(err),
-    })
-    return apiError(500, "messages.server_error", "Server error")
+    if (isApiError(err)) return err.toResponse()
+    throw err
   }
 }
 
-export async function POST(req: Request, ctx: RouteContext) {
-  const authResult = await requireUserJSON()
-  if (authResult instanceof Response) return authResult
-  const me = authResult
-  const { id: conversationId } = await ctx.params
-  const body = await req.json().catch(() => null)
-  if (!body || typeof body.body !== "string") {
-    return apiError(400, "messages.invalid_payload", "Invalid payload", "body")
-  }
-
-  try {
-    const row = await sendMessage({
-      conversationId,
-      senderId: me.id,
-      body: body.body,
-    })
-    return NextResponse.json({ message: row })
-  } catch (err) {
-    if (err instanceof MessagesError) {
-      const status = err.code === "not_found" ? 404 : 400
-      return apiError(status, `messages.${err.code}`, err.message)
-    }
-    logger.error("sendMessage failed", {
-      userId: me.id,
-      conversationId,
-      message: String(err),
-    })
-    return apiError(500, "messages.server_error", "Server error")
-  }
-}
+export const POST = sendMessageOp.runFromRequest

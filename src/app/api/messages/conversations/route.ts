@@ -1,39 +1,35 @@
 // GET  /api/messages/conversations — inbox listing (10s poll).
 // POST /api/messages/conversations { otherEmail } — open or create 1:1.
 //
-// Phase 5.5 (A5) — GET supports If-Modified-Since against users.messages_
-// updated_at (bumped by an AFTER INSERT trigger on the messages table —
-// migration 0005). 304 short-circuits before the inbox list query.
+// GET stays route-direct so the If-Modified-Since 304 short-circuit can run
+// before the heavy inbox-list aggregation (same pattern as
+// /api/notifications/unread-count). POST is op-wrapped — the operation
+// handles auth, Zod, permission, and ApiError translation.
 
 import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
-import { getSession, requireUserJSON } from "@/lib/auth/server"
-import {
-  listForUser,
-  openOrCreate1to1,
-} from "@/features/messages/server/conversations"
-import { MessagesError } from "@/features/messages/server/errors"
-import { logger } from "@/lib/logger"
+import { ApiError } from "@mlabs/api"
+import { buildContext } from "@mlabs/api/server"
+import { messages } from "@mlabs/services"
 import { db } from "@/lib/db"
-import { user } from "@/lib/db/schema/auth"
-import { apiError } from "@/lib/schemas/api-error"
-import { z } from "zod"
+import { getSessionFromHeaders } from "@/lib/auth/server"
+import { openOrCreate1to1Op } from "@/server/operations/messages"
 
 export const runtime = "nodejs"
 
 export async function GET(req: Request) {
-  const session = await getSession()
+  const session = await getSessionFromHeaders(req.headers)
   if (!session?.user) {
-    return apiError(401, "auth.unauthenticated", "Sign in required")
+    return ApiError.unauthorized().toResponse()
   }
-  const userId = session.user.id
+  const u = session.user as { id: string; email: string; role?: string }
+  const role: "user" | "admin" = u.role === "admin" ? "admin" : "user"
+  const ctx = buildContext({
+    headers: req.headers,
+    session: { user: { id: u.id, email: u.email, role } },
+    requestId: req.headers.get("x-request-id") ?? crypto.randomUUID(),
+  })
 
-  const [row] = await db
-    .select({ ts: user.messages_updated_at })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1)
-  const updatedAt = row?.ts ?? null
+  const { ts: updatedAt } = await messages.getConversationsFreshness(db, ctx)
 
   const ifModifiedSinceHeader = req.headers.get("if-modified-since")
   if (updatedAt && ifModifiedSinceHeader) {
@@ -46,7 +42,7 @@ export async function GET(req: Request) {
     }
   }
 
-  const items = await listForUser(userId)
+  const { items } = await messages.listConversations(db, ctx)
   return NextResponse.json(
     { items },
     {
@@ -57,42 +53,4 @@ export async function GET(req: Request) {
   )
 }
 
-const createSchema = z.object({
-  otherEmail: z.email("Enter a valid email"),
-})
-
-export async function POST(req: Request) {
-  const authResult = await requireUserJSON()
-  if (authResult instanceof Response) return authResult
-  const me = authResult
-  const body = await req.json().catch(() => null)
-  const parsed = createSchema.safeParse(body)
-  if (!parsed.success) {
-    return apiError(
-      400,
-      "messages.invalid_input",
-      parsed.error.issues[0]?.message ?? "Invalid input",
-      parsed.error.issues[0]?.path[0]?.toString(),
-    )
-  }
-
-  try {
-    const { id } = await openOrCreate1to1({
-      meId: me.id,
-      otherEmail: parsed.data.otherEmail,
-    })
-    return NextResponse.json({ id })
-  } catch (err) {
-    if (err instanceof MessagesError) {
-      // user_not_found / self_dm → 400 with a human-readable message.
-      // The error message is generic enough that "user_not_found" doesn't
-      // leak whether a real user exists vs. is unverified.
-      return apiError(400, `messages.${err.code}`, err.message)
-    }
-    logger.error("openOrCreate1to1 failed", {
-      meId: me.id,
-      message: String(err),
-    })
-    return apiError(500, "messages.server_error", "Could not open conversation.")
-  }
-}
+export const POST = openOrCreate1to1Op.runFromRequest

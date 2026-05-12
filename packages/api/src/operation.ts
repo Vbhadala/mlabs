@@ -228,14 +228,17 @@ export function createOperations<DB>(deps: OperationDeps<DB>) {
           // query string. The Zod schema decides what's valid; this just
           // gathers raw material. GET / DELETE typically have no body, so
           // falling back to query params keeps those routes ergonomic.
-          let raw: unknown = undefined
+          let raw: Record<string, unknown> = {}
           if (
             request.method !== "GET" &&
             request.method !== "HEAD" &&
             request.headers.get("content-type")?.includes("application/json")
           ) {
             try {
-              raw = await request.json()
+              const body = await request.json()
+              if (body && typeof body === "object" && !Array.isArray(body)) {
+                raw = { ...(body as Record<string, unknown>) }
+              }
             } catch {
               throw ApiError.badRequest(
                 "validation.json",
@@ -245,6 +248,14 @@ export function createOperations<DB>(deps: OperationDeps<DB>) {
           } else {
             const url = new URL(request.url)
             raw = Object.fromEntries(url.searchParams)
+          }
+
+          // Merge dynamic-segment params from the Next route context. Params
+          // come from the URL path so they win over body/query of the same
+          // name — those are caller-controlled, params are routing-controlled.
+          if (_context?.params) {
+            const params = await _context.params
+            raw = { ...raw, ...params }
           }
 
           const result = await runWithContext(ctx, raw)
