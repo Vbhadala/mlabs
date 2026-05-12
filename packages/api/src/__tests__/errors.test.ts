@@ -1,15 +1,14 @@
-// @vitest-environment node
-//
-// apiError() helper produces the locked ApiErrorResponse shape (OV7).
+// ApiError.toResponse() emits the locked ApiErrorResponse wire shape (OV7).
 // Both web and mobile clients depend on `body.error.{code,message,field?}` —
 // regressions here would force every client to special-case.
 
 import { describe, expect, it } from "vitest"
-import { ApiErrorResponse, apiError } from "@/lib/schemas/api-error"
+import { ApiErrorResponse } from "@mlabs/validators"
+import { ApiError } from "../errors"
 
-describe("apiError() helper", () => {
+describe("ApiError.toResponse()", () => {
   it("produces the locked envelope with code + message", async () => {
-    const res = apiError(401, "auth.unauthenticated", "Sign in required")
+    const res = ApiError.unauthorized().toResponse()
     expect(res.status).toBe(401)
     const body = await res.json()
     expect(body).toEqual({
@@ -18,7 +17,11 @@ describe("apiError() helper", () => {
   })
 
   it("includes the field key when supplied (RHF/form integration)", async () => {
-    const res = apiError(400, "messages.invalid_payload", "Body is required", "body")
+    const res = ApiError.badRequest(
+      "messages.invalid_payload",
+      "Body is required",
+      "body",
+    ).toResponse()
     expect(res.status).toBe(400)
     const body = await res.json()
     expect(body.error).toEqual({
@@ -29,13 +32,13 @@ describe("apiError() helper", () => {
   })
 
   it("omits `field` when not supplied (no `field: undefined` in JSON)", async () => {
-    const res = apiError(500, "server_error", "Boom")
+    const res = ApiError.internal("server_error", "Boom").toResponse()
     const body = await res.json()
     expect(Object.prototype.hasOwnProperty.call(body.error, "field")).toBe(false)
   })
 
   it("output validates against the Zod schema", async () => {
-    const res = apiError(404, "messages.not_found", "Not found")
+    const res = ApiError.notFound("messages.not_found", "Not found").toResponse()
     const body = await res.json()
     const parsed = ApiErrorResponse.safeParse(body)
     expect(parsed.success).toBe(true)
@@ -49,8 +52,8 @@ describe("apiError() helper", () => {
   })
 
   it("passes arbitrary HTTP statuses through unchanged", () => {
-    expect(apiError(400, "x", "y").status).toBe(400)
-    expect(apiError(413, "x", "y").status).toBe(413)
-    expect(apiError(503, "x", "y").status).toBe(503)
+    expect(new ApiError({ status: 400, code: "x", message: "y" }).toResponse().status).toBe(400)
+    expect(new ApiError({ status: 413, code: "x", message: "y" }).toResponse().status).toBe(413)
+    expect(new ApiError({ status: 503, code: "x", message: "y" }).toResponse().status).toBe(503)
   })
 })

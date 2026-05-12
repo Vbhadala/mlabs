@@ -4,6 +4,7 @@
 import "server-only"
 import { headers } from "next/headers"
 import { notFound, redirect } from "next/navigation"
+import { ApiError } from "@mlabs/api"
 import { auth } from "./index"
 import { extractBearerToken, verifyAccessToken } from "./jwt"
 
@@ -98,8 +99,7 @@ export async function requireUserJSON(): Promise<
 > {
   const session = await getSession()
   if (!session?.user) {
-    const { apiError } = await import("@/lib/schemas/api-error")
-    return apiError(401, "auth.unauthenticated", "Sign in required")
+    return ApiError.unauthorized().toResponse()
   }
   return session.user
 }

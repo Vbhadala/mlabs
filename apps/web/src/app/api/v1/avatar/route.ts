@@ -6,6 +6,7 @@
 // shape; the AvatarUploader surfaces err.error.message inline.
 
 import { NextResponse } from "next/server"
+import { ApiError } from "@mlabs/api"
 import { requireUserJSON } from "@/lib/auth/server"
 import {
   AvatarError,
@@ -14,7 +15,6 @@ import {
   removeAvatar,
 } from "@/features/avatar/server/pipeline"
 import { logger } from "@/lib/logger"
-import { apiError } from "@/lib/schemas/api-error"
 import { clientFromHeaders } from "@/lib/db/audit"
 
 // Bump the route body limit a bit above MAX_BYTES so our own check (in the
@@ -31,10 +31,19 @@ export async function POST(req: Request) {
   const form = await req.formData().catch(() => null)
   const file = form?.get("file")
   if (!(file instanceof File)) {
-    return apiError(400, "avatar.no_file", "No file provided.", "file")
+    return ApiError.badRequest(
+      "avatar.no_file",
+      "No file provided.",
+      "file",
+    ).toResponse()
   }
   if (file.size > MAX_BYTES) {
-    return apiError(413, "avatar.too_large", "That image is too large. Max 5 MB.", "file")
+    return new ApiError({
+      status: 413,
+      code: "avatar.too_large",
+      message: "That image is too large. Max 5 MB.",
+      field: "file",
+    }).toResponse()
   }
 
   const bytes = Buffer.from(await file.arrayBuffer())
@@ -50,13 +59,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ url })
   } catch (err) {
     if (err instanceof AvatarError) {
-      return apiError(400, `avatar.${err.code}`, err.message)
+      return ApiError.badRequest(`avatar.${err.code}`, err.message).toResponse()
     }
     logger.error("avatar upload failed", {
       userId: me.id,
       message: String(err),
     })
-    return apiError(500, "avatar.server_error", "Upload failed. Try again.")
+    return ApiError.internal(
+      "avatar.server_error",
+      "Upload failed. Try again.",
+    ).toResponse()
   }
 }
 
@@ -77,6 +89,9 @@ export async function DELETE(req: Request) {
       userId: me.id,
       message: String(err),
     })
-    return apiError(500, "avatar.server_error", "Could not remove avatar.")
+    return ApiError.internal(
+      "avatar.server_error",
+      "Could not remove avatar.",
+    ).toResponse()
   }
 }

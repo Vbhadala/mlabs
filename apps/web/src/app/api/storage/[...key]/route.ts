@@ -11,8 +11,8 @@
 // code — safe to delete during the swap.
 
 import { NextRequest, NextResponse } from "next/server"
+import { ApiError } from "@mlabs/api"
 import { storage } from "@/lib/storage"
-import { apiError } from "@/lib/schemas/api-error"
 
 interface RouteContext {
   params: Promise<{ key: string[] }>
@@ -35,7 +35,7 @@ export async function GET(_req: NextRequest, ctx: RouteContext) {
       },
     })
   } catch {
-    return apiError(404, "storage.not_found", "Not found")
+    return ApiError.notFound("storage.not_found", "Not found").toResponse()
   }
 }
 

@@ -29,17 +29,17 @@
 // Phase 5.5 Lane B: refactored to the locked ApiErrorResponse shape.
 
 import { NextResponse } from "next/server"
+import { ApiError } from "@mlabs/api"
 import { auth } from "@/lib/auth"
 import { signAccessToken } from "@/lib/auth/jwt"
 import { logger } from "@/lib/logger"
-import { apiError } from "@/lib/schemas/api-error"
 
 export const runtime = "nodejs"
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers })
   if (!session?.user) {
-    return apiError(401, "auth.unauthenticated", "Sign in required")
+    return ApiError.unauthorized().toResponse()
   }
 
   const user = session.user as {
@@ -51,7 +51,11 @@ export async function POST(req: Request) {
 
   if (user.banned_at) {
     logger.warn("Refresh requested by banned user", { userId: user.id })
-    return apiError(403, "auth.account_banned", "Account is banned")
+    return new ApiError({
+      status: 403,
+      code: "auth.account_banned",
+      message: "Account is banned",
+    }).toResponse()
   }
 
   const { token, expiresIn } = await signAccessToken({
