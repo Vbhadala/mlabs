@@ -10,16 +10,14 @@
 
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
-import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { auth } from "@/lib/auth"
 import { requireUserJSON } from "@/lib/auth/server"
-import { db } from "@/lib/db"
-import { user as userTable, session as sessionTable } from "@/lib/db/schema/auth"
 import { audit, clientFromHeaders } from "@/lib/db/audit"
 import { logger } from "@/lib/logger"
 import { storage } from "@/lib/storage"
 import { apiError } from "@/lib/schemas/api-error"
+import { deleteAccountOp } from "@/server/operations/users"
 
 export const runtime = "nodejs"
 
@@ -67,57 +65,30 @@ export async function PATCH(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const authResult = await requireUserJSON()
-  if (authResult instanceof Response) return authResult
-  const me = authResult
-  const client = clientFromHeaders(req.headers)
-
-  await audit({
-    actorId: me.id,
-    action: "user.deleted_anonymized",
-    target: { type: "user", id: me.id },
-    meta: { kind: "user.deleted_anonymized" },
-    client,
-  })
-
-  // Best-effort avatar cleanup (mirrors features/profile/server/actions.ts).
-  const meWithImage = me as typeof me & { image?: string | null }
-  if (meWithImage.image) {
+  // Op handles auth + audit + anonymize + session-revoke in one pipeline.
+  // The only piece left at the route layer is the best-effort storage
+  // cleanup, which can't live in services (the storage adapter is an
+  // app-composition concern). We do the storage delete AFTER the op
+  // succeeds so a hung storage backend can't block account deletion.
+  const res = await deleteAccountOp.runFromRequest(req)
+  if (res.status !== 200) return res
+  const body = (await res.clone().json()) as {
+    ok: true
+    previousImage: string | null
+  }
+  if (body.previousImage) {
     const prefix = "/api/storage/"
-    if (meWithImage.image.startsWith(prefix)) {
-      const key = meWithImage.image.slice(prefix.length)
+    if (body.previousImage.startsWith(prefix)) {
+      const key = body.previousImage.slice(prefix.length)
       try {
         await storage.delete(key)
       } catch (err) {
         logger.warn("avatar delete failed during account deletion", {
-          userId: me.id,
           key,
           message: String(err),
         })
       }
     }
   }
-
-  // Anonymize-in-place. Preserves audit_log FK + historical refs (messages).
-  await db
-    .update(userTable)
-    .set({
-      name: "Deleted user",
-      email: `deleted-${me.id}@example.invalid`,
-      emailVerified: false,
-      image: null,
-    })
-    .where(eq(userTable.id, me.id))
-
-  // Revoke every session for the user (including the caller).
-  await audit({
-    actorId: me.id,
-    action: "session.revoked",
-    target: { type: "user", id: me.id },
-    meta: { kind: "session.revoked", reason: "account_deleted" },
-    client,
-  })
-  await db.delete(sessionTable).where(eq(sessionTable.userId, me.id))
-
   return NextResponse.json({ ok: true })
 }

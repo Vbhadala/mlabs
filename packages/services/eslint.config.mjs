@@ -27,6 +27,10 @@ const crossDomainBlocks = [
     files: ["src/messages/**/*.ts"],
     forbidden: ["../audit/*", "../notifications/*", "../users/*"],
   },
+  {
+    files: ["src/users/**/*.ts"],
+    forbidden: ["../audit/*", "../messages/*", "../notifications/*"],
+  },
 ]
 
 export default [

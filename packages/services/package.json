@@ -8,7 +8,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./notifications": "./src/notifications/index.ts",
-    "./messages": "./src/messages/index.ts"
+    "./messages": "./src/messages/index.ts",
+    "./users": "./src/users/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -12,6 +12,8 @@
 //   - @mlabs/services/messages       — openOrCreate1to1, listConversations,
 //                                       listMessages, sendMessage,
 //                                       markConversationRead
+//   - @mlabs/services/users          — deleteAccount
 
 export * as notifications from "./notifications"
 export * as messages from "./messages"
+export * as users from "./users"
