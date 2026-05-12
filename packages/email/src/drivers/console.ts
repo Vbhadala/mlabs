@@ -1,7 +1,8 @@
-// Dev fallback driver: logs the email to console instead of sending.
-// Active when POSTMARK_SERVER_TOKEN is unset. Useful for local dev and tests.
-
 import "server-only"
+
+// Dev fallback driver: logs the email to console instead of sending.
+// Active when no postmark token is configured. Useful for local dev and tests.
+
 import type { EmailDriver, SendArgs, SendResult } from "../types"
 
 export const consoleDriver: EmailDriver = {

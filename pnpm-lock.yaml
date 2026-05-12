@@ -17,6 +17,9 @@ importers:
       '@mlabs/db':
         specifier: workspace:*
         version: link:packages/db
+      '@mlabs/email':
+        specifier: workspace:*
+        version: link:packages/email
       '@mlabs/validators':
         specifier: workspace:*
         version: link:packages/validators
@@ -278,6 +281,22 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
+      typescript:
+        specifier: ^5
+        version: 5.3.3
+
+  packages/email:
+    dependencies:
+      postmark:
+        specifier: ^4.0.7
+        version: 4.0.7
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+    devDependencies:
+      '@mlabs/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
       typescript:
         specifier: ^5
         version: 5.3.3
