@@ -25,7 +25,17 @@ export type AuthSession = NonNullable<Awaited<ReturnType<typeof auth.api.getSess
  */
 export async function getSession() {
   const h = await headers()
+  return getSessionFromHeaders(h)
+}
 
+/**
+ * Same three-transport resolution as getSession() but takes an explicit
+ * Headers object instead of reading from next/headers. Used by the
+ * @mlabs/api operation adapter which passes Request.headers in directly.
+ */
+export async function getSessionFromHeaders(
+  h: Headers,
+): Promise<AuthSession | null> {
   // Path 1: JWT bearer (mobile's primary credential).
   const bearer = extractBearerToken(h.get("authorization"))
   if (bearer) {

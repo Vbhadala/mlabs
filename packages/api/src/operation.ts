@@ -90,11 +90,22 @@ export interface OperationSchema<I, O> {
   __output?: O
 }
 
+/** Next 16 route handlers receive `{ params: Promise<...> }` as the second
+ *  argument. The adapter's signature accepts that shape (params optional so
+ *  fixed routes don't need to construct one) but doesn't read it today —
+ *  dynamic-segment operations parse params via Zod from the input schema. */
+export interface OperationRouteContext {
+  params?: Promise<Record<string, string | string[]>>
+}
+
 export interface Operation<I, O> {
-  /** Adapter for Next route files: `export const POST = op.runFromRequest`. */
+  /** Adapter for Next route files: `export const POST = op.runFromRequest`.
+   *  Both arguments are typed to match Next 16's `RouteHandlerConfig`
+   *  contract (NextRequest is a Request subtype; the ctx shape is
+   *  contravariantly compatible with `{ params: Promise<...> }`). */
   runFromRequest: (
     request: Request,
-    context?: { params?: Record<string, string | string[]> },
+    context?: OperationRouteContext,
   ) => Promise<Response>
   /** Adapter for Server Actions: callers pass parsed input directly. Throws
    *  ApiError on auth/validation/permission failure so the action surface
