@@ -20,3 +20,11 @@ export const markAllReadOp = defineOperation({
   permission: "user",
   handler: async (db, ctx) => notifications.markAllRead(db, ctx),
 })
+
+export const markReadOp = defineOperation({
+  name: "notifications.markRead",
+  input: z.object({ id: z.string().min(1) }),
+  output: MarkResultSchema,
+  permission: "user",
+  handler: async (db, ctx, { id }) => notifications.markRead(db, ctx, { id }),
+})

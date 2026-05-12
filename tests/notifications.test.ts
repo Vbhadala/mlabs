@@ -76,23 +76,19 @@ vi.mock("@/lib/db", () => {
 
 // Auth mock — controls which user a server action thinks it is.
 let currentUserId = "user-A"
+const userShape = () => ({
+  id: currentUserId,
+  email: `${currentUserId}@example.test`,
+  name: currentUserId,
+  emailVerified: true,
+  image: null,
+  role: "user",
+})
 vi.mock("@/lib/auth/server", () => ({
-  requireUser: vi.fn(async () => ({
-    id: currentUserId,
-    email: `${currentUserId}@example.test`,
-    name: currentUserId,
-    emailVerified: true,
-    image: null,
-  })),
-  getSession: vi.fn(async () => ({
-    user: {
-      id: currentUserId,
-      email: `${currentUserId}@example.test`,
-      name: currentUserId,
-      emailVerified: true,
-      image: null,
-    },
-  })),
+  requireUser: vi.fn(async () => userShape()),
+  getSession: vi.fn(async () => ({ user: userShape() })),
+  // Used by the op adapter's composition root in src/server/operations/index.ts
+  getSessionFromHeaders: vi.fn(async () => ({ user: userShape() })),
 }))
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }))
@@ -109,10 +105,18 @@ vi.mock("drizzle-orm", () => {
       preds.every((p) => p(r))
   const desc = (col: { _column: string }) => col
   const sql = (() => undefined) as unknown
-  return { isNull, eq, and, desc, sql }
+  // relations() is called at top-of-module in packages/db/src/schema/auth.ts
+  // to wire userRelations / sessionRelations / accountRelations. We don't
+  // exercise relational queries from these tests, so a noop is fine.
+  const relations = () => ({})
+  return { isNull, eq, and, desc, sql, relations }
 })
 
-// The schema export — we hand back column markers the predicates can read.
+// Schema markers — column metadata the mock predicates read. Cover both the
+// legacy shim path (@/lib/db/schema/notifications, used by the existing
+// create.ts) AND the new package path (@mlabs/db/schema, used by services
+// reached through op.runFromAction). Inlined per mock factory because
+// vi.mock hoists above all top-level statements.
 vi.mock("@/lib/db/schema/notifications", () => ({
   notifications: {
     id: { _column: "id" },
@@ -123,6 +127,35 @@ vi.mock("@/lib/db/schema/notifications", () => ({
     created_at: { _column: "created_at" },
   },
 }))
+vi.mock("@mlabs/db/schema", () => ({
+  notifications: {
+    id: { _column: "id" },
+    user_id: { _column: "user_id" },
+    type: { _column: "type" },
+    body: { _column: "body" },
+    read_at: { _column: "read_at" },
+    created_at: { _column: "created_at" },
+  },
+  // Other tables exported from the barrel — services in this file don't
+  // touch them, but importing the package barrel pulls them through. Empty
+  // markers keep the import resolvable.
+  user: {},
+  session: {},
+  account: {},
+  verification: {},
+  audit_log: {},
+  error_log: {},
+  conversations: {},
+  conversation_participants: {},
+  messages: {},
+}))
+
+// The op adapter resolves headers via next/headers for Server Action calls.
+// In tests we never run inside a real request — override the resolver to a
+// noop Headers source. The composition root's getSessionFromHeaders is
+// mocked above to ignore the argument.
+import { setActionHeadersResolver } from "@mlabs/api/server"
+setActionHeadersResolver(async () => new Headers())
 
 import { createNotification } from "@/features/notifications/server/create"
 import { markRead, markAllRead } from "@/features/notifications/server/actions"
