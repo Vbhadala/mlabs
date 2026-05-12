@@ -1,6 +1,6 @@
 # MLabs Template
 
-The Million Labs MVP template. Fork this for every new client project.
+The Million Labs MVP template. Fork this for every new project.
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 ·
 shadcn/ui · Drizzle · Neon · Better Auth · Postmark · Replit Object Storage
