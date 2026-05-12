@@ -24,6 +24,7 @@
     "@mlabs/config": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "lefthook": "^2.1.6",
+    "syncpack": "15.1.2",
     "tsx": "^4.21.0",
     "turbo": "^2.5.10",
     "typescript": "^5"
