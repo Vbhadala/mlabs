@@ -2,6 +2,3 @@ packages:
   - "apps/*"
   - "packages/*"
   - "tooling/*"
-  # Transitional: mobile/ stays at repo root until Phase 6 moves it to apps/mobile/.
-  # Listed explicitly so pnpm picks up its deps (expo, react-native, nativewind, ...).
-  - "mobile"

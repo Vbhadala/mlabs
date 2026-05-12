@@ -17,7 +17,8 @@ const { withNativeWind } = require("nativewind/metro");
 const path = require("node:path");
 
 const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, "..");
+// apps/mobile/ → ../../ is the monorepo root.
+const workspaceRoot = path.resolve(projectRoot, "..", "..");
 
 const config = getDefaultConfig(projectRoot);
 

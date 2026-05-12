@@ -2,7 +2,7 @@
 /**
  * gen-mobile-tailwind.ts
  *
- * Generates `mobile/tailwind.config.js` from `@mlabs/config/design`. This is
+ * Generates `apps/mobile/tailwind.config.js` from `@mlabs/config/design`. This is
  * the SINGLE source of truth — the mobile tailwind config is regenerated, not
  * hand-edited.
  *
@@ -22,7 +22,7 @@ import { design } from "@mlabs/config/design";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, "..");
-const OUT_PATH = resolve(REPO_ROOT, "mobile/tailwind.config.js");
+const OUT_PATH = resolve(REPO_ROOT, "apps/mobile/tailwind.config.js");
 
 const HEADER = `/**
  * DO NOT EDIT — GENERATED FILE
@@ -116,7 +116,7 @@ function main() {
     const current = readFileSync(OUT_PATH, "utf8");
     if (current !== generated) {
       console.error(
-        "[gen-mobile-tw] mobile/tailwind.config.js is OUT OF SYNC with @mlabs/config/design."
+        "[gen-mobile-tw] apps/mobile/tailwind.config.js is OUT OF SYNC with @mlabs/config/design."
       );
       console.error("Run `npm run gen:mobile-tw` and commit the result.");
       process.exit(1);

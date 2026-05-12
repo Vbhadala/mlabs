@@ -84,7 +84,7 @@ interface MobileConfig {
  * EAS build picks them up via Expo's own config evaluation.
  */
 async function loadMobileConfig(): Promise<MobileConfig> {
-  const filePath = path.join(process.cwd(), "mobile", "app.config.ts")
+  const filePath = path.join(process.cwd(), "apps", "mobile", "app.config.ts")
   try {
     const raw = await readFile(filePath, "utf8")
     return {

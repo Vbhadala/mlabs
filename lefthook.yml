@@ -21,8 +21,8 @@ pre-commit:
     - name: check-contrast
       run: pnpm --silent check-contrast
     # Mobile Tailwind config drift guard. Only runs when the relevant inputs
-    # change. Forces the generated mobile/tailwind.config.js to stay in sync
+    # change. Forces the generated apps/mobile/tailwind.config.js to stay in sync
     # with packages/config/src/design.ts.
     - name: check-mobile-tailwind
-      glob: "{packages/config/src/design.ts,mobile/tailwind.config.js,scripts/gen-mobile-tailwind.ts}"
+      glob: "{packages/config/src/design.ts,apps/mobile/tailwind.config.js,scripts/gen-mobile-tailwind.ts}"
       run: pnpm gen:mobile-tw:check
