@@ -31,7 +31,7 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="space-y-3">
-        <h1 className="text-xl font-semibold">Check your email</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Check your email</h1>
         <p className="text-sm text-muted-foreground">
           We sent a verification link to <span className="text-foreground">{email}</span>.
           Click it to finish setting up your account.
@@ -43,7 +43,7 @@ export default function SignupPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-semibold">Create your account</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           A few details and you&apos;re in.
         </p>

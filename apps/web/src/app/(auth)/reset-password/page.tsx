@@ -32,7 +32,7 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="space-y-3">
-        <h1 className="text-xl font-semibold">Invalid reset link</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Invalid reset link</h1>
         <p className="text-sm text-muted-foreground">
           This password reset link is missing its token. Request a new one.
         </p>
@@ -46,7 +46,7 @@ function ResetPasswordForm() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-semibold">Set a new password</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Set a new password</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Choose something at least 8 characters long.
         </p>
