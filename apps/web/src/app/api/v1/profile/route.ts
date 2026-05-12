@@ -1,7 +1,7 @@
-// /api/profile — mobile REST mirror of features/profile/server/actions.ts.
+// /api/v1/profile — mobile REST mirror of features/profile/server/actions.ts.
 //
-// PATCH /api/profile  { name }    → updates display name
-// DELETE /api/profile             → anonymizes account (irreversible)
+// PATCH /api/v1/profile  { name }    → updates display name
+// DELETE /api/v1/profile             → anonymizes account (irreversible)
 //
 // Both endpoints flow through ops at @/server/operations/users. Web pages
 // use Server Actions in features/profile/server/actions.ts; mobile reaches

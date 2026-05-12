@@ -55,7 +55,7 @@ export function Thread({
   // arrive while the thread is in view — keeps the bell + inbox in sync.
   const messageCount = messages.length
   useEffect(() => {
-    void fetch(`/api/messages/conversations/${conversationId}/read`, {
+    void fetch(`/api/v1/messages/conversations/${conversationId}/read`, {
       method: "POST",
     })
   }, [conversationId, messageCount])
@@ -74,7 +74,7 @@ export function Thread({
         const params = new URLSearchParams()
         if (cursorRef.current) params.set("after", cursorRef.current)
         const res = await fetch(
-          `/api/messages/conversations/${conversationId}/messages?${params.toString()}`,
+          `/api/v1/messages/conversations/${conversationId}/messages?${params.toString()}`,
           { cache: "no-store" },
         )
         if (!res.ok) return
@@ -130,7 +130,7 @@ export function Thread({
     setSending(true)
     try {
       const res = await fetch(
-        `/api/messages/conversations/${conversationId}/messages`,
+        `/api/v1/messages/conversations/${conversationId}/messages`,
         {
           method: "POST",
           headers: { "content-type": "application/json" },

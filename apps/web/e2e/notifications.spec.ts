@@ -10,9 +10,9 @@ test("/notifications redirects unauthenticated visitors to /login", async ({
   ).toBeVisible()
 })
 
-test("/api/notifications/unread-count returns 401 when unauthenticated", async ({
+test("/api/v1/notifications/unread-count returns 401 when unauthenticated", async ({
   request,
 }) => {
-  const res = await request.get("/api/notifications/unread-count")
+  const res = await request.get("/api/v1/notifications/unread-count")
   expect(res.status()).toBe(401)
 })

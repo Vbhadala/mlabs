@@ -11,8 +11,8 @@ User avatar upload + display. Composes:
 
 ## Routes
 
-- `POST /api/avatar` (multipart, field `file`) — upload + replace.
-- `DELETE /api/avatar` — remove avatar.
+- `POST /api/v1/avatar` (multipart, field `file`) — upload + replace.
+- `DELETE /api/v1/avatar` — remove avatar.
 
 ## Limits
 
@@ -24,7 +24,7 @@ User avatar upload + display. Composes:
 
 ```bash
 rm -rf src/features/avatar
-rm -rf 'src/app/api/avatar'
+rm -rf 'src/app/api/v1/avatar'
 # In features/profile/components/account-section.tsx — remove the <AvatarUploader> line.
 ```
 

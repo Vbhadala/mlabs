@@ -11,7 +11,7 @@ const POLL_INTERVAL_MS = 5_000
 // no realtime) and the outside-voice critique about idle Neon load.
 export function NotificationBell() {
   const { data } = usePolledFetch<{ count: number }>({
-    url: "/api/notifications/unread-count",
+    url: "/api/v1/notifications/unread-count",
     intervalMs: POLL_INTERVAL_MS,
   })
   const count = data?.count ?? null

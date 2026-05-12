@@ -46,7 +46,7 @@ export async function uploadAvatar(
     name,
     type,
   } as unknown as Blob);
-  const res = await apiRequest<{ avatarUrl: string }>("/api/avatar", {
+  const res = await apiRequest<{ avatarUrl: string }>("/api/v1/avatar", {
     method: "POST",
     body: form,
   });

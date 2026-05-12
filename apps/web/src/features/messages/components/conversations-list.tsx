@@ -16,7 +16,7 @@ interface ConversationsListProps {
 // loading skeleton on subsequent fetches — we already have data to show.
 export function ConversationsList({ initialItems }: ConversationsListProps) {
   const { data } = usePolledFetch<{ items: ConversationListItem[] }>({
-    url: "/api/messages/conversations",
+    url: "/api/v1/messages/conversations",
     intervalMs: INBOX_POLL_MS,
   })
   const items = data?.items ?? initialItems

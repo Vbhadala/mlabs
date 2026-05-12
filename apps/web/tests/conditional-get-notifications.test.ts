@@ -1,6 +1,6 @@
 // @vitest-environment node
 //
-// Conditional GET (A5) on /api/notifications/unread-count.
+// Conditional GET (A5) on /api/v1/notifications/unread-count.
 //
 // The route reads users.notifications_updated_at (via
 // notifications.getFreshness) and compares it to the caller's
@@ -46,10 +46,10 @@ vi.mock("@mlabs/services", () => ({
 // (the service is mocked) so an empty stub is enough.
 vi.mock("@/lib/db", () => ({ db: {} }))
 
-import { GET } from "@/app/api/notifications/unread-count/route"
+import { GET } from "@/app/api/v1/notifications/unread-count/route"
 
 const mkRequest = (headers: Record<string, string> = {}) =>
-  new Request("http://localhost:3000/api/notifications/unread-count", {
+  new Request("http://localhost:3000/api/v1/notifications/unread-count", {
     method: "GET",
     headers,
   })
@@ -59,7 +59,7 @@ beforeEach(() => {
   tsHolder.value = null
 })
 
-describe("GET /api/notifications/unread-count — conditional GET", () => {
+describe("GET /api/v1/notifications/unread-count — conditional GET", () => {
   it("304 when server timestamp <= If-Modified-Since (no count query run)", async () => {
     const ts = new Date("2025-01-01T12:00:00Z")
     tsHolder.value = ts

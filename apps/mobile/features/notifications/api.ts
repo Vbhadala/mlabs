@@ -17,7 +17,7 @@ export async function listNotifications(opts: {
   notModified: boolean;
 }> {
   const res = await apiGet<{ notifications: Notification[] }>(
-    "/api/notifications",
+    "/api/v1/notifications",
     { ifModifiedSince: opts.ifModifiedSince }
   );
   return {
@@ -35,7 +35,7 @@ export async function getUnreadCount(opts: {
   notModified: boolean;
 }> {
   const res = await apiGet<{ count: number }>(
-    "/api/notifications/unread-count",
+    "/api/v1/notifications/unread-count",
     { ifModifiedSince: opts.ifModifiedSince }
   );
   return {
@@ -46,5 +46,5 @@ export async function getUnreadCount(opts: {
 }
 
 export async function markAllRead(): Promise<{ ok: true }> {
-  return apiPost("/api/notifications/mark-all-read", {});
+  return apiPost("/api/v1/notifications/mark-all-read", {});
 }

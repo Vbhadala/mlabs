@@ -28,7 +28,7 @@ export async function listConversations(opts: {
   notModified: boolean;
 }> {
   const res = await apiGet<{ conversations: Conversation[] }>(
-    "/api/messages/conversations",
+    "/api/v1/messages/conversations",
     { ifModifiedSince: opts.ifModifiedSince }
   );
   return {
@@ -42,7 +42,7 @@ export async function listMessages(
   conversationId: string
 ): Promise<Message[]> {
   const res = await apiGet<{ messages: Message[] }>(
-    `/api/messages/conversations/${encodeURIComponent(conversationId)}`
+    `/api/v1/messages/conversations/${encodeURIComponent(conversationId)}`
   );
   return res.data?.messages ?? [];
 }
@@ -52,7 +52,7 @@ export async function sendMessage(input: {
   body: string;
 }): Promise<Message> {
   const data = await apiPost<{ message: Message }>(
-    `/api/messages/conversations/${encodeURIComponent(input.conversationId)}`,
+    `/api/v1/messages/conversations/${encodeURIComponent(input.conversationId)}`,
     { body: input.body }
   );
   return data.message;

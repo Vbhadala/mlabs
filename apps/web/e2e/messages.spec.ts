@@ -17,18 +17,18 @@ test("/messages/[id] redirects unauthenticated visitors to /login", async ({ pag
   await expect(page).toHaveURL(/\/login$/)
 })
 
-test("GET /api/messages/conversations returns 401 when unauthenticated", async ({
+test("GET /api/v1/messages/conversations returns 401 when unauthenticated", async ({
   request,
 }) => {
-  const res = await request.get("/api/messages/conversations")
+  const res = await request.get("/api/v1/messages/conversations")
   expect(res.status()).toBe(401)
 })
 
-test("GET /api/messages/conversations/[id]/messages returns 401 when unauthenticated", async ({
+test("GET /api/v1/messages/conversations/[id]/messages returns 401 when unauthenticated", async ({
   request,
 }) => {
   const res = await request.get(
-    "/api/messages/conversations/conv_anything/messages",
+    "/api/v1/messages/conversations/conv_anything/messages",
   )
   expect(res.status()).toBe(401)
 })

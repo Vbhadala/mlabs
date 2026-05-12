@@ -34,7 +34,7 @@ export function AvatarUploader({ currentUrl, userName }: AvatarUploaderProps) {
     startTransition(async () => {
       const fd = new FormData()
       fd.append("file", file)
-      const res = await fetch("/api/avatar", { method: "POST", body: fd })
+      const res = await fetch("/api/v1/avatar", { method: "POST", body: fd })
       if (!res.ok) {
         const body = await res.json().catch(() => ({ error: "Upload failed." }))
         setError(body.error ?? "Upload failed.")
@@ -46,7 +46,7 @@ export function AvatarUploader({ currentUrl, userName }: AvatarUploaderProps) {
 
   function handleRemove() {
     startTransition(async () => {
-      const res = await fetch("/api/avatar", { method: "DELETE" })
+      const res = await fetch("/api/v1/avatar", { method: "DELETE" })
       if (!res.ok) {
         const body = await res.json().catch(() => ({ error: "Failed." }))
         setError(body.error ?? "Failed.")

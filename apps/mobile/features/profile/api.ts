@@ -11,7 +11,7 @@ export interface Profile {
 export async function updateProfile(input: {
   name?: string;
 }): Promise<Profile> {
-  const data = await apiPatch<{ user: Profile }>("/api/profile", input);
+  const data = await apiPatch<{ user: Profile }>("/api/v1/profile", input);
   return data.user;
 }
 
@@ -19,9 +19,9 @@ export async function changePassword(input: {
   currentPassword: string;
   newPassword: string;
 }): Promise<{ ok: true }> {
-  return apiPost("/api/profile/password", input);
+  return apiPost("/api/v1/profile/password", input);
 }
 
 export async function deleteAccount(): Promise<void> {
-  await apiDelete("/api/profile");
+  await apiDelete("/api/v1/profile");
 }

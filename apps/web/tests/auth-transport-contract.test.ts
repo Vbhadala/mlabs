@@ -7,7 +7,7 @@
 //  - JWT bearer (mobile — Phase 5.5)
 //  - Better Auth bearer-plugin session token (fallback bearer path)
 //
-// Uses /api/notifications/unread-count as the representative GET handler.
+// Uses /api/v1/notifications/unread-count as the representative GET handler.
 // Phase 4 (Lane C) moved this route to call getSessionFromHeaders + the
 // @mlabs/services notifications domain directly; the transport chain still
 // lives inside src/lib/auth/server.ts::getSessionFromHeaders, so this test
@@ -48,16 +48,16 @@ vi.mock("@mlabs/services", () => ({
 // never actually call it (services are mocked).
 vi.mock("@/lib/db", () => ({ db: {} }))
 
-import { GET } from "@/app/api/notifications/unread-count/route"
+import { GET } from "@/app/api/v1/notifications/unread-count/route"
 import { signAccessToken } from "@/lib/auth/jwt"
 
 const mkRequest = (headers?: Record<string, string>) =>
-  new Request("http://localhost:3000/api/notifications/unread-count", {
+  new Request("http://localhost:3000/api/v1/notifications/unread-count", {
     method: "GET",
     headers: headers ?? {},
   })
 
-describe("Transport contract — /api/notifications/unread-count GET", () => {
+describe("Transport contract — /api/v1/notifications/unread-count GET", () => {
   beforeEach(() => {
     mockBetterAuthGetSession.mockReset()
     mockGetUnreadCount.mockReset()

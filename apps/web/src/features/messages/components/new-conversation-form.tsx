@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-// Form to start a DM by email. Hits POST /api/messages/conversations which
+// Form to start a DM by email. Hits POST /api/v1/messages/conversations which
 // resolves the email → user, blocks self-DM and unverified/anonymized
 // targets, and (race-safely) opens-or-creates the 1:1 row before
 // returning its id. We then navigate to /messages/[id].
@@ -22,7 +22,7 @@ export function NewConversationForm() {
         e.preventDefault()
         setError(null)
         startTransition(async () => {
-          const res = await fetch("/api/messages/conversations", {
+          const res = await fetch("/api/v1/messages/conversations", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ otherEmail: email.trim() }),
