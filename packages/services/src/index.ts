@@ -13,7 +13,11 @@
 //                                       listMessages, sendMessage,
 //                                       markConversationRead
 //   - @mlabs/services/users          — deleteAccount
+//   - @mlabs/services/admin          — changeRole, banUser, unbanUser,
+//                                       preparePasswordReset,
+//                                       sendAdminNotification
 
 export * as notifications from "./notifications"
 export * as messages from "./messages"
 export * as users from "./users"
+export * as admin from "./admin"

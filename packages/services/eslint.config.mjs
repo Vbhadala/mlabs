@@ -21,15 +21,19 @@ const crossDomainBlocks = [
   // Add a tuple per domain pair as new domains land.
   {
     files: ["src/notifications/**/*.ts"],
-    forbidden: ["../audit/*", "../messages/*", "../users/*"],
+    forbidden: ["../audit/*", "../messages/*", "../users/*", "../admin/*"],
   },
   {
     files: ["src/messages/**/*.ts"],
-    forbidden: ["../audit/*", "../notifications/*", "../users/*"],
+    forbidden: ["../audit/*", "../notifications/*", "../users/*", "../admin/*"],
   },
   {
     files: ["src/users/**/*.ts"],
-    forbidden: ["../audit/*", "../messages/*", "../notifications/*"],
+    forbidden: ["../audit/*", "../messages/*", "../notifications/*", "../admin/*"],
+  },
+  {
+    files: ["src/admin/**/*.ts"],
+    forbidden: ["../audit/*", "../messages/*", "../notifications/*", "../users/*"],
   },
 ]
 

@@ -230,12 +230,3 @@ export async function listAudit(
   }
 }
 
-export async function adminCount(): Promise<number> {
-  // Used by changeRole's last-admin guard. Skips requireAdmin() because
-  // it's an internal predicate, called from within an already-gated path.
-  const [row] = await db
-    .select({ n: sql<number>`count(*)::int` })
-    .from(userTable)
-    .where(eq(userTable.role, "admin"))
-  return row?.n ?? 0
-}

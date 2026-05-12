@@ -9,7 +9,8 @@
     ".": "./src/index.ts",
     "./notifications": "./src/notifications/index.ts",
     "./messages": "./src/messages/index.ts",
-    "./users": "./src/users/index.ts"
+    "./users": "./src/users/index.ts",
+    "./admin": "./src/admin/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
