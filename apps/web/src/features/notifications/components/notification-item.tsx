@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useTransition } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@mlabs/ui-web/utils"
 import type { NotificationRow } from "@/features/notifications/server/queries"
 import { markRead } from "@/features/notifications/server/actions"
 

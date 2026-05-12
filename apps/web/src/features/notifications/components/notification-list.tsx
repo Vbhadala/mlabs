@@ -1,7 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mlabs/ui-web/button"
 import { DataList, EmptyState } from "@/lib/ui"
 import type { NotificationRow } from "@/features/notifications/server/queries"
 import { markAllRead } from "@/features/notifications/server/actions"

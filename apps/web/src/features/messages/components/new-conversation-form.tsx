@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@mlabs/ui-web/button"
+import { Input } from "@mlabs/ui-web/input"
+import { Label } from "@mlabs/ui-web/label"
 
 // Form to start a DM by email. Hits POST /api/v1/messages/conversations which
 // resolves the email → user, blocks self-DM and unverified/anonymized

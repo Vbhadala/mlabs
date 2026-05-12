@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { brand } from "@/config/brand"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mlabs/ui-web/button"
 import { getSession } from "@/lib/auth/server"
 
 export default async function Home() {

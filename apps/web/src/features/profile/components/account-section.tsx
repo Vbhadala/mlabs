@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@mlabs/ui-web/button"
+import { Input } from "@mlabs/ui-web/input"
+import { Label } from "@mlabs/ui-web/label"
 import { SectionCard } from "./section-card"
 import { AvatarUploader } from "@/features/avatar/components/avatar-uploader"
 import {

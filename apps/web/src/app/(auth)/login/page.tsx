@@ -3,9 +3,9 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@mlabs/ui-web/button"
+import { Input } from "@mlabs/ui-web/input"
+import { Label } from "@mlabs/ui-web/label"
 import { signIn } from "@/lib/auth/client"
 
 export default function LoginPage() {

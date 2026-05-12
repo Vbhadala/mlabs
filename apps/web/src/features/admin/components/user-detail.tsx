@@ -2,10 +2,10 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
+import { Button } from "@mlabs/ui-web/button"
+import { Input } from "@mlabs/ui-web/input"
+import { Label } from "@mlabs/ui-web/label"
+import { cn } from "@mlabs/ui-web/utils"
 import type { AdminUserRow, AdminAuditRow } from "@/features/admin/types"
 import {
   banUser,

@@ -16,9 +16,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { Button } from "@mlabs/ui-web/button"
+import { Input } from "@mlabs/ui-web/input"
+import { cn } from "@mlabs/ui-web/utils"
 import type { MessageRow } from "@/features/messages/types"
 import { MAX_BODY_CHARS } from "@/features/messages/types"
 
