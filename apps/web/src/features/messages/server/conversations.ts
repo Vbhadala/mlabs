@@ -13,12 +13,12 @@
 import "server-only"
 import { and, desc, eq, ne, sql } from "drizzle-orm"
 import { db } from "@/lib/db"
-import { user as userTable } from "@/lib/db/schema/auth"
 import {
+  user as userTable,
   conversations,
   conversation_participants,
   messages,
-} from "@/lib/db/schema/messages"
+} from "@mlabs/db/schema"
 import { MessagesError } from "./errors"
 import type { ConversationListItem } from "../types"
 

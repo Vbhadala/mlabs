@@ -16,13 +16,13 @@ import "server-only"
 import { and, asc, eq, gt, isNull, ne, or, sql } from "drizzle-orm"
 import { z } from "zod"
 import { db } from "@/lib/db"
-import { user as userTable } from "@/lib/db/schema/auth"
 import {
+  user as userTable,
   conversations,
   conversation_participants,
   messages,
-} from "@/lib/db/schema/messages"
-import { notifications } from "@/lib/db/schema/notifications"
+  notifications,
+} from "@mlabs/db/schema"
 import { createNotification } from "@/features/notifications/server/create"
 import { logger } from "@/lib/logger"
 import { requireParticipant } from "./conversations"

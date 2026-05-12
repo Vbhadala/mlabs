@@ -6,7 +6,7 @@
 
 import "server-only"
 import { db } from "@/lib/db"
-import { notifications } from "@/lib/db/schema/notifications"
+import { notifications } from "@mlabs/db/schema"
 import type { NotificationBody } from "../types"
 
 interface CreateNotificationArgs {

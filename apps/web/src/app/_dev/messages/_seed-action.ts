@@ -11,7 +11,7 @@
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { eq } from "drizzle-orm"
-import { user as userTable } from "@/lib/db/schema/auth"
+import { user as userTable } from "@mlabs/db/schema"
 import { requireUser } from "@/lib/auth/server"
 import { openOrCreate1to1 } from "@/features/messages/server/conversations"
 import { sendMessage } from "@/features/messages/server/messages"

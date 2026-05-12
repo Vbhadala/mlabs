@@ -256,7 +256,7 @@ vi.mock("@/lib/db", () => {
 
 // Stub schema columns. Each has a _column name + a _table marker so the
 // db mock can route writes to the right in-memory store.
-vi.mock("@/lib/db/schema/auth", () => ({
+vi.mock("@mlabs/db/schema", () => ({
   user: {
     _name: "users",
     id: { _column: "id", _table: "users" },
@@ -265,9 +265,6 @@ vi.mock("@/lib/db/schema/auth", () => ({
     emailVerified: { _column: "emailVerified", _table: "users" },
     image: { _column: "image", _table: "users" },
   },
-}))
-
-vi.mock("@/lib/db/schema/messages", () => ({
   conversations: {
     _name: "conversations",
     id: { _column: "id", _table: "conversations" },
@@ -292,9 +289,6 @@ vi.mock("@/lib/db/schema/messages", () => ({
     body: { _column: "body", _table: "messages" },
     created_at: { _column: "created_at", _table: "messages" },
   },
-}))
-
-vi.mock("@/lib/db/schema/notifications", () => ({
   notifications: {
     _name: "notifications",
     id: { _column: "id", _table: "notifications" },

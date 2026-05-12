@@ -13,7 +13,7 @@
 
 import "server-only"
 import { db } from "@/lib/db"
-import { error_log } from "@/lib/db/schema/error_log"
+import { error_log } from "@mlabs/db/schema"
 
 type Meta = Record<string, unknown> | undefined
 

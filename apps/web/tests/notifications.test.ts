@@ -112,21 +112,8 @@ vi.mock("drizzle-orm", () => {
   return { isNull, eq, and, desc, sql, relations }
 })
 
-// Schema markers — column metadata the mock predicates read. Cover both the
-// legacy shim path (@/lib/db/schema/notifications, used by the existing
-// create.ts) AND the new package path (@mlabs/db/schema, used by services
-// reached through op.runFromAction). Inlined per mock factory because
-// vi.mock hoists above all top-level statements.
-vi.mock("@/lib/db/schema/notifications", () => ({
-  notifications: {
-    id: { _column: "id" },
-    user_id: { _column: "user_id" },
-    type: { _column: "type" },
-    body: { _column: "body" },
-    read_at: { _column: "read_at" },
-    created_at: { _column: "created_at" },
-  },
-}))
+// Schema markers — column metadata the mock predicates read. Inlined per
+// mock factory because vi.mock hoists above all top-level statements.
 vi.mock("@mlabs/db/schema", () => ({
   notifications: {
     id: { _column: "id" },

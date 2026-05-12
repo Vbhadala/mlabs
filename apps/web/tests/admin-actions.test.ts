@@ -171,7 +171,7 @@ vi.mock("@/lib/db", () => {
   }
 })
 
-vi.mock("@/lib/db/schema/auth", () => ({
+vi.mock("@mlabs/db/schema", () => ({
   user: {
     _name: "users",
     id: { _column: "id", _table: "users" },

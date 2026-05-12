@@ -17,10 +17,6 @@ vi.mock("@/lib/db", () => ({
     }),
   },
 }))
-vi.mock("@/lib/db/schema/audit_log", () => ({
-  audit_log: { _table: "audit_log" },
-}))
-
 import {
   audit,
   clientFromHeaders,

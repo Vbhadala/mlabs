@@ -4,7 +4,7 @@
 import "server-only"
 import { and, desc, eq, isNull, sql } from "drizzle-orm"
 import { db } from "@/lib/db"
-import { notifications } from "@/lib/db/schema/notifications"
+import { notifications } from "@mlabs/db/schema"
 import type { NotificationBody } from "../types"
 
 export interface NotificationRow {
