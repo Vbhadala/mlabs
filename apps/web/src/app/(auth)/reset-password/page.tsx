@@ -7,23 +7,33 @@ import { Button } from "@mlabs/ui-web/button"
 import { Label } from "@mlabs/ui-web/label"
 import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { authClient } from "@/lib/auth/client"
+import { passwordSchema } from "@mlabs/validators"
 
 function ResetPasswordForm() {
   const router = useRouter()
   const params = useSearchParams()
   const token = params.get("token") ?? ""
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [errors, setErrors] = useState<{ password?: string; form?: string }>({})
   const [pending, setPending] = useState(false)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setError(null)
+    const parsed = passwordSchema.safeParse(password)
+    if (!parsed.success) {
+      setErrors({
+        password: parsed.error.issues[0]?.message ?? "Invalid password",
+      })
+      return
+    }
+    setErrors({})
     setPending(true)
     const res = await authClient.resetPassword({ newPassword: password, token })
     setPending(false)
     if (res.error) {
-      setError(res.error.message ?? "Reset failed. The link may have expired.")
+      setErrors({
+        form: res.error.message ?? "Reset failed. The link may have expired.",
+      })
       return
     }
     router.push("/login?reset=ok")
@@ -51,21 +61,26 @@ function ResetPasswordForm() {
           Choose something at least 8 characters long.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="password">New password</Label>
           <PasswordInput
             id="password"
             autoComplete="new-password"
-            required
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
           />
+          {errors.password ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.password}
+            </p>
+          ) : null}
         </div>
-        {error && (
+        {errors.form && (
           <p className="text-sm text-destructive" role="alert">
-            {error}
+            {errors.form}
           </p>
         )}
         <Button type="submit" className="w-full" disabled={pending}>

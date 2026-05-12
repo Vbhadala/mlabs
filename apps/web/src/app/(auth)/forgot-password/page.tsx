@@ -6,9 +6,11 @@ import { Button } from "@mlabs/ui-web/button"
 import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
 import { authClient } from "@/lib/auth/client"
+import { ForgotPasswordSchema } from "@mlabs/validators"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
+  const [errors, setErrors] = useState<{ email?: string }>({})
   const [pending, setPending] = useState(false)
   // Always show success — never reveal whether the email exists (no enumeration).
   // Per PLAN.md §10: password reset request returns 200 either way.
@@ -16,6 +18,17 @@ export default function ForgotPasswordPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    const parsed = ForgotPasswordSchema.safeParse({ email })
+    if (!parsed.success) {
+      const next: typeof errors = {}
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof typeof next
+        if (key && !next[key]) next[key] = issue.message
+      }
+      setErrors(next)
+      return
+    }
+    setErrors({})
     setPending(true)
     await authClient.requestPasswordReset({ email, redirectTo: "/reset-password" })
     setPending(false)
@@ -42,17 +55,22 @@ export default function ForgotPasswordPage() {
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
             autoComplete="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
           />
+          {errors.email ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.email}
+            </p>
+          ) : null}
         </div>
         <Button type="submit" className="w-full" disabled={pending}>
           {pending ? "Sending…" : "Send reset link"}

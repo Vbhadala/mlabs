@@ -4,8 +4,10 @@
 // and adds an eye/eye-off button on the right edge. Forwards every
 // standard input prop except `type` (which it controls).
 //
-// Usage:
-//   <PasswordInput id="password" autoComplete="current-password" required ... />
+// Positioning uses inline `style` rather than Tailwind utilities so the
+// toggle stays correctly placed even if Tailwind's content-scan misses
+// this file (new files have occasionally tripped up Tailwind v4's auto
+// detection — defensive belt-and-braces here).
 
 import * as React from "react"
 import { Input } from "./input"
@@ -17,7 +19,7 @@ function PasswordInput({ className, ...props }: PasswordInputProps) {
   const [visible, setVisible] = React.useState(false)
 
   return (
-    <div className="relative">
+    <div style={{ position: "relative" }}>
       <Input
         type={visible ? "text" : "password"}
         className={cn("pr-10", className)}
@@ -29,7 +31,14 @@ function PasswordInput({ className, ...props }: PasswordInputProps) {
         aria-label={visible ? "Hide password" : "Show password"}
         aria-pressed={visible}
         onClick={() => setVisible((v) => !v)}
-        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-lg text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          right: 0,
+          width: "2.5rem",
+        }}
+        className="flex items-center justify-center rounded-r-lg text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         {visible ? <EyeOff /> : <Eye />}
       </button>

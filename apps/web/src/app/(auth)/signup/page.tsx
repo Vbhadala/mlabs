@@ -7,23 +7,39 @@ import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
 import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { signUp } from "@/lib/auth/client"
+import { SignUpSchema } from "@mlabs/validators"
 
 export default function SignupPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [errors, setErrors] = useState<{
+    name?: string
+    email?: string
+    password?: string
+    form?: string
+  }>({})
   const [success, setSuccess] = useState(false)
   const [pending, setPending] = useState(false)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setError(null)
+    const parsed = SignUpSchema.safeParse({ name, email, password })
+    if (!parsed.success) {
+      const next: typeof errors = {}
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof typeof next
+        if (key && !next[key]) next[key] = issue.message
+      }
+      setErrors(next)
+      return
+    }
+    setErrors({})
     setPending(true)
     const res = await signUp.email({ email, password, name })
     setPending(false)
     if (res.error) {
-      setError(res.error.message ?? "Sign up failed")
+      setErrors({ form: res.error.message ?? "Sign up failed" })
       return
     }
     setSuccess(true)
@@ -49,17 +65,22 @@ export default function SignupPage() {
           A few details and you&apos;re in.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="name">Name</Label>
           <Input
             id="name"
             type="text"
             autoComplete="name"
-            required
             value={name}
             onChange={(e) => setName(e.target.value)}
+            aria-invalid={!!errors.name}
           />
+          {errors.name ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.name}
+            </p>
+          ) : null}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
@@ -67,26 +88,37 @@ export default function SignupPage() {
             id="email"
             type="email"
             autoComplete="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
           />
+          {errors.email ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.email}
+            </p>
+          ) : null}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
           <PasswordInput
             id="password"
             autoComplete="new-password"
-            required
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
           />
-          <p className="text-xs text-muted-foreground">At least 8 characters.</p>
+          {errors.password ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.password}
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">At least 8 characters.</p>
+          )}
         </div>
-        {error && (
+        {errors.form && (
           <p className="text-sm text-destructive" role="alert">
-            {error}
+            {errors.form}
           </p>
         )}
         <Button type="submit" className="w-full" disabled={pending}>

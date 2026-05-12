@@ -8,22 +8,37 @@ import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
 import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { signIn } from "@/lib/auth/client"
+import { LoginSchema } from "@mlabs/validators"
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [errors, setErrors] = useState<{
+    email?: string
+    password?: string
+    form?: string
+  }>({})
   const [pending, setPending] = useState(false)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setError(null)
+    const parsed = LoginSchema.safeParse({ email, password })
+    if (!parsed.success) {
+      const next: typeof errors = {}
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof typeof next
+        if (key && !next[key]) next[key] = issue.message
+      }
+      setErrors(next)
+      return
+    }
+    setErrors({})
     setPending(true)
     const res = await signIn.email({ email, password })
     setPending(false)
     if (res.error) {
-      setError(res.error.message ?? "Sign in failed")
+      setErrors({ form: res.error.message ?? "Sign in failed" })
       return
     }
     router.push("/")
@@ -34,20 +49,25 @@ export default function LoginPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Welcome back. Enter your credentials to continue.
+          Sign in to continue.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
             autoComplete="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
           />
+          {errors.email ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.email}
+            </p>
+          ) : null}
         </div>
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
@@ -62,14 +82,19 @@ export default function LoginPage() {
           <PasswordInput
             id="password"
             autoComplete="current-password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
           />
+          {errors.password ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.password}
+            </p>
+          ) : null}
         </div>
-        {error && (
+        {errors.form && (
           <p className="text-sm text-destructive" role="alert">
-            {error}
+            {errors.form}
           </p>
         )}
         <Button type="submit" className="w-full" disabled={pending}>
