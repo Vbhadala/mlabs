@@ -13,3 +13,6 @@ pre-commit:
   jobs:
     - name: check-migrations
       run: bash .lefthook/pre-commit/check-migrations.sh
+    - name: check-mobile-tailwind
+      glob: "{src/config/design.ts,mobile/tailwind.config.js,scripts/gen-mobile-tailwind.ts}"
+      run: npm run gen:mobile-tw:check
