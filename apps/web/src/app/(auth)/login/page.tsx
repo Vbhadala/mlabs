@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Button } from "@mlabs/ui-web/button"
 import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
+import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { signIn } from "@/lib/auth/client"
 
 export default function LoginPage() {
@@ -55,12 +56,11 @@ export default function LoginPage() {
               href="/forgot-password"
               className="text-xs text-muted-foreground hover:text-foreground"
             >
-              Forgot?
+              Forgot password?
             </Link>
           </div>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="current-password"
             required
             value={password}

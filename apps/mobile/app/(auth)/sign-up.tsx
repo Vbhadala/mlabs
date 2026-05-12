@@ -10,6 +10,7 @@ import {
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../components/ui/Input";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 import { Button } from "../../components/ui/Button";
 import { useSignUp } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
@@ -106,11 +107,10 @@ export default function SignUpScreen() {
                 returnKeyType="next"
                 error={errors.email}
               />
-              <Input
+              <PasswordInput
                 label="Password"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
                 returnKeyType="go"
                 onSubmitEditing={submit}
                 error={errors.password}

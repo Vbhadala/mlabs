@@ -4,8 +4,8 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState } from "react"
 import { Button } from "@mlabs/ui-web/button"
-import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
+import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { authClient } from "@/lib/auth/client"
 
 function ResetPasswordForm() {
@@ -54,9 +54,8 @@ function ResetPasswordForm() {
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="password">New password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}

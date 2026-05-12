@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Input } from "../../components/ui/Input";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 import { Button } from "../../components/ui/Button";
 import { useResetPassword } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
@@ -90,20 +90,18 @@ export default function ResetPasswordScreen() {
               </Text>
             </View>
             <View className="mt-8" style={{ gap: 24 }}>
-              <Input
+              <PasswordInput
                 label="New password"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
                 returnKeyType="next"
                 error={errors.password}
                 hint="At least 8 characters."
               />
-              <Input
+              <PasswordInput
                 label="Confirm password"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                secureTextEntry
                 returnKeyType="go"
                 onSubmitEditing={submit}
                 error={errors.confirmPassword}

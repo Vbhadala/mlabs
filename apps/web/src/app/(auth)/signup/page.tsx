@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Button } from "@mlabs/ui-web/button"
 import { Input } from "@mlabs/ui-web/input"
 import { Label } from "@mlabs/ui-web/label"
+import { PasswordInput } from "@mlabs/ui-web/password-input"
 import { signUp } from "@/lib/auth/client"
 
 export default function SignupPage() {
@@ -73,9 +74,8 @@ export default function SignupPage() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}

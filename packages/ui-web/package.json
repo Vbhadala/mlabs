@@ -11,6 +11,7 @@
     "./field": "./src/components/field.tsx",
     "./input": "./src/components/input.tsx",
     "./label": "./src/components/label.tsx",
+    "./password-input": "./src/components/password-input.tsx",
     "./separator": "./src/components/separator.tsx",
     "./skeleton": "./src/components/skeleton.tsx",
     "./sonner": "./src/components/sonner.tsx",
