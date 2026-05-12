@@ -1,56 +1,25 @@
 import { defineConfig, globalIgnores } from "eslint/config"
-import nextVitals from "eslint-config-next/core-web-vitals"
-import nextTs from "eslint-config-next/typescript"
-import noBrandStringLiteral from "./eslint-rules/no-brand-string-literal.mjs"
-import noDrizzleInSchemas from "./eslint-rules/no-drizzle-in-schemas.mjs"
+import mlabsNext from "@mlabs/eslint-config/next"
 
-const mlabsRules = {
-  plugins: {
-    mlabs: {
-      rules: {
-        "no-brand-string-literal": noBrandStringLiteral,
-        "no-drizzle-in-schemas": noDrizzleInSchemas,
-      },
-    },
-  },
-  rules: {
-    // No raw process.env access outside src/config/env.ts. Forces all env reads through
-    // the t3-env validated singleton.
-    "no-restricted-syntax": [
-      "error",
-      {
-        selector:
-          "MemberExpression[object.object.name='process'][object.property.name='env']",
-        message:
-          "Don't access process.env directly. Import { env } from '@/config/env' instead.",
-      },
-      {
-        selector: "MemberExpression[object.name='process'][property.name='env']",
-        message:
-          "Don't access process.env directly. Import { env } from '@/config/env' instead.",
-      },
-    ],
-    "mlabs/no-brand-string-literal": "error",
-    "mlabs/no-drizzle-in-schemas": "error",
-  },
-}
+// Root ESLint config for the web app (src/). The shared MLabs preset bundles:
+//   - eslint-config-next (core-web-vitals + typescript)
+//   - The 3 MLabs custom rules: no-brand-string-literal, no-drizzle-in-schemas,
+//     plus the no-raw-process-env restriction (enforced via no-restricted-syntax)
+//
+// The mlabs/* rules are activated by the preset for all files; we layer in
+// path-scoped overrides below for env files that legitimately need process.env.
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...mlabsNext,
   globalIgnores([
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
-    "eslint-rules/**",       // the rule source itself uses fs/path
-    "mobile/**",             // Expo app has its own linter via `expo lint`; Next.js DOM rules don't apply to React Native
+    "tooling/eslint-config/src/rules/**", // rule source itself uses fs/path
+    "mobile/**",                          // Expo app has its own linter via `expo lint`
+    "packages/**",                        // packages have their own configs
   ]),
-  // Apply MLabs custom rules everywhere except where exempt
-  {
-    files: ["src/**/*.{ts,tsx,js,jsx}", "app/**/*.{ts,tsx,js,jsx}"],
-    ...mlabsRules,
-  },
   // Carve out the env config — it's the ONE place process.env is allowed
   {
     files: ["src/config/env.ts"],
@@ -59,6 +28,17 @@ const eslintConfig = defineConfig([
   // Carve out drizzle config + next config — they need process.env at boot
   {
     files: ["drizzle.config.ts", "next.config.ts"],
+    rules: { "no-restricted-syntax": "off" },
+  },
+  // Build/test/CI scripts that legitimately need process.env. The t3-env
+  // singleton is for app runtime; these run outside the validated env.
+  {
+    files: [
+      "playwright.config.ts",
+      "scripts/**/*.{ts,tsx,js,mjs}",
+      "tests/**/*.{ts,tsx}",
+      "vitest.config.ts",
+    ],
     rules: { "no-restricted-syntax": "off" },
   },
 ])

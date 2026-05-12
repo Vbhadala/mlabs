@@ -12,7 +12,8 @@ export default defineConfig({
     include: [
       "tests/**/*.test.{ts,tsx}",
       "src/**/*.test.{ts,tsx}",
-      "eslint-rules/**/*.test.{ts,tsx}",
+      "packages/*/src/**/*.test.{ts,tsx}",
+      "tooling/*/src/**/*.test.{ts,tsx}",
     ],
   },
   resolve: {
