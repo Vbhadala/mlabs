@@ -2,23 +2,15 @@
   "$schema": "https://unpkg.com/syncpack@15.1.2/dist/schema.json",
   "versionGroups": [
     {
-      "label": "Mobile pins its own React 18 + Expo-bundled TS 5.3 + eslint 8 + tailwind 3 during the Phase 6 SDK upgrade window",
+      "label": "Mobile React + @types/react versions are set by Expo SDK 55 (exact-pin React 19.2.0, ~19.2.x types) — web tracks its own React 19.2.x patch via Next's recommended pin. Both are 19.2.x; the patch drift is intentional.",
       "packages": ["@mlabs/mobile"],
-      "dependencies": [
-        "react",
-        "react-dom",
-        "@types/react",
-        "@types/react-dom",
-        "typescript",
-        "eslint",
-        "tailwindcss"
-      ],
+      "dependencies": ["react", "react-dom", "@types/react", "@types/react-dom"],
       "isIgnored": true
     },
     {
-      "label": "Web pins TypeScript 5.9.3 — without the pin pnpm's hoisting resolves the mobile ~5.3.3 spec and apps/web typecheck breaks on @vitejs/plugin-react's 5.4+ syntax",
-      "packages": ["@mlabs/web"],
-      "dependencies": ["typescript"],
+      "label": "Mobile pins Tailwind 3 (NativeWind 4 requires 3.4+; NativeWind hasn't moved to Tailwind 4 yet)",
+      "packages": ["@mlabs/mobile"],
+      "dependencies": ["tailwindcss"],
       "isIgnored": true
     },
     {

@@ -33,7 +33,7 @@ importers:
         specifier: ^2.5.10
         version: 2.9.12
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   apps/mobile:
@@ -148,7 +148,7 @@ importers:
         specifier: ^3.4.10
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       typescript:
-        specifier: ~5.9.3
+        specifier: ^5.9.3
         version: 5.9.3
 
   apps/web:
@@ -312,7 +312,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/tsconfig
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
@@ -340,7 +340,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/tsconfig
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/config:
@@ -349,7 +349,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/tsconfig
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/db:
@@ -380,7 +380,7 @@ importers:
         specifier: ^4.21.0
         version: 4.21.0
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/email:
@@ -396,7 +396,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/tsconfig
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/services:
@@ -427,7 +427,7 @@ importers:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
@@ -473,7 +473,7 @@ importers:
         specifier: ^4.7.0
         version: 4.7.0(@types/node@20.19.41)(typescript@5.9.3)
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/validators:
@@ -486,7 +486,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/tsconfig
       typescript:
-        specifier: ^5
+        specifier: ^5.9.3
         version: 5.9.3
 
   tooling/eslint-config:

@@ -13,33 +13,26 @@
   },
   "packageRules": [
     {
-      "description": "Expo 51 stack is pinned until the Phase 6 SDK upgrade — no auto-bumps for the SDK or any expo-/react-native package",
+      "description": "Expo SDK + react-native are version-locked to each other; group them so any SDK bump lands as a single PR. Major bumps still route through the dashboard for manual approval.",
       "matchPackageNames": [
         "expo",
         "/^expo-/",
         "react-native",
         "/^react-native-/",
         "/^@react-native\\//",
-        "/^@react-native-community\\//"
+        "/^@react-native-community\\//",
+        "@expo/metro-runtime",
+        "@expo/vector-icons",
+        "jest-expo",
+        "eslint-config-expo"
       ],
-      "enabled": false
+      "groupName": "expo sdk"
     },
     {
-      "description": "React majors require manual upgrade — mobile pins 18, web pins 19, both deliberate",
-      "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
+      "description": "Mobile keeps Tailwind 3 until NativeWind ships Tailwind 4 support — no auto-bump",
+      "matchFileNames": ["apps/mobile/package.json"],
+      "matchPackageNames": ["tailwindcss", "nativewind"],
       "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "description": "Mobile pins TypeScript ~5.3.3 (Expo SDK 51 bundles it) — no bumps until Phase 6",
-      "matchFileNames": ["apps/mobile/package.json"],
-      "matchPackageNames": ["typescript"],
-      "enabled": false
-    },
-    {
-      "description": "Mobile pins eslint 8 + @types/react-native (Phase 6 cleanup)",
-      "matchFileNames": ["apps/mobile/package.json"],
-      "matchPackageNames": ["eslint", "@types/react-native", "tailwindcss", "nativewind"],
       "enabled": false
     },
     {
