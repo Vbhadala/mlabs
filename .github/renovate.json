@@ -1,0 +1,124 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "timezone": "Europe/London",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "rebaseWhen": "conflicted",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 0,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Expo 51 stack is pinned until the Phase 6 SDK upgrade — no auto-bumps for the SDK or any expo-/react-native package",
+      "matchPackageNames": [
+        "expo",
+        "/^expo-/",
+        "react-native",
+        "/^react-native-/",
+        "/^@react-native\\//",
+        "/^@react-native-community\\//"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "React majors require manual upgrade — mobile pins 18, web pins 19, both deliberate",
+      "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Mobile pins TypeScript ~5.3.3 (Expo SDK 51 bundles it) — no bumps until Phase 6",
+      "matchFileNames": ["apps/mobile/package.json"],
+      "matchPackageNames": ["typescript"],
+      "enabled": false
+    },
+    {
+      "description": "Mobile pins eslint 8 + @types/react-native (Phase 6 cleanup)",
+      "matchFileNames": ["apps/mobile/package.json"],
+      "matchPackageNames": ["eslint", "@types/react-native", "tailwindcss", "nativewind"],
+      "enabled": false
+    },
+    {
+      "description": "All other major bumps land via dependency dashboard approval, not auto-PR",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group the Next.js ecosystem",
+      "matchPackageNames": ["next", "eslint-config-next"],
+      "groupName": "next.js"
+    },
+    {
+      "description": "Group TypeScript + @types/node across web + packages (mobile is excluded above)",
+      "matchPackageNames": ["typescript", "@types/node"],
+      "groupName": "typescript"
+    },
+    {
+      "description": "Group Drizzle + Neon (kept on the same release cadence)",
+      "matchPackageNames": ["/^drizzle-/", "/^@neondatabase\\//"],
+      "groupName": "drizzle + neon"
+    },
+    {
+      "description": "Group Better Auth core + plugins",
+      "matchPackageNames": ["better-auth", "/^@better-auth\\//"],
+      "groupName": "better-auth"
+    },
+    {
+      "description": "Group lint + test tooling on the web/packages side",
+      "matchPackageNames": [
+        "eslint",
+        "/^eslint-/",
+        "/^@eslint\\//",
+        "vitest",
+        "/^@vitest\\//",
+        "@vitejs/plugin-react",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "typescript-eslint"
+      ],
+      "groupName": "lint + test tooling"
+    },
+    {
+      "description": "Group Drizzle + Postgres adapters",
+      "matchPackageNames": ["drizzle-orm", "drizzle-kit", "/^@neondatabase\\//", "pg"],
+      "groupName": "db tooling"
+    },
+    {
+      "description": "Group Tailwind + UI base layer (web)",
+      "matchPackageNames": [
+        "tailwindcss",
+        "/^@tailwindcss\\//",
+        "tailwind-merge",
+        "tailwind-variants",
+        "class-variance-authority",
+        "clsx"
+      ],
+      "groupName": "tailwind + ui base"
+    },
+    {
+      "description": "Group test runtime ecosystem",
+      "matchPackageNames": [
+        "@testing-library/react",
+        "@testing-library/dom",
+        "@testing-library/jest-dom",
+        "@testing-library/user-event",
+        "jsdom",
+        "msw"
+      ],
+      "groupName": "testing libraries"
+    },
+    {
+      "description": "Group turborepo + workspace tooling",
+      "matchPackageNames": ["turbo", "syncpack", "lefthook", "tsx"],
+      "groupName": "monorepo tooling"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  }
+}
