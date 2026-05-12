@@ -9,7 +9,11 @@ export default defineConfig({
     setupFiles: ["./tests/setup.ts"],
     globals: true,
     css: false,
-    include: ["tests/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
+    include: [
+      "tests/**/*.test.{ts,tsx}",
+      "src/**/*.test.{ts,tsx}",
+      "eslint-rules/**/*.test.{ts,tsx}",
+    ],
   },
   resolve: {
     alias: {

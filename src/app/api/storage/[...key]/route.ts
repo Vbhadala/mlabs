@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server"
 import { storage } from "@/lib/storage"
+import { apiError } from "@/lib/schemas/api-error"
 
 interface RouteContext {
   params: Promise<{ key: string[] }>
@@ -34,7 +35,7 @@ export async function GET(_req: NextRequest, ctx: RouteContext) {
       },
     })
   } catch {
-    return new NextResponse("Not found", { status: 404 })
+    return apiError(404, "storage.not_found", "Not found")
   }
 }
 

@@ -86,7 +86,8 @@ describe("POST /api/auth/refresh", () => {
     const res = await POST(mkRequest())
     expect(res.status).toBe(401)
     const body = await res.json()
-    expect(body.error).toMatch(/sign in/i)
+    expect(body.error.code).toBe("auth.unauthenticated")
+    expect(body.error.message).toMatch(/sign in/i)
   })
 
   it("returns 403 when the user is banned (ban-propagation gate)", async () => {
@@ -103,7 +104,8 @@ describe("POST /api/auth/refresh", () => {
     const res = await POST(mkRequest({ authorization: "Bearer sess_banned" }))
     expect(res.status).toBe(403)
     const body = await res.json()
-    expect(body.error).toMatch(/ban/i)
+    expect(body.error.code).toBe("auth.account_banned")
+    expect(body.error.message).toMatch(/ban/i)
   })
 
   it("defaults role to 'user' when the session user object lacks one", async () => {

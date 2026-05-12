@@ -28,6 +28,12 @@ export const env = createEnv({
     // fork in the deploy env; ignored if unset. Treat as a write-once value:
     // after the first admin exists, subsequent promotions use the admin UI.
     INITIAL_ADMIN_EMAIL: z.string().email().optional(),
+
+    // Phase 5.5 — Expo custom URL scheme for in-email deep links. When set,
+    // emails surface `scheme://path` links so a tap from Mail opens the
+    // installed Expo app directly. When unset (web-only fork), buildAppLinkUrl
+    // falls back to BETTER_AUTH_URL so the email opens the browser.
+    EXPO_SCHEME: z.string().optional(),
   },
   client: {
     // Public env vars must be prefixed NEXT_PUBLIC_
@@ -42,6 +48,7 @@ export const env = createEnv({
     POSTMARK_FROM_EMAIL: process.env.POSTMARK_FROM_EMAIL,
     REPLIT_OBJECT_STORAGE_BUCKET_ID: process.env.REPLIT_OBJECT_STORAGE_BUCKET_ID,
     INITIAL_ADMIN_EMAIL: process.env.INITIAL_ADMIN_EMAIL,
+    EXPO_SCHEME: process.env.EXPO_SCHEME,
   },
   // During first-deploy / fork, secrets may not be set yet. Skip validation
   // unless explicitly requested. Set SKIP_ENV_VALIDATION=1 for build steps

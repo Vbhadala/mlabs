@@ -14,6 +14,11 @@
 import "server-only"
 import { brand } from "@/config/brand"
 import { getEmailDriver } from "./driver"
+// Re-exported so call sites that compose CTA URLs do it through the helpers
+// instead of `${env.BETTER_AUTH_URL}/path?token=${tok}` string concat (C1 in
+// PHASE_5_5.md). When a notification CTA must deep-link into the mobile app,
+// use buildAppLinkUrl; otherwise buildAuthUrl is the right call.
+export { buildAppLinkUrl, buildAuthUrl } from "./url"
 
 interface BaseSendOpts {
   to: string
