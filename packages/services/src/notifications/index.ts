@@ -4,6 +4,7 @@
 // tooling/eslint-config (Phase 4 commit 2).
 
 export {
+  getFreshness,
   getUnreadCount,
   listInbox,
   markAllRead,

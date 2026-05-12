@@ -4,36 +4,43 @@
 // in the background; the client treats it as "no badge, retry later."
 //
 // Phase 5.5 (A5) — conditional GET: callers send If-Modified-Since with the
-// timestamp from the previous successful response. If `users.notifications_
-// updated_at <= ifModifiedSince`, we return 304 and skip the count query
-// entirely. The freshness column is bumped by an AFTER INSERT trigger on
-// notifications (migration 0005), so the timestamp can never get ahead of
-// the actual row.
+// timestamp from the previous successful response. If
+// `users.notifications_updated_at <= ifModifiedSince`, we return 304 and skip
+// the count query entirely. The freshness column is bumped by an AFTER INSERT
+// trigger on notifications (migration 0005), so the timestamp can never get
+// ahead of the actual row.
+//
+// Documented exception: this route doesn't go through defineOperation. The
+// HTTP-caching logic (304 + Last-Modified) sits outside the input/output
+// schema model and short-circuits the count query — wrapping that through
+// the operation adapter wouldn't avoid the duplication. The route still
+// uses the @mlabs/services notifications domain for both queries, so the
+// service contract is consistent with operation-wrapped routes.
 
 import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
-import { getSession } from "@/lib/auth/server"
-import { unreadCount } from "@/features/notifications/server/queries"
+import { ApiError } from "@mlabs/api"
+import { buildContext } from "@mlabs/api/server"
+import { notifications } from "@mlabs/services"
 import { db } from "@/lib/db"
-import { user } from "@/lib/db/schema/auth"
-import { apiError } from "@/lib/schemas/api-error"
+import { getSessionFromHeaders } from "@/lib/auth/server"
 
 export const runtime = "nodejs"
 
 export async function GET(req: Request) {
-  const session = await getSession()
+  const session = await getSessionFromHeaders(req.headers)
   if (!session?.user) {
-    return apiError(401, "auth.unauthenticated", "Sign in required")
+    return ApiError.unauthorized().toResponse()
   }
-  const userId = session.user.id
+  const u = session.user as { id: string; email: string; role?: string }
+  const role: "user" | "admin" = u.role === "admin" ? "admin" : "user"
+  const ctx = buildContext({
+    headers: req.headers,
+    session: { user: { id: u.id, email: u.email, role } },
+    requestId: req.headers.get("x-request-id") ?? crypto.randomUUID(),
+  })
 
-  // Read the freshness column — single primary-key lookup, sub-ms.
-  const [row] = await db
-    .select({ ts: user.notifications_updated_at })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1)
-  const updatedAt = row?.ts ?? null
+  // Freshness check — single primary-key lookup, sub-ms.
+  const { ts: updatedAt } = await notifications.getFreshness(db, ctx)
 
   const ifModifiedSinceHeader = req.headers.get("if-modified-since")
   if (updatedAt && ifModifiedSinceHeader) {
@@ -48,7 +55,7 @@ export async function GET(req: Request) {
     }
   }
 
-  const count = await unreadCount(userId)
+  const { count } = await notifications.getUnreadCount(db, ctx)
   return NextResponse.json(
     { count },
     {

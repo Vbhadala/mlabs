@@ -2,16 +2,16 @@
 //
 // Lane A — transport contract test.
 //
-// Proves that a real /api/* route handler accepts BOTH transports identically:
+// Proves that a real /api/* route handler accepts all three transports:
 //  - Cookie session (web — existing behavior, regression check)
-//  - JWT bearer (mobile — Phase 5.5 new behavior)
+//  - JWT bearer (mobile — Phase 5.5)
+//  - Better Auth bearer-plugin session token (fallback bearer path)
 //
 // Uses /api/notifications/unread-count as the representative GET handler.
-// Every other /api/* route uses the same getSession()/requireUser() helpers
-// from src/lib/auth/server (verified by audit in /plan-eng-review), so the
-// contract proven here applies to all of them. Per-route feature-layer mocking
-// adds boilerplate without coverage gains — the helper layer is the integration
-// point, and that's fully covered by tests/auth-jwt.test.ts (16 cases).
+// Phase 4 (Lane C) moved this route to call getSessionFromHeaders + the
+// @mlabs/services notifications domain directly; the transport chain still
+// lives inside src/lib/auth/server.ts::getSessionFromHeaders, so this test
+// continues to exercise it end-to-end by letting that function run real.
 
 import { describe, expect, it, vi, beforeEach } from "vitest"
 
@@ -23,7 +23,7 @@ vi.mock("@/config/env", () => ({
   },
 }))
 
-// Mock Better Auth — represents the cookie-session path.
+// Mock Better Auth — represents the cookie-session AND bearer-plugin paths.
 const mockBetterAuthGetSession = vi.fn()
 vi.mock("@/lib/auth", () => ({
   auth: {
@@ -33,38 +33,20 @@ vi.mock("@/lib/auth", () => ({
   },
 }))
 
-// Mock the feature layer so we don't need Postgres.
-const mockUnreadCount = vi.fn()
-vi.mock("@/features/notifications/server/queries", () => ({
-  unreadCount: (...args: unknown[]) => mockUnreadCount(...args),
-}))
-
-// Mock next/headers — return whatever headers the test attaches to the request.
-const headersStore = { current: new Headers() }
-vi.mock("next/headers", () => ({
-  headers: async () => headersStore.current,
-}))
-
-// Phase 5.5: route now reads users.notifications_updated_at for conditional GET.
-// We don't care about the timestamp here — just hand back a sentinel so the
-// route falls through to the existing count path.
-vi.mock("@/lib/db", () => ({
-  db: {
-    select: () => ({
-      from: () => ({
-        where: () => ({
-          limit: () => Promise.resolve([{ ts: new Date(0) }]),
-        }),
-      }),
-    }),
+// Mock the services layer so we don't need Postgres. The route calls
+// getFreshness (sentinel value, irrelevant for the transport assertions
+// here) then getUnreadCount (the count value the route returns).
+const mockGetUnreadCount = vi.fn()
+vi.mock("@mlabs/services", () => ({
+  notifications: {
+    getFreshness: vi.fn(async () => ({ ts: new Date(0) })),
+    getUnreadCount: (...args: unknown[]) => mockGetUnreadCount(...args),
   },
 }))
-vi.mock("@/lib/db/schema/auth", () => ({
-  user: { id: { _column: "id" }, notifications_updated_at: { _column: "ts" } },
-}))
-vi.mock("drizzle-orm", () => ({
-  eq: () => true,
-}))
+
+// db is touched at route module load via the @/lib/db shim's Proxy; we
+// never actually call it (services are mocked).
+vi.mock("@/lib/db", () => ({ db: {} }))
 
 import { GET } from "@/app/api/notifications/unread-count/route"
 import { signAccessToken } from "@/lib/auth/jwt"
@@ -78,25 +60,30 @@ const mkRequest = (headers?: Record<string, string>) =>
 describe("Transport contract — /api/notifications/unread-count GET", () => {
   beforeEach(() => {
     mockBetterAuthGetSession.mockReset()
-    mockUnreadCount.mockReset()
-    headersStore.current = new Headers()
+    mockGetUnreadCount.mockReset()
   })
 
   it("[cookie] returns 200 with unread count when cookie session is valid (regression)", async () => {
-    headersStore.current = new Headers({
-      cookie: "better-auth.session_token=valid-cookie-token",
-    })
     mockBetterAuthGetSession.mockResolvedValue({
       user: { id: "u_cookie", email: "c@x.com", role: "user" },
-      session: { token: "valid-cookie-token", userId: "u_cookie", expiresAt: new Date() },
+      session: {
+        token: "valid-cookie-token",
+        userId: "u_cookie",
+        expiresAt: new Date(),
+      },
     })
-    mockUnreadCount.mockResolvedValue(7)
+    mockGetUnreadCount.mockResolvedValue({ count: 7 })
 
-    const res = await GET(mkRequest())
+    const res = await GET(
+      mkRequest({ cookie: "better-auth.session_token=valid-cookie-token" }),
+    )
     expect(res.status).toBe(200)
-    const body = await res.json()
+    const body = (await res.json()) as { count: number }
     expect(body.count).toBe(7)
-    expect(mockUnreadCount).toHaveBeenCalledWith("u_cookie")
+    // The service receives the (db, ctx, args) triple; assert the ctx
+    // userId resolved through the cookie path.
+    const ctx = mockGetUnreadCount.mock.calls[0]?.[1] as { userId: string }
+    expect(ctx.userId).toBe("u_cookie")
   })
 
   it("[JWT bearer] returns 200 with unread count when valid JWT is sent in Authorization header", async () => {
@@ -105,17 +92,15 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
       email: "j@x.com",
       role: "user",
     })
-    headersStore.current = new Headers({
-      authorization: `Bearer ${token}`,
-    })
     // Better Auth should NEVER be consulted on the JWT path — stateless verify.
-    mockUnreadCount.mockResolvedValue(3)
+    mockGetUnreadCount.mockResolvedValue({ count: 3 })
 
-    const res = await GET(mkRequest())
+    const res = await GET(mkRequest({ authorization: `Bearer ${token}` }))
     expect(res.status).toBe(200)
-    const body = await res.json()
+    const body = (await res.json()) as { count: number }
     expect(body.count).toBe(3)
-    expect(mockUnreadCount).toHaveBeenCalledWith("u_jwt")
+    const ctx = mockGetUnreadCount.mock.calls[0]?.[1] as { userId: string }
+    expect(ctx.userId).toBe("u_jwt")
     expect(mockBetterAuthGetSession).not.toHaveBeenCalled()
   })
 
@@ -123,43 +108,45 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     // A token that isn't a JWT (no 3 dotted segments / bad signature) → JWT path
     // returns null → fall-through to better-auth which the bearer plugin maps
     // to a session-row lookup.
-    headersStore.current = new Headers({
-      authorization: "Bearer sess_abc_long_random_string",
-    })
     mockBetterAuthGetSession.mockResolvedValue({
       user: { id: "u_session", email: "s@x.com", role: "user" },
-      session: { token: "sess_abc_long_random_string", userId: "u_session", expiresAt: new Date() },
+      session: {
+        token: "sess_abc_long_random_string",
+        userId: "u_session",
+        expiresAt: new Date(),
+      },
     })
-    mockUnreadCount.mockResolvedValue(2)
+    mockGetUnreadCount.mockResolvedValue({ count: 2 })
 
-    const res = await GET(mkRequest())
+    const res = await GET(
+      mkRequest({ authorization: "Bearer sess_abc_long_random_string" }),
+    )
     expect(res.status).toBe(200)
-    const body = await res.json()
+    const body = (await res.json()) as { count: number }
     expect(body.count).toBe(2)
-    expect(mockUnreadCount).toHaveBeenCalledWith("u_session")
+    const ctx = mockGetUnreadCount.mock.calls[0]?.[1] as { userId: string }
+    expect(ctx.userId).toBe("u_session")
     expect(mockBetterAuthGetSession).toHaveBeenCalledTimes(1)
   })
 
   it("[no auth] returns 401 when neither cookie nor bearer present", async () => {
-    headersStore.current = new Headers()
     mockBetterAuthGetSession.mockResolvedValue(null)
 
     const res = await GET(mkRequest())
     expect(res.status).toBe(401)
-    const body = await res.json()
+    const body = (await res.json()) as { error: { code: string } }
     expect(body.error.code).toBe("auth.unauthenticated")
-    expect(mockUnreadCount).not.toHaveBeenCalled()
+    expect(mockGetUnreadCount).not.toHaveBeenCalled()
   })
 
   it("[expired JWT] returns 401 (JWT verify fails, Better Auth bearer also returns null)", async () => {
     // Tampered JWT — verifyAccessToken returns null, falls through to Better
     // Auth which treats it as an unknown session token and returns null.
-    headersStore.current = new Headers({
-      authorization: "Bearer eyJ.tampered.signature",
-    })
     mockBetterAuthGetSession.mockResolvedValue(null)
 
-    const res = await GET(mkRequest({ authorization: "Bearer eyJ.tampered.signature" }))
+    const res = await GET(
+      mkRequest({ authorization: "Bearer eyJ.tampered.signature" }),
+    )
     expect(res.status).toBe(401)
   })
 })

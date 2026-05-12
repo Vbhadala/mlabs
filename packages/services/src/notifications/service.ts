@@ -11,7 +11,7 @@ import "server-only"
 // it exists), not here.
 
 import { and, desc, eq, isNull, sql } from "drizzle-orm"
-import { notifications } from "@mlabs/db/schema"
+import { notifications, user } from "@mlabs/db/schema"
 import type { NotificationBody } from "@mlabs/db/types"
 import type { Database } from "@mlabs/db/client"
 import type { CallerContext } from "@mlabs/api/context"
@@ -33,6 +33,30 @@ export interface MarkResult {
 }
 
 export const INBOX_LIMIT = 50
+
+/**
+ * Freshness timestamp for conditional-GET on /api/notifications/unread-count
+ * (Phase 5.5 A5). Reads users.notifications_updated_at — the column is
+ * maintained by an AFTER INSERT trigger on notifications (migration 0005),
+ * so the timestamp can never get ahead of the actual row.
+ *
+ * The cross-table read (notifications service touching user table) is
+ * intentional: the freshness signal is denormalized onto user precisely so
+ * the bell poll never scans notifications. Keeping the read in this domain
+ * means the route doesn't have to know about that denormalization.
+ */
+export async function getFreshness(
+  db: Database,
+  ctx: CallerContext,
+  _args: Record<string, never> = {},
+): Promise<{ ts: Date | null }> {
+  const [row] = await db
+    .select({ ts: user.notifications_updated_at })
+    .from(user)
+    .where(eq(user.id, ctx.userId))
+    .limit(1)
+  return { ts: row?.ts ?? null }
+}
 
 export async function getUnreadCount(
   db: Database,
