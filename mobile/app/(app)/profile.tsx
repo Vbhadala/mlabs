@@ -103,7 +103,7 @@ export default function ProfileScreen() {
               <Skeleton width={80} height={80} borderRadius={40} />
             ) : (
               <Avatar
-                src={me.data?.avatarUrl ?? undefined}
+                src={me.data?.image ?? undefined}
                 name={me.data?.name}
                 userId={me.data?.id}
                 size={80}

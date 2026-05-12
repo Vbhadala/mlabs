@@ -71,6 +71,30 @@ export async function requireUser() {
 }
 
 /**
+ * Phase 5.5: REST-friendly variant of requireUser.
+ *
+ * Returns either the user OR a 401 NextResponse — never throws redirect().
+ * Use this in /api/* route handlers that mobile reaches (mobile can't follow
+ * 307 redirects to /login; it expects 401 JSON in the locked ApiErrorResponse
+ * shape).
+ *
+ * Usage:
+ *   const auth = await requireUserJSON()
+ *   if (auth instanceof Response) return auth   // 401
+ *   const user = auth                            // narrowed
+ */
+export async function requireUserJSON(): Promise<
+  AuthSession["user"] | Response
+> {
+  const session = await getSession()
+  if (!session?.user) {
+    const { apiError } = await import("@/lib/schemas/api-error")
+    return apiError(401, "auth.unauthenticated", "Sign in required")
+  }
+  return session.user
+}
+
+/**
  * Server-component helper: enforces auth + admin role.
  *
  * Non-admin authenticated users get notFound() — same response as any

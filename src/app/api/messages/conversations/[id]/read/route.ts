@@ -4,7 +4,7 @@
 // the thread is in view). Cascades to notifications via the server module.
 
 import { NextResponse } from "next/server"
-import { requireUser } from "@/lib/auth/server"
+import { requireUserJSON } from "@/lib/auth/server"
 import { markConversationRead } from "@/features/messages/server/messages"
 import { MessagesError } from "@/features/messages/server/errors"
 import { logger } from "@/lib/logger"
@@ -17,7 +17,9 @@ interface RouteContext {
 }
 
 export async function POST(_req: Request, ctx: RouteContext) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const { id: conversationId } = await ctx.params
 
   try {

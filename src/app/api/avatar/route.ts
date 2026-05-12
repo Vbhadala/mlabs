@@ -6,7 +6,7 @@
 // shape; the AvatarUploader surfaces err.error.message inline.
 
 import { NextResponse } from "next/server"
-import { requireUser } from "@/lib/auth/server"
+import { requireUserJSON } from "@/lib/auth/server"
 import {
   AvatarError,
   MAX_BYTES,
@@ -23,7 +23,9 @@ export const runtime = "nodejs"
 export const maxDuration = 30
 
 export async function POST(req: Request) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const client = clientFromHeaders(req.headers)
 
   const form = await req.formData().catch(() => null)
@@ -59,7 +61,9 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const client = clientFromHeaders(req.headers)
   try {
     await removeAvatar({

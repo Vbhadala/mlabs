@@ -7,7 +7,7 @@
 
 import { NextResponse } from "next/server"
 import { eq } from "drizzle-orm"
-import { getSession, requireUser } from "@/lib/auth/server"
+import { getSession, requireUserJSON } from "@/lib/auth/server"
 import {
   listForUser,
   openOrCreate1to1,
@@ -62,7 +62,9 @@ const createSchema = z.object({
 })
 
 export async function POST(req: Request) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const body = await req.json().catch(() => null)
   const parsed = createSchema.safeParse(body)
   if (!parsed.success) {

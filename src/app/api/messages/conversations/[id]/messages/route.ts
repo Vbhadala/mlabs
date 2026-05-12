@@ -7,7 +7,7 @@
 // returns "not_found" → 404, never 403 (no enumeration).
 
 import { NextResponse } from "next/server"
-import { getSession, requireUser } from "@/lib/auth/server"
+import { getSession, requireUserJSON } from "@/lib/auth/server"
 import {
   listMessages,
   sendMessage,
@@ -52,7 +52,9 @@ export async function GET(req: Request, ctx: RouteContext) {
 }
 
 export async function POST(req: Request, ctx: RouteContext) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const { id: conversationId } = await ctx.params
   const body = await req.json().catch(() => null)
   if (!body || typeof body.body !== "string") {

@@ -75,13 +75,16 @@ let refreshInFlight: Promise<string | null> | null = null;
 async function performRefresh(): Promise<string | null> {
   const refresh = await getRefreshToken();
   if (!refresh) return null;
+  // /api/auth/refresh reads the session (refresh) token from the Authorization
+  // header — Better Auth's bearer plugin converts it to a session lookup.
+  // The session token itself does NOT rotate (Better Auth's session.updateAge
+  // advances expiry server-side); only the short-lived JWT comes back here.
   const res = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       "X-Client": "mobile",
+      Authorization: `Bearer ${refresh}`,
     },
-    body: JSON.stringify({ refreshToken: refresh }),
   });
   if (!res.ok) {
     await clearTokens();
@@ -89,9 +92,10 @@ async function performRefresh(): Promise<string | null> {
   }
   const data = (await res.json()) as {
     accessToken: string;
-    refreshToken: string;
+    expiresIn: number;
+    tokenType: string;
   };
-  await setTokens({ access: data.accessToken, refresh: data.refreshToken });
+  await SecureStore.setItemAsync(KEY_ACCESS, data.accessToken);
   return data.accessToken;
 }
 
