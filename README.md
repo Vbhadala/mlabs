@@ -86,21 +86,36 @@ That's the whole rebrand. For deeper per-fork changes, read
 
 ## Forking a new project
 
-When Phase 10 lands: `pnpm rename` will handle the safe `@mlabs/*` →
-`@<client>/*` replacements (package names, imports, README brand
-strings, `.well-known/` manifest placeholders) and write a
-`.fork-config.json` for idempotency.
+```bash
+pnpm rename \
+  --namespace @acme \
+  --slug acme \
+  --display-name "ACME App" \
+  --deeplink-host app.acme.com
+```
 
-Manual setup that the script doesn't (and shouldn't) automate —
-bundle IDs, OAuth apps, Postmark sender signatures, EAS project setup,
-GitHub repo secrets — lives in `FORK_CHECKLIST.md.template` (alongside
-this README at the repo root).
+Rewrites every `@mlabs/<pkg>` package name, workspace dependency,
+import statement, and path alias to your scope; replaces the
+`"Muscat"` display name, `"muscat"` slug + scheme, deep-link host,
+and `"muscat-mobile"` JWT issuer; writes `.fork-config.json` for
+idempotent re-runs. `.well-known/` placeholders and bundle IDs stay
+manual on purpose — they need real Apple Team IDs and Google Play
+SHA-256 fingerprints, which the script can't guess.
+
+After the rename:
+
+```bash
+rm pnpm-lock.yaml && pnpm install   # regenerate the lockfile under the new scope
+pnpm gen:mobile-tw                  # regenerate apps/mobile/tailwind.config.js
+# Open FORK_CHECKLIST.md for the rest of the manual steps.
+```
+
+The generated `FORK_CHECKLIST.md` walks bundle IDs, OAuth apps,
+Postmark + Neon + EAS project setup, GitHub repo secrets, and the
+first-boot smoke test.
 
 Per-client handover (secret rotation, accounts, pre-launch gates) lives
 in [HANDOVER.md.template](./HANDOVER.md.template).
-
-Currently (pre-Phase-10): the manual rename map is at the bottom of
-[docs/forking-guide.md](./docs/forking-guide.md).
 
 ## Learn more
 

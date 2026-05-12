@@ -10,7 +10,13 @@ import mlabsNext from "@mlabs/eslint-config/next"
 
 const eslintConfig = defineConfig([
   ...mlabsNext,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "tests/fixtures/**",
+  ]),
   // env config is the ONE place process.env is allowed
   {
     files: ["src/config/env.ts"],

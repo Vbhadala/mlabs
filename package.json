@@ -18,7 +18,8 @@
     "verify:deeplinks": "tsx scripts/verify-deeplinks.ts",
     "check-contrast": "tsx scripts/check-contrast.ts",
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
-    "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check"
+    "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
+    "rename": "tsx scripts/rename.ts"
   },
   "devDependencies": {
     "@mlabs/config": "workspace:*",
