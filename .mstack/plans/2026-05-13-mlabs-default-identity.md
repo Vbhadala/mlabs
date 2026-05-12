@@ -2,9 +2,10 @@
 
 **Date:** 2026-05-13
 **Slug:** mlabs-default-identity
-**Status:** reviewed
+**Status:** implemented
 **Author:** Vinod (with /mlabs-plan)
 **Review:** [.mstack/reviews/2026-05-13-mlabs-default-identity.md](../reviews/2026-05-13-mlabs-default-identity.md)
+**Implementation:** [.mstack/implementations/2026-05-13-mlabs-default-identity/report.md](../implementations/2026-05-13-mlabs-default-identity/report.md)
 
 ---
 
