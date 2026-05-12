@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/ui/Button";
 import { useResendVerify, useVerifyEmail } from "../../features/auth/hooks";
+import { brand } from "@mlabs/config";
 
 type Status = "pending" | "success" | "error";
 
@@ -42,7 +43,10 @@ export default function VerifyScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 px-6 pt-6">
-        <Text className="text-base font-semibold text-foreground">Muscat</Text>
+        <View className="flex-row items-center" style={{ gap: 8 }}>
+          <View className="size-2 rounded-full bg-primary" />
+          <Text className="text-base font-extrabold tracking-tight text-foreground">{brand.name}</Text>
+        </View>
         <View className="mt-16 items-center" style={{ gap: 16 }}>
           {status === "pending" ? (
             <>

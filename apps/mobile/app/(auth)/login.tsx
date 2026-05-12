@@ -15,6 +15,7 @@ import { useLogin, useResendVerify } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api/client";
 import { LoginSchema } from "@mlabs/validators";
+import { brand } from "@mlabs/config";
 
 export default function LoginScreen() {
   const [email, setEmail] = React.useState("");
@@ -71,9 +72,12 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-1 px-6 pt-6">
-            <Text className="text-base font-semibold text-foreground">
-              Muscat
-            </Text>
+            <View className="flex-row items-center" style={{ gap: 8 }}>
+              <View className="size-2 rounded-full bg-primary" />
+              <Text className="text-base font-extrabold tracking-tight text-foreground">
+                {brand.name}
+              </Text>
+            </View>
             <View className="mt-8">
               <Text
                 accessibilityRole="header"

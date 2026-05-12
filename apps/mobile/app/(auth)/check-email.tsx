@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/ui/Button";
 import { useResendVerify } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
+import { brand } from "@mlabs/config";
 
 const RESEND_COOLDOWN_SEC = 30;
 
@@ -45,7 +46,10 @@ export default function CheckEmailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 px-6 pt-6">
-        <Text className="text-base font-semibold text-foreground">Muscat</Text>
+        <View className="flex-row items-center" style={{ gap: 8 }}>
+          <View className="size-2 rounded-full bg-primary" />
+          <Text className="text-base font-extrabold tracking-tight text-foreground">{brand.name}</Text>
+        </View>
         <View className="mt-16">
           <Text
             accessibilityRole="header"
