@@ -16,8 +16,9 @@
 | 2 | W2 — Better Auth + Drizzle + audit_log | 2 days | not started | Phases 3, 5, 8 |
 | 3 | W3 — Postmark email wrappers | ½ day | not started | Phase 5 (signup flow) |
 | 4 | W4 — `lib/ui` + `lib/storage` + `lib/logger` | 1 day | not started | Phase 5 |
-| 5 | W5–W8 — features (profile, avatar, notifications, messages, admin) | 3–4 days | **W5 + W6 + W7 + W8 all done (profile, avatar, notifications, messages, admin)** | Phase 7 |
-| 6 | W9 — Claude Code skills | 1–2 days | not started | parallel with everything |
+| 5 | W5–W8 — features (profile, avatar, notifications, messages, admin) | 3–4 days | **W5 + W6 + W7 + W8 all done (profile, avatar, notifications, messages, admin)** | Phase 5.5 |
+| **5.5** | **Expo mobile app (`/mobile`) + bearer auth + conditional GET + shared schemas. See `PHASE_5_5.md`** | **3–4 weeks** | **planned (cleared by /plan-eng-review 2026-05-11)** | **Phase 7** |
+| 6 | W9 — Claude Code skills (`prep-natively-build` dropped per decision 0004) | 1–2 days | not started | parallel with everything |
 | 7 | Pre-ship — docs, dark mode QA, polling load test, first-fork dry run | 1 day | not started | v1 ship |
 
 ---
@@ -459,6 +460,30 @@ Tag: `v0.5.0-features`.
 
 ---
 
+## Phase 5.5: Expo mobile scaffold
+
+Full plan in `PHASE_5_5.md`. Summary:
+
+- `/mobile` Expo app covering auth, profile, avatar, messages, notifications
+- Bearer auth (1hr access + 7d refresh) on top of existing Better Auth
+- Conditional GET (If-Modified-Since / ETag) backed by DB triggers on `users.notifications_updated_at` + `users.messages_updated_at`
+- `src/lib/schemas/` pure-Zod barrel (ESLint-guarded) + `ApiErrorResponse` wire format
+- NativeWind v4 + Tailwind v3 mobile config generated from `src/config/design.ts` (CI-checked, header-banner protected)
+- Build our own 8 mobile primitives matching shadcn API
+- `@tanstack/react-query` on mobile with 401 auto-refresh
+- 11 Maestro E2E flows (local-only; TODOS.md #2 tracks CI promotion)
+- Universal Links + App Links plumbing (placeholders in template; `new-project` skill fills bundle ID / team ID / SHA)
+
+**Lanes (parallelizable):** A (server foundations, sequential) → B + C + D (parallel) → E (final integration). See `PHASE_5_5.md` for the 44-step breakdown.
+
+**Decision docs:** `docs/decisions/0004-expo-over-natively.md`, `docs/decisions/0005-conditional-get-load-math.md`.
+
+**Test plan artifact:** `~/.gstack/projects/Vbhadala-mlabs/vinod-Vbhadala-muscat-v1-eng-review-test-plan-20260511-221355.md`.
+
+Tag: `v0.5.5-mobile`.
+
+---
+
 ## Phase 6: W9 — Claude Code skills
 
 These run in parallel with everything (W9 lane in PLAN.md). Defer the heaviest ones to v1.1.
@@ -467,9 +492,9 @@ These run in parallel with everything (W9 lane in PLAN.md). Defer the heaviest o
 
 | Skill | Time | What it does |
 |---|---|---|
-| `new-project` | 3 hrs | Clone template, rename, init Replit, init Neon branch, generate Better Auth secret |
-| `handover-pack` | 2 hrs | Generate filled `HANDOVER.md`, secret rotation list, Loom script |
-| `remove-feature` | 3 hrs | Delete feature folder, drop migrations, remove env vars, update nav |
+| `new-project` | 4 hrs | Clone template, rename, init Replit, init Neon branch, generate Better Auth secret. **Phase 5.5 additions:** prompt for iOS bundle ID + Apple team ID + Android cert SHA-256; fill placeholders in `public/.well-known/apple-app-site-association`, `public/.well-known/assetlinks.json`, and `mobile/app.config.ts`; run `npm run gen:mobile-tw`. |
+| `handover-pack` | 2 hrs | Generate filled `HANDOVER.md`, secret rotation list, Loom script. **Phase 5.5 additions:** production EAS submission checklist (Apple Developer account, Play Console, signing certs); `npm run verify:deeplinks` reminder. |
+| `remove-feature` | 3 hrs | Delete feature folder, drop migrations, remove env vars, update nav. **Phase 5.5 additions:** also strip mirror `mobile/features/{feature}/` folder. |
 
 ### 6.2 v1.1 skills (defer)
 
@@ -478,7 +503,7 @@ These run in parallel with everything (W9 lane in PLAN.md). Defer the heaviest o
 | `add-feature` | Need 3+ forks to find the right shape |
 | `upgrade-template` | Same; in-flight propagation is partially fantasy per outside voice |
 | `generate-admin-crud` | Once admin pattern is proven on 2 features, scaffold from a Drizzle table |
-| `prep-natively-build` | Wait until first project actually wraps via Natively — gather real pain |
+| ~~`prep-natively-build`~~ | **Dropped per decision 0004 — Expo replaces Natively** |
 
 ### 6.3 Commit
 
