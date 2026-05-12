@@ -27,6 +27,7 @@
     "@mlabs/config": "workspace:*",
     "@mlabs/db": "workspace:*",
     "@mlabs/email": "workspace:*",
+    "@mlabs/services": "workspace:*",
     "@mlabs/ui-web": "workspace:*",
     "@mlabs/validators": "workspace:*",
     "@hookform/resolvers": "^5.2.2",

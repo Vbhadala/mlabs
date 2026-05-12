@@ -29,6 +29,9 @@ importers:
       '@mlabs/email':
         specifier: workspace:*
         version: link:packages/email
+      '@mlabs/services':
+        specifier: workspace:*
+        version: link:packages/services
       '@mlabs/ui-web':
         specifier: workspace:*
         version: link:packages/ui-web
@@ -369,6 +372,40 @@ importers:
         specifier: ^5
         version: 5.3.3
 
+  packages/services:
+    dependencies:
+      '@mlabs/api':
+        specifier: workspace:*
+        version: link:../api
+      '@mlabs/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@neondatabase/serverless@1.1.0)(kysely@0.28.17)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@mlabs/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint-config
+      '@mlabs/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
+      eslint:
+        specifier: ^9
+        version: 9.39.4(jiti@2.7.0)
+      typescript:
+        specifier: ^5
+        version: 5.3.3
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.6(@types/node@20.19.41)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.14.6(@types/node@20.19.41)(typescript@5.3.3))(vite@8.0.12(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0))
+
   packages/ui-web:
     dependencies:
       '@base-ui/react':
@@ -426,6 +463,10 @@ importers:
         version: 5.9.3
 
   tooling/eslint-config:
+    dependencies:
+      '@typescript-eslint/parser':
+        specifier: ^8.59.3
+        version: 8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
     devDependencies:
       eslint:
         specifier: ^9
