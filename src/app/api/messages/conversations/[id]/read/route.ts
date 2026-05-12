@@ -8,6 +8,7 @@ import { requireUser } from "@/lib/auth/server"
 import { markConversationRead } from "@/features/messages/server/messages"
 import { MessagesError } from "@/features/messages/server/errors"
 import { logger } from "@/lib/logger"
+import { apiError } from "@/lib/schemas/api-error"
 
 export const runtime = "nodejs"
 
@@ -24,13 +25,13 @@ export async function POST(_req: Request, ctx: RouteContext) {
     return NextResponse.json({ ok: true })
   } catch (err) {
     if (err instanceof MessagesError && err.code === "not_found") {
-      return NextResponse.json({ error: "Not found" }, { status: 404 })
+      return apiError(404, "messages.not_found", "Not found")
     }
     logger.error("markConversationRead failed", {
       userId: me.id,
       conversationId,
       message: String(err),
     })
-    return NextResponse.json({ error: "Server error" }, { status: 500 })
+    return apiError(500, "messages.server_error", "Server error")
   }
 }

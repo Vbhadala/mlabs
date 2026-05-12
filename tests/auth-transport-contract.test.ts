@@ -45,8 +45,35 @@ vi.mock("next/headers", () => ({
   headers: async () => headersStore.current,
 }))
 
+// Phase 5.5: route now reads users.notifications_updated_at for conditional GET.
+// We don't care about the timestamp here — just hand back a sentinel so the
+// route falls through to the existing count path.
+vi.mock("@/lib/db", () => ({
+  db: {
+    select: () => ({
+      from: () => ({
+        where: () => ({
+          limit: () => Promise.resolve([{ ts: new Date(0) }]),
+        }),
+      }),
+    }),
+  },
+}))
+vi.mock("@/lib/db/schema/auth", () => ({
+  user: { id: { _column: "id" }, notifications_updated_at: { _column: "ts" } },
+}))
+vi.mock("drizzle-orm", () => ({
+  eq: () => true,
+}))
+
 import { GET } from "@/app/api/notifications/unread-count/route"
 import { signAccessToken } from "@/lib/auth/jwt"
+
+const mkRequest = (headers?: Record<string, string>) =>
+  new Request("http://localhost:3000/api/notifications/unread-count", {
+    method: "GET",
+    headers: headers ?? {},
+  })
 
 describe("Transport contract — /api/notifications/unread-count GET", () => {
   beforeEach(() => {
@@ -65,7 +92,7 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     })
     mockUnreadCount.mockResolvedValue(7)
 
-    const res = await GET()
+    const res = await GET(mkRequest())
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.count).toBe(7)
@@ -84,7 +111,7 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     // Better Auth should NEVER be consulted on the JWT path — stateless verify.
     mockUnreadCount.mockResolvedValue(3)
 
-    const res = await GET()
+    const res = await GET(mkRequest())
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.count).toBe(3)
@@ -105,7 +132,7 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     })
     mockUnreadCount.mockResolvedValue(2)
 
-    const res = await GET()
+    const res = await GET(mkRequest())
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.count).toBe(2)
@@ -117,10 +144,10 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     headersStore.current = new Headers()
     mockBetterAuthGetSession.mockResolvedValue(null)
 
-    const res = await GET()
+    const res = await GET(mkRequest())
     expect(res.status).toBe(401)
     const body = await res.json()
-    expect(body.error).toBe("unauthenticated")
+    expect(body.error.code).toBe("auth.unauthenticated")
     expect(mockUnreadCount).not.toHaveBeenCalled()
   })
 
@@ -132,7 +159,7 @@ describe("Transport contract — /api/notifications/unread-count GET", () => {
     })
     mockBetterAuthGetSession.mockResolvedValue(null)
 
-    const res = await GET()
+    const res = await GET(mkRequest({ authorization: "Bearer eyJ.tampered.signature" }))
     expect(res.status).toBe(401)
   })
 })

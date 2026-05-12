@@ -21,6 +21,17 @@ export const user = pgTable(
     role: text("role").default("user").notNull(),
     banned_at: timestamp("banned_at"),
     banned_reason: text("banned_reason"),
+    // Phase 5.5 P1 — DB-trigger-maintained freshness signals for conditional
+    // GET on /api/notifications/unread-count + /api/messages/conversations.
+    // Never written from app code; INSERT triggers on notifications + messages
+    // bump these inside the same transaction as the data write. App-level
+    // writes would race (P1 in PHASE_5_5.md locked decisions).
+    notifications_updated_at: timestamp("notifications_updated_at")
+      .defaultNow()
+      .notNull(),
+    messages_updated_at: timestamp("messages_updated_at")
+      .defaultNow()
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

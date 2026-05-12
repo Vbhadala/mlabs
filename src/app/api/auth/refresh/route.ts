@@ -25,22 +25,21 @@
 //   - Token leakage: a stolen JWT is valid for up to 1 hour. A stolen session
 //     token is revocable instantly via DELETE FROM session (Better Auth
 //     admin/audit flow). Both fronts have a path.
+//
+// Phase 5.5 Lane B: refactored to the locked ApiErrorResponse shape.
 
-// Lane A uses ad-hoc { error } shape; Lane B refactors to ApiErrorResponse.
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { signAccessToken } from "@/lib/auth/jwt"
 import { logger } from "@/lib/logger"
+import { apiError } from "@/lib/schemas/api-error"
 
 export const runtime = "nodejs"
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers })
   if (!session?.user) {
-    return NextResponse.json(
-      { error: "Sign in required" },
-      { status: 401 },
-    )
+    return apiError(401, "auth.unauthenticated", "Sign in required")
   }
 
   const user = session.user as {
@@ -52,10 +51,7 @@ export async function POST(req: Request) {
 
   if (user.banned_at) {
     logger.warn("Refresh requested by banned user", { userId: user.id })
-    return NextResponse.json(
-      { error: "Account is banned" },
-      { status: 403 },
-    )
+    return apiError(403, "auth.account_banned", "Account is banned")
   }
 
   const { token, expiresIn } = await signAccessToken({
