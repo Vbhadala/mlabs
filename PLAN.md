@@ -136,7 +136,7 @@ mlabs-template/
 | T9 | Postmark failure on signup | **Reversed:** inline send from Server Action; catch + show retry button. No `email_jobs` table, no setInterval runner. |
 | P10 | Realtime architecture | **Reversed:** polling everywhere. Notifications: 5s. Messages: 2s when chat open, 10s background. No SSE, no `lib/realtime`, no LISTEN/NOTIFY. |
 | P11 | Avatar resize | **Reversed:** server-side `sharp` resize, single path. iOS Safari canvas issue avoided. |
-| OV1 | Monorepo vs single-app | **Reversed:** single Next.js app with `src/lib/`. No pnpm workspaces. |
+| OV1 | Monorepo vs single-app | **Reversed:** single Next.js app with `src/lib/`. No pnpm workspaces. Phase 5.5 carve-out: `/mobile` Expo app is a sibling Node project in the same repo, importing pure-Zod schemas + design tokens from `src/`. No turborepo/workspaces tooling. See `docs/decisions/0004-expo-over-natively.md`. |
 | D1 | Dark mode | Built-in via `next-themes`, system default, toggle in profile |
 | D2 | Auth screen pattern | Centered card on neutral background. Boring, configurable, no per-fork asset |
 | D3 | Loading state default | Skeleton for `<DataList>`, spinner for button actions |
@@ -156,6 +156,7 @@ mlabs-template/
 | Landing page | core | `/` route; swappable hero/features blocks per fork |
 | Legal pages | core | `/terms`, `/privacy` as MDX with brand placeholders |
 | Contact form | core | Routes to support email via Postmark with metadata |
+| **Mobile (Expo) parity for: auth, profile, avatar, messages, notifications** | feature (`/mobile`) | Phase 5.5 — see `PHASE_5_5.md` + `docs/decisions/0004-expo-over-natively.md`. Shares auth, schemas, design tokens, emails with web. |
 
 ---
 
@@ -267,7 +268,6 @@ Convention: **every list view in every feature uses `<DataList>`**. Forks inheri
 | `add-feature` | Pull a feature back in from upstream template (post-fork) |
 | `upgrade-template` | Diff against template version, show patchable changes — dev decides what to merge |
 | `generate-admin-crud` | Given a Drizzle table, scaffold admin list/detail/edit |
-| `prep-natively-build` | Pre-flight for Natively wrap: manifest, icons, splash, deep links, push setup |
 | `handover-pack` | Generate filled `HANDOVER.md`, env checklist, Loom recording script, client invite, secret rotation list |
 
 ---
@@ -324,7 +324,8 @@ These were flagged by the eng review and the outside voice. Don't defer.
 | C | W6: `features/notifications` (polling) | After B |
 | C | W7: `features/messages` (CRUD + polling) | After B |
 | C | W8: `features/admin` + `audit_log` table + `audit()` helper | After B (W2 dependency for audit metadata typing) |
-| D | W9: `.claude/skills/*` (7 skills) | Independent — runs alongside A/B/C |
+| **C+** | **Phase 5.5: Expo `/mobile` app (auth, profile, avatar, messages, notifications) + bearer auth + conditional GET + DB triggers + shared schemas** | **After W5–W8. See `PHASE_5_5.md` for full lane breakdown (A→B/C/D parallel→E).** |
+| D | W9: `.claude/skills/*` (6 skills — `prep-natively-build` dropped, see §8) | Independent — runs alongside A/B/C |
 
 **Conflict flag:** W2, W3, W8 all touch `src/lib/db/schema/`. **Mitigation:** separate files (`users.ts`, `email_sends.ts` if needed, `audit_log.ts`); single `index.ts` re-exports.
 
@@ -347,7 +348,8 @@ These were flagged by the eng review and the outside voice. Don't defer.
 | Background jobs beyond email retry | Email runner reversed; richer jobs deferred |
 | Webhooks-in (Stripe etc.) | Per-project; template ships idempotent receiver pattern but not configured |
 | User-to-user DMs across multiple devices with offline replay | Polling catches up on next poll; no message queue |
-| Native mobile codebase | Natively wraps the responsive web app |
+| Expo Push Notifications | Polling provides parity in v1; push needs APNs cert + FCM service account per fork (per-project setup). Deferred to v1.1. |
+| Offline message queue / biometric auth | Per-project nice-to-haves; baseline mobile UX works without them. |
 | Eject mechanic for sealed features | Defer unless customization-vs-upgrade pain emerges |
 | Distribution mechanism for adding v2 features into in-flight forks | `add-feature` skill deferred until shape is proven |
 | Per-product visual identity / landing hero | Each fork runs `/design-consultation` post-fork |

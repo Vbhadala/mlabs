@@ -9,6 +9,7 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
+import { bearer } from "better-auth/plugins/bearer"
 import { eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { user as userTable } from "@/lib/db/schema/auth"
@@ -23,6 +24,13 @@ export const auth = betterAuth({
 
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
+
+  // Phase 5.5: enable `Authorization: Bearer <session-token>` transport.
+  // Mobile (Expo) cannot use cookies, so it sends the session token in the
+  // Authorization header. Existing cookie behavior on web is unchanged.
+  // The bearer plugin transparently converts the header into a synthetic
+  // cookie before the rest of the auth pipeline runs.
+  plugins: [bearer()],
 
   emailAndPassword: {
     enabled: true,

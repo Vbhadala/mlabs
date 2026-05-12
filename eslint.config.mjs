@@ -2,10 +2,16 @@ import { defineConfig, globalIgnores } from "eslint/config"
 import nextVitals from "eslint-config-next/core-web-vitals"
 import nextTs from "eslint-config-next/typescript"
 import noBrandStringLiteral from "./eslint-rules/no-brand-string-literal.mjs"
+import noDrizzleInSchemas from "./eslint-rules/no-drizzle-in-schemas.mjs"
 
 const mlabsRules = {
   plugins: {
-    mlabs: { rules: { "no-brand-string-literal": noBrandStringLiteral } },
+    mlabs: {
+      rules: {
+        "no-brand-string-literal": noBrandStringLiteral,
+        "no-drizzle-in-schemas": noDrizzleInSchemas,
+      },
+    },
   },
   rules: {
     // No raw process.env access outside src/config/env.ts. Forces all env reads through
@@ -25,6 +31,7 @@ const mlabsRules = {
       },
     ],
     "mlabs/no-brand-string-literal": "error",
+    "mlabs/no-drizzle-in-schemas": "error",
   },
 }
 
@@ -37,6 +44,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "eslint-rules/**",       // the rule source itself uses fs/path
+    "mobile/**",             // Expo app has its own linter via `expo lint`; Next.js DOM rules don't apply to React Native
   ]),
   // Apply MLabs custom rules everywhere except where exempt
   {

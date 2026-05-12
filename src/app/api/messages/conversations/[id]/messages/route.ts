@@ -7,13 +7,14 @@
 // returns "not_found" → 404, never 403 (no enumeration).
 
 import { NextResponse } from "next/server"
-import { getSession, requireUser } from "@/lib/auth/server"
+import { getSession, requireUserJSON } from "@/lib/auth/server"
 import {
   listMessages,
   sendMessage,
 } from "@/features/messages/server/messages"
 import { MessagesError } from "@/features/messages/server/errors"
 import { logger } from "@/lib/logger"
+import { apiError } from "@/lib/schemas/api-error"
 
 export const runtime = "nodejs"
 
@@ -24,7 +25,7 @@ interface RouteContext {
 export async function GET(req: Request, ctx: RouteContext) {
   const session = await getSession()
   if (!session?.user) {
-    return NextResponse.json({ error: "unauthenticated" }, { status: 401 })
+    return apiError(401, "auth.unauthenticated", "Sign in required")
   }
   const { id: conversationId } = await ctx.params
   const url = new URL(req.url)
@@ -39,23 +40,25 @@ export async function GET(req: Request, ctx: RouteContext) {
     return NextResponse.json({ items })
   } catch (err) {
     if (err instanceof MessagesError && err.code === "not_found") {
-      return NextResponse.json({ error: "Not found" }, { status: 404 })
+      return apiError(404, "messages.not_found", "Not found")
     }
     logger.error("listMessages failed", {
       userId: session.user.id,
       conversationId,
       message: String(err),
     })
-    return NextResponse.json({ error: "Server error" }, { status: 500 })
+    return apiError(500, "messages.server_error", "Server error")
   }
 }
 
 export async function POST(req: Request, ctx: RouteContext) {
-  const me = await requireUser()
+  const authResult = await requireUserJSON()
+  if (authResult instanceof Response) return authResult
+  const me = authResult
   const { id: conversationId } = await ctx.params
   const body = await req.json().catch(() => null)
   if (!body || typeof body.body !== "string") {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
+    return apiError(400, "messages.invalid_payload", "Invalid payload", "body")
   }
 
   try {
@@ -67,22 +70,14 @@ export async function POST(req: Request, ctx: RouteContext) {
     return NextResponse.json({ message: row })
   } catch (err) {
     if (err instanceof MessagesError) {
-      const status =
-        err.code === "not_found"
-          ? 404
-          : err.code === "invalid_body"
-            ? 400
-            : 400
-      return NextResponse.json(
-        { error: err.message, code: err.code },
-        { status },
-      )
+      const status = err.code === "not_found" ? 404 : 400
+      return apiError(status, `messages.${err.code}`, err.message)
     }
     logger.error("sendMessage failed", {
       userId: me.id,
       conversationId,
       message: String(err),
     })
-    return NextResponse.json({ error: "Server error" }, { status: 500 })
+    return apiError(500, "messages.server_error", "Server error")
   }
 }

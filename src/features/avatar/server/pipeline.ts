@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm"
 import sharp from "sharp"
 import { db } from "@/lib/db"
 import { user as userTable } from "@/lib/db/schema/auth"
-import { audit } from "@/lib/db/audit"
+import { audit, type AuditClient } from "@/lib/db/audit"
 import { logger } from "@/lib/logger"
 import { storage } from "@/lib/storage"
 
@@ -34,6 +34,7 @@ export async function processAndStoreAvatar(args: {
   previousImageUrl: string | null
   bytes: Buffer
   contentType: string
+  client?: AuditClient
 }): Promise<{ url: string }> {
   if (!ALLOWED_MIME.includes(args.contentType as (typeof ALLOWED_MIME)[number])) {
     throw new AvatarError(
@@ -81,6 +82,7 @@ export async function processAndStoreAvatar(args: {
     action: "user.avatar_changed",
     target: { type: "user", id: args.userId },
     meta: { kind: "user.avatar_changed" },
+    client: args.client,
   })
 
   await db
@@ -109,12 +111,14 @@ export async function processAndStoreAvatar(args: {
 export async function removeAvatar(args: {
   userId: string
   previousImageUrl: string | null
+  client?: AuditClient
 }): Promise<void> {
   await audit({
     actorId: args.userId,
     action: "user.avatar_removed",
     target: { type: "user", id: args.userId },
     meta: { kind: "user.avatar_removed" },
+    client: args.client,
   })
 
   await db
