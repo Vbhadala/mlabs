@@ -1,0 +1,13 @@
+# Maestro flow 9 — sign out clears SecureStore → next launch shows login
+appId: ${MAESTRO_APP_ID}
+---
+- launchApp:
+    clearState: false
+- tapOn: "Profile"
+- tapOn: "Sign out"
+- tapOn: "Sign out"   # confirm in dialog
+- assertVisible: "Welcome back"
+- stopApp
+- launchApp:
+    clearState: false
+- assertVisible: "Welcome back"

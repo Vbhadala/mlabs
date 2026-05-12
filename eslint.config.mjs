@@ -44,6 +44,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "eslint-rules/**",       // the rule source itself uses fs/path
+    "mobile/**",             // Expo app has its own linter via `expo lint`; Next.js DOM rules don't apply to React Native
   ]),
   // Apply MLabs custom rules everywhere except where exempt
   {
