@@ -22,9 +22,7 @@
   },
   "devDependencies": {
     "@mlabs/config": "workspace:*",
-    "builtins": "^5.1.0",
     "drizzle-kit": "^0.31.10",
-    "graphemer": "^1.4.0",
     "lefthook": "^2.1.6",
     "syncpack": "15.1.2",
     "tsx": "^4.21.0",
