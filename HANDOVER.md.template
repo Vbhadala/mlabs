@@ -1,8 +1,10 @@
 # Handover — `{{PROJECT_NAME}}`
 
 > **Template note:** copy this file to `HANDOVER.md` (root) in each fork and
-> fill in the placeholders. The `new-project` skill (Phase 6) automates most
-> of the substitution. Substitution markers below use `{{...}}` syntax.
+> fill in the placeholders. Phase 10's `pnpm rename` script automates the
+> safe replacements (package names, imports, brand strings); the per-client
+> setup below (accounts, secrets, OAuth) is intentionally manual.
+> Substitution markers below use `{{...}}` syntax.
 >
 > Delete this template-note block before delivering to the client.
 
@@ -29,7 +31,7 @@ own before the app reaches the stores. Reference: [`docs/handover/eas-submission
 - [ ] **Apple Team ID** captured: `{{APPLE_TEAM_ID}}`
       Source: Apple Developer Portal → Membership → Team ID.
 - [ ] **iOS bundle identifier** assigned: `{{IOS_BUNDLE_ID}}`
-      Mirrored in `mobile/app.config.ts` (`ios.bundleIdentifier`).
+      Mirrored in `apps/mobile/app.config.ts` (`ios.bundleIdentifier`).
 - [ ] **App Store Connect listing** created (screenshots, description, age
       rating, privacy policy URL, support URL).
 - [ ] **App Store Connect API key** generated for EAS Submit
@@ -40,14 +42,14 @@ own before the app reaches the stores. Reference: [`docs/handover/eas-submission
       MLabs engineer for warranty period).
 - [ ] **Push notification entitlement** — deferred for v1 (polling-only).
       When push lands: generate APNs Auth Key, upload via `eas credentials`,
-      update `mobile/app.config.ts` ios entitlements.
+      update `apps/mobile/app.config.ts` ios entitlements.
 
 ### Android
 
 - [ ] **Google Play Console** — paid account ($25 one-time).
       Account: `{{GOOGLE_PLAY_ACCOUNT_EMAIL}}`
 - [ ] **Android package name** assigned: `{{ANDROID_PACKAGE}}`
-      Mirrored in `mobile/app.config.ts` (`android.package`).
+      Mirrored in `apps/mobile/app.config.ts` (`android.package`).
 - [ ] **Play Console internal track** configured with testers list.
 - [ ] **Play Console service account JSON** generated for EAS Submit
       (Setup → API access). Stored at: `{{ANDROID_SERVICE_ACCOUNT_PATH}}`
@@ -55,7 +57,7 @@ own before the app reaches the stores. Reference: [`docs/handover/eas-submission
 - [ ] **Signing keys** — Play App Signing enabled (default).
       SHA-256 fingerprint of the **App signing key** (not upload key)
       captured: `{{ANDROID_CERT_SHA256}}`
-- [ ] **EAS Submit** profile in `mobile/eas.json` updated with service
+- [ ] **EAS Submit** profile in `apps/mobile/eas.json` updated with service
       account path.
 
 For step-by-step walkthroughs see [`docs/handover/eas-submission.md`](docs/handover/eas-submission.md).
@@ -80,7 +82,7 @@ links will fall back to in-browser.
 #   https://developer.apple.com/account → Membership → Team ID
 
 # Bundle identifier:
-#   from mobile/app.config.ts → ios.bundleIdentifier
+#   from apps/mobile/app.config.ts → ios.bundleIdentifier
 ```
 
 Substitute into `public/.well-known/apple-app-site-association`:
@@ -95,7 +97,7 @@ Substitute into `public/.well-known/apple-app-site-association`:
 For EAS-managed signing keys (default for new MLabs projects):
 
 ```bash
-cd mobile
+cd apps/mobile
 npx eas credentials -p android
 # select: production → keystore → show
 # Copy the "SHA-256 Fingerprint" value (32 hex bytes separated by colons).
@@ -129,7 +131,7 @@ Substitute into `public/.well-known/assetlinks.json`:
 After deploying the web app with the substituted manifests:
 
 ```bash
-npm run verify:deeplinks -- https://{{PROD_HOST}}
+pnpm verify:deeplinks -- https://{{PROD_HOST}}
 ```
 
 Expect all checks green. Red items block universal-link UX in the wild.
@@ -161,11 +163,11 @@ values. Both old and new must be valid simultaneously during handoff window
 
 ### Build-time gates
 
-- [ ] `npm run verify:deeplinks -- https://{{PROD_HOST}}` — green.
-- [ ] `npm run check-contrast` — green (WCAG AA across all token pairs).
-- [ ] `npm run lint` — green.
-- [ ] `npm run typecheck` — green (or only pre-existing waivers).
-- [ ] `npm run test` — green.
+- [ ] `pnpm verify:deeplinks -- https://{{PROD_HOST}}` — green.
+- [ ] `pnpm check-contrast` — green (WCAG AA across all token pairs).
+- [ ] `pnpm lint` — green.
+- [ ] `pnpm typecheck` — green (or only pre-existing waivers).
+- [ ] `pnpm test` — green.
 
 ### Mobile manual gates
 
@@ -309,9 +311,14 @@ for non-critical issues.
 
 ## References
 
+- `docs/forking-guide.md` — three tiers of change (safe / extend / don't touch)
+- `docs/decisions/0006-monorepo.md` — monorepo architecture
+- `docs/decisions/0007-service-layer.md` — service layer + defineOperation
+- `docs/api-versioning.md` — `/api/v1/*` evolution policy
+- `docs/generated-artifacts.md` — what's generated and when to regenerate
 - `docs/handover/eas-submission.md` — full EAS Submit walkthrough
 - `docs/handover/postmark-templates.md` — template specs + per-fork setup
 - `docs/handover/replit-setup.md` — Replit deploy walkthrough
 - `docs/decisions/0002-polling-load.md` — scaling math
 - `docs/decisions/0004-expo-over-natively.md` — mobile platform choice
-- `PHASE_5_5.md` — Phase 5.5 locked plan
+- `PHASE_5_5.md` — Phase 5.5 locked plan (historical)

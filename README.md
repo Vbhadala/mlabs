@@ -1,94 +1,116 @@
 # MLabs Template
 
-The Million Labs MVP template. Fork this repo for every new project.
+The Million Labs MVP template. Fork this for every new client project.
 
-**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 · shadcn/ui · Drizzle · Neon · Better Auth · Postmark · Replit Object Storage.
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 ·
+shadcn/ui · Drizzle · Neon · Better Auth · Postmark · Replit Object Storage
+· Expo 55 · NativeWind · pnpm workspaces + Turborepo.
 
-**See [`PLAN.md`](./PLAN.md) for the full v1 plan, architecture decisions, and deferred TODOs.**
+**New here?** Read [docs/forking-guide.md](./docs/forking-guide.md) first.
 
 ---
 
 ## Quick start
 
 ```bash
-# 1. Install
-npm install
+# 1. Install (pnpm 10+ required — see package.json#packageManager)
+pnpm install
 
 # 2. Copy env and fill in the blanks
 cp .env.example .env.local
 $EDITOR .env.local
 
-# 3. Run dev (uses SKIP_ENV_VALIDATION until W2+ deps are wired)
-npm run dev
+# 3. Run web dev
+pnpm dev
+#    OR mobile dev:
+pnpm --filter @mlabs/mobile start
 ```
 
-Dev server: <http://localhost:3000>
+Web: <http://localhost:3000>
+Mobile: scan the Expo QR code (Expo Go) or press `i` / `a` for simulator.
+
+## Layout
+
+```text
+apps/
+  web/         Next.js 16 — /api/v1/* + Server Actions + UI
+  mobile/      Expo 55 — React Native, NativeWind, expo-router
+
+packages/
+  validators/  Pure-Zod schemas (shared web + mobile)
+  db/          Drizzle + migrations + advisory-lock migrate script
+  email/       Postmark templates + URL builders
+  auth/        Better Auth + bearer + oAuthProxy + admin bootstrap
+  config/      Design tokens (+ tailwind preset, env factory)
+  api/         defineOperation adapter + ApiError + typed fetch client + CallerContext
+  services/    Business logic (pure functions)
+  ui-web/      shadcn primitives — web only
+
+tooling/
+  tsconfig/, eslint-config/, prettier-config/, tailwind-config/
+```
 
 ## Scripts
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Local dev with hot reload |
-| `npm run build` | Production build (`next build`) |
-| `npm run start` | Run the production build |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | `tsc --noEmit` (the real quality gate) |
-| `npm run db:generate` | Generate SQL migrations from schema changes |
-| `npm run db:migrate` | Apply pending migrations |
-| `npm run db:studio` | Drizzle Studio (DB browser) |
-
-## Repo layout
-
-```
-src/
-├── app/              # Next.js App Router routes
-│   ├── (marketing)/  # Public landing
-│   ├── (auth)/       # Login, signup, password reset
-│   ├── (app)/        # Authed area
-│   └── (admin)/      # Admin shell
-├── features/         # Removable feature modules — delete the folder + nav line
-├── lib/              # Core, non-removable
-│   ├── auth/         # Better Auth (W2)
-│   ├── db/           # Drizzle + audit_log helper (W2)
-│   ├── email/        # Postmark wrappers (W3)
-│   ├── storage/      # Replit Object Storage adapter (W4)
-│   ├── ui/           # shadcn primitives + EmptyState/LoadingState/ErrorState/DataList (W4)
-│   └── logger/       # console wrapper + error_log table (W4)
-└── config/           # Centralized — rebrand happens here
-    ├── brand.ts      # Name, tagline, support email, etc.
-    ├── seo.ts        # Next.js metadata defaults
-    ├── design.ts     # Semantic tokens + scales
-    └── env.ts        # Boot-time env validation
-```
+| `pnpm dev` | Web dev (Next.js, port 3000) |
+| `pnpm --filter @mlabs/mobile start` | Mobile dev (Expo) |
+| `pnpm build` | Production build (all apps via turbo) |
+| `pnpm typecheck` | `tsc --noEmit` across all packages (turbo) |
+| `pnpm lint` | ESLint across all packages (turbo) |
+| `pnpm test` | Vitest across all packages (turbo) |
+| `pnpm db:generate` | Generate SQL migrations from schema changes |
+| `pnpm db:migrate` | Apply pending migrations (advisory-locked) |
+| `pnpm db:studio` | Drizzle Studio (DB browser) |
+| `pnpm gen:mobile-tw` | Regenerate `apps/mobile/tailwind.config.js` from `packages/config` |
+| `pnpm gen:mobile-tw:check` | Verify mobile Tailwind is in sync (CI gate) |
+| `pnpm check-contrast` | WCAG AA check against design tokens |
+| `pnpm verify:deeplinks` | Validate `.well-known` manifests against `$PROD_HOST` |
 
 ## Rebrand in 10 minutes
 
-1. Edit `src/config/brand.ts` — name, tagline, emails, legal entity, URL
-2. Edit `src/config/design.ts` colors (HSL triplets — light + dark) AND mirror them in `src/app/globals.css`
-3. Swap `public/favicon.ico`
-4. Swap `public/og-default.png` (or rely on the `@vercel/og` route shipped in v1)
+1. Edit `apps/web/src/config/brand.ts` — name, tagline, support email,
+   legal entity, URL. (The `no-brand-string-literal` ESLint rule
+   enforces that this file is the only place the literal brand name
+   appears outside config/templates/legal/docs/tests dirs.)
+2. Edit `packages/config/src/design.ts` colors (HSL triplets — light +
+   dark), AND mirror them in `apps/web/src/app/globals.css`. Then run
+   `pnpm gen:mobile-tw` to regenerate mobile's Tailwind config.
+3. Swap `apps/web/public/favicon.ico`.
+4. Swap `apps/web/public/og-default.png` (or rely on the `@vercel/og`
+   route shipped in v1).
 
-That's the whole rebrand.
+That's the whole rebrand. For deeper per-fork changes, read
+[docs/forking-guide.md](./docs/forking-guide.md).
 
-## Adding / removing features
+## Forking a new project
 
-- **Add:** scaffold under `src/features/<name>/`. Use `<DataList>` and the state primitives. Add the nav link in `src/app/(app)/layout.tsx`.
-- **Remove:** delete the feature folder, remove the nav link, run `npm run db:generate` to drop the feature's tables.
+When Phase 10 lands: `pnpm rename` will handle the safe `@mlabs/*` →
+`@<client>/*` replacements (package names, imports, README brand
+strings, `.well-known/` manifest placeholders) and write a
+`.fork-config.json` for idempotency.
 
-For removing template-shipped features, the `remove-feature` Claude skill (in `.claude/skills/`) handles env vars, migrations, and dep cleanup safely.
+Manual setup that the script doesn't (and shouldn't) automate —
+bundle IDs, OAuth apps, Postmark sender signatures, EAS project setup,
+GitHub repo secrets — lives in `FORK_CHECKLIST.md.template` (alongside
+this README at the repo root).
 
-## Status
+Per-client handover (secret rotation, accounts, pre-launch gates) lives
+in [HANDOVER.md.template](./HANDOVER.md.template).
 
-W1 (stack scaffold + config) is in progress. See [`PLAN.md` §11](./PLAN.md) for the full implementation roadmap.
+Currently (pre-Phase-10): the manual rename map is at the bottom of
+[docs/forking-guide.md](./docs/forking-guide.md).
 
-| Workstream | Status |
-|---|---|
-| W1 — Scaffold + config | in progress |
-| W2 — `lib/auth` (Better Auth + Drizzle) | not started |
-| W3 — `lib/email` (Postmark) | not started |
-| W4 — `lib/storage` + `lib/ui` + `lib/logger` | not started |
-| W5 — `features/profile` + `features/avatar` | not started |
-| W6 — `features/notifications` | not started |
-| W7 — `features/messages` | not started |
-| W8 — `features/admin` + `audit_log` | not started |
-| W9 — `.claude/skills/*` | not started |
+## Learn more
+
+- [docs/forking-guide.md](./docs/forking-guide.md) — three tiers of change (safe / extend / don't touch)
+- [docs/api-versioning.md](./docs/api-versioning.md) — `/api/v1/*` evolution policy
+- [docs/decisions/](./docs/decisions/) — architecture decisions (start at [0006](./docs/decisions/0006-monorepo.md) and [0007](./docs/decisions/0007-service-layer.md))
+- [docs/generated-artifacts.md](./docs/generated-artifacts.md) — what's generated and when to regenerate
+- [HANDOVER.md.template](./HANDOVER.md.template) — per-client handover
+
+Migration history (W1 → Phase 8) is documented in `PLAN.md`,
+`IMPLEMENTATION.md`, `PHASE_5_5.md`, and the per-phase commits on
+`chore/monorepo-migration`. Useful for context on *why*; not required
+reading to ship a fork.
