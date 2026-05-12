@@ -20,18 +20,19 @@
   --card-foreground:       oklch(0.145 0 0);
   --popover:               oklch(1 0 0);
   --popover-foreground:    oklch(0.145 0 0);
-  --primary:               oklch(0.205 0 0);
-  --primary-foreground:    oklch(0.985 0 0);
+  /* MLabs orange (~#FF6B2C). Dark-on-orange foreground for WCAG AA. */
+  --primary:               oklch(0.69 0.18 39);
+  --primary-foreground:    oklch(0.205 0 0);
   --secondary:             oklch(0.97 0 0);
   --secondary-foreground:  oklch(0.205 0 0);
-  --muted:                 oklch(0.97 0 0);
+  --muted:                 oklch(0.97 0.003 80);
   --muted-foreground:      oklch(0.48 0 0);
   --accent:                oklch(0.97 0 0);
   --accent-foreground:     oklch(0.205 0 0);
   --destructive:           oklch(0.577 0.245 27.325);
-  --border:                oklch(0.64 0 0);
-  --input:                 oklch(0.64 0 0);
-  --ring:                  oklch(0.62 0 0);
+  --border:                oklch(0.62 0.005 80);
+  --input:                 oklch(0.62 0.005 80);
+  --ring:                  oklch(0.62 0.19 39);
   --radius:                0.625rem;
 
   /* MLabs additions on top of shadcn */
@@ -57,24 +58,25 @@
 }
 
 .dark {
-  --background:            oklch(0.145 0 0);
+  /* MLabs navy (~#0A0F1C). Surface separation via slightly lighter card. */
+  --background:            oklch(0.18 0.02 260);
   --foreground:            oklch(0.985 0 0);
-  --card:                  oklch(0.205 0 0);
+  --card:                  oklch(0.22 0.03 260);
   --card-foreground:       oklch(0.985 0 0);
-  --popover:               oklch(0.205 0 0);
+  --popover:               oklch(0.22 0.03 260);
   --popover-foreground:    oklch(0.985 0 0);
-  --primary:               oklch(0.922 0 0);
+  --primary:               oklch(0.69 0.18 39);
   --primary-foreground:    oklch(0.205 0 0);
-  --secondary:             oklch(0.269 0 0);
+  --secondary:             oklch(0.27 0.02 260);
   --secondary-foreground:  oklch(0.985 0 0);
-  --muted:                 oklch(0.269 0 0);
+  --muted:                 oklch(0.27 0.02 260);
   --muted-foreground:      oklch(0.708 0 0);
-  --accent:                oklch(0.269 0 0);
+  --accent:                oklch(0.27 0.02 260);
   --accent-foreground:     oklch(0.985 0 0);
   --destructive:           oklch(0.704 0.191 22.216);
   --border:                oklch(1 0 0 / 35%);
   --input:                 oklch(1 0 0 / 40%);
-  --ring:                  oklch(0.556 0 0);
+  --ring:                  oklch(0.69 0.18 39);
 
   --success:               oklch(0.7 0.18 145);
   --success-foreground:    oklch(0.145 0 0);
