@@ -18,7 +18,7 @@ import { resolve } from "node:path"
 const migration = readFileSync(
   resolve(
     process.cwd(),
-    "drizzle/migrations/0005_add_user_notification_timestamps.sql",
+    "packages/db/drizzle/migrations/0005_add_user_notification_timestamps.sql",
   ),
   "utf8",
 )
@@ -67,7 +67,7 @@ describe("migration 0005 — notification timestamp triggers", () => {
 
   it("journal is updated so drizzle-kit migrate picks it up", () => {
     const journal = readFileSync(
-      resolve(process.cwd(), "drizzle/migrations/meta/_journal.json"),
+      resolve(process.cwd(), "packages/db/drizzle/migrations/meta/_journal.json"),
       "utf8",
     )
     expect(journal).toContain("0005_add_user_notification_timestamps")
