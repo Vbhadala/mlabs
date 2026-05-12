@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 
 describe("config/brand", () => {
   it("exposes a brand name", () => {

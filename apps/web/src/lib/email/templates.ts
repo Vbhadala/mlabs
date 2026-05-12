@@ -3,7 +3,7 @@
 // URL builders so existing imports from "@/lib/email" keep working.
 
 import "server-only"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 import { createTemplates } from "@mlabs/email/templates"
 import { getEmailDriver } from "./driver"
 

@@ -17,9 +17,15 @@ let cachedBrandName = null;
 
 function readBrandName(cwd) {
   if (cachedBrandName !== null) return cachedBrandName;
+  // Walk up from the lint cwd looking for the brand source. Order:
+  //   1. The canonical @mlabs/config location (monorepo).
+  //   2. apps/web/src/config/brand.ts (transitional — pre-Task-3 forks).
+  //   3. src/config/brand.ts (single-app fallback).
   const candidates = [
-    path.join(cwd, "src/config/brand.ts"),
+    path.join(cwd, "packages/config/src/brand.ts"),
+    path.join(cwd, "../../packages/config/src/brand.ts"),
     path.join(cwd, "apps/web/src/config/brand.ts"),
+    path.join(cwd, "src/config/brand.ts"),
   ];
   for (const file of candidates) {
     try {
@@ -58,7 +64,7 @@ export default {
     schema: [],
     messages: {
       noLiteral:
-        "Don't hardcode the brand name '{{name}}'. Import { brand } from '@/config/brand' and use brand.name.",
+        "Don't hardcode the brand name '{{name}}'. Import { brand } from '@mlabs/config' and use brand.name.",
     },
   },
   create(context) {

@@ -2,7 +2,7 @@
 // /verify-email per design decision D2 (PLAN.md §4).
 
 import Link from "next/link"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

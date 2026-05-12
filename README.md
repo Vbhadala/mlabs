@@ -70,12 +70,13 @@ tooling/
 
 ## Rebrand in 10 minutes
 
-1. Edit `apps/web/src/config/brand.ts` — name, tagline, support email,
+1. Edit `packages/config/src/brand.ts` — name, tagline, support email,
    legal entity, URL. (The `no-brand-string-literal` ESLint rule
    enforces that this file is the only place the literal brand name
-   appears outside config/templates/legal/docs/tests dirs.)
-2. Edit `packages/config/src/design.ts` colors (HSL triplets — light +
-   dark), AND mirror them in `apps/web/src/app/globals.css`. Then run
+   appears outside config/templates/legal/docs/tests dirs.) Both web
+   and mobile import from `@mlabs/config`.
+2. Edit `packages/config/src/design.ts` colors (OKLCH — light + dark),
+   AND mirror them in `apps/web/src/app/globals.css`. Then run
    `pnpm gen:mobile-tw` to regenerate mobile's Tailwind config.
 3. Swap `apps/web/public/favicon.ico`.
 4. Swap `apps/web/public/og-default.png` (or rely on the `@vercel/og`

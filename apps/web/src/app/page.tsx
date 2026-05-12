@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 import { Button } from "@mlabs/ui-web/button"
 import { getSession } from "@/lib/auth/server"
 

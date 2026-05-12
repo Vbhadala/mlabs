@@ -7,3 +7,6 @@
 
 export { design } from "./design"
 export type { Design } from "./design"
+
+export { brand } from "./brand"
+export type { Brand } from "./brand"

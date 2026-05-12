@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 
 export const seo = {
   defaultTitle: `${brand.name} — ${brand.tagline}`,

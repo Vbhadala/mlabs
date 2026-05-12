@@ -41,6 +41,9 @@ importers:
       '@expo/vector-icons':
         specifier: ^15.1.1
         version: 15.1.1(expo-font@55.0.7)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      '@mlabs/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@mlabs/validators':
         specifier: workspace:*
         version: link:../../packages/validators

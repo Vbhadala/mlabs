@@ -5,7 +5,7 @@
 // content. Features mount inside without competing for chrome.
 
 import Link from "next/link"
-import { brand } from "@/config/brand"
+import { brand } from "@mlabs/config"
 import { requireUser } from "@/lib/auth/server"
 import { NotificationBell } from "@/features/notifications"
 import { SignOutButton } from "./_components/sign-out-button"
