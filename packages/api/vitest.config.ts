@@ -18,7 +18,10 @@ export default defineConfig({
       // no-op. Mirror the root config's stub so package-isolated test runs
       // can import server-only modules.
       "server-only": fileURLToPath(
-        new URL("../../tests/server-only-stub.ts", import.meta.url),
+        new URL(
+          "../../apps/web/tests/server-only-stub.ts",
+          import.meta.url,
+        ),
       ),
     },
   },

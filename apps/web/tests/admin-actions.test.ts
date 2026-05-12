@@ -150,8 +150,9 @@ vi.mock("@/lib/db", () => {
           const kept = (target as unknown as Record<string, unknown>[]).filter(
             (r) => !pred(r),
           )
-          if (table._name === "sessions") store.sessions = kept as SessionRow[]
-          else store.users = kept as UserRow[]
+          if (table._name === "sessions")
+            store.sessions = kept as unknown as SessionRow[]
+          else store.users = kept as unknown as UserRow[]
           return {
             then(resolve: (v: unknown) => void) {
               resolve(undefined)

@@ -6,7 +6,7 @@ import {
   oklchToSrgb,
   parseOklch,
   relativeLuminance,
-} from "../scripts/check-contrast"
+} from "../../../scripts/check-contrast"
 
 // ---------- parser ----------
 

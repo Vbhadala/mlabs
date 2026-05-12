@@ -9,18 +9,15 @@ export default defineConfig({
     setupFiles: ["./tests/setup.ts"],
     globals: true,
     css: false,
-    include: [
-      "tests/**/*.test.{ts,tsx}",
-      "src/**/*.test.{ts,tsx}",
-      "packages/*/src/**/*.test.{ts,tsx}",
-      "tooling/*/src/**/*.test.{ts,tsx}",
-    ],
+    include: ["tests/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
   },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       // Next.js's server-only marker is a build-time guard; in tests it's a no-op
-      "server-only": fileURLToPath(new URL("./tests/server-only-stub.ts", import.meta.url)),
+      "server-only": fileURLToPath(
+        new URL("./tests/server-only-stub.ts", import.meta.url),
+      ),
     },
   },
 })

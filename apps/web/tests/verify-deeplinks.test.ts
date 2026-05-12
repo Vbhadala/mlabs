@@ -3,7 +3,7 @@ import {
   fetchManifest,
   validateAasa,
   validateAssetlinks,
-} from "../scripts/verify-deeplinks"
+} from "../../../scripts/verify-deeplinks"
 
 // ---------- AASA validator ----------
 

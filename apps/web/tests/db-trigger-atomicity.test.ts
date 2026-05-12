@@ -13,11 +13,17 @@
 
 import { describe, expect, it } from "vitest"
 import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
+import { resolve, dirname } from "node:path"
+import { fileURLToPath } from "node:url"
+
+// Resolve workspace root from this test file's location so the test passes
+// regardless of whether vitest runs from the monorepo root or apps/web.
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const WORKSPACE_ROOT = resolve(__dirname, "..", "..", "..")
 
 const migration = readFileSync(
   resolve(
-    process.cwd(),
+    WORKSPACE_ROOT,
     "packages/db/drizzle/migrations/0005_add_user_notification_timestamps.sql",
   ),
   "utf8",
@@ -67,7 +73,10 @@ describe("migration 0005 — notification timestamp triggers", () => {
 
   it("journal is updated so drizzle-kit migrate picks it up", () => {
     const journal = readFileSync(
-      resolve(process.cwd(), "packages/db/drizzle/migrations/meta/_journal.json"),
+      resolve(
+        WORKSPACE_ROOT,
+        "packages/db/drizzle/migrations/meta/_journal.json",
+      ),
       "utf8",
     )
     expect(journal).toContain("0005_add_user_notification_timestamps")
