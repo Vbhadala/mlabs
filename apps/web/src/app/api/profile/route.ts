@@ -1,68 +1,21 @@
 // /api/profile — mobile REST mirror of features/profile/server/actions.ts.
 //
-// PATCH /api/profile  { name }            → updates display name
-// DELETE /api/profile                     → anonymizes account (irreversible)
+// PATCH /api/profile  { name }    → updates display name
+// DELETE /api/profile             → anonymizes account (irreversible)
 //
-// The web app uses Server Actions in features/profile/server/actions.ts;
-// mobile can't reach those so we expose REST equivalents. Logic stays in sync
-// by sharing the same Drizzle schema, audit() calls, and Better Auth admin
-// APIs — never duplicated business rules.
+// Both endpoints flow through ops at @/server/operations/users. Web pages
+// use Server Actions in features/profile/server/actions.ts; mobile reaches
+// these routes. Logic stays in sync because both layers ultimately call
+// the same operation handlers (or service functions).
 
 import { NextResponse } from "next/server"
-import { headers } from "next/headers"
-import { z } from "zod"
-import { auth } from "@/lib/auth"
-import { requireUserJSON } from "@/lib/auth/server"
-import { audit, clientFromHeaders } from "@/lib/db/audit"
 import { logger } from "@/lib/logger"
 import { storage } from "@/lib/storage"
-import { apiError } from "@/lib/schemas/api-error"
-import { deleteAccountOp } from "@/server/operations/users"
+import { deleteAccountOp, updateNameOp } from "@/server/operations/users"
 
 export const runtime = "nodejs"
 
-const updateBody = z.object({
-  name: z.string().trim().min(1, "Name is required").max(80, "Name is too long"),
-})
-
-export async function PATCH(req: Request) {
-  const authResult = await requireUserJSON()
-  if (authResult instanceof Response) return authResult
-  const me = authResult
-  const client = clientFromHeaders(req.headers)
-
-  const body = await req.json().catch(() => null)
-  const parsed = updateBody.safeParse(body)
-  if (!parsed.success) {
-    return apiError(
-      400,
-      "profile.invalid_input",
-      parsed.error.issues[0]?.message ?? "Invalid input",
-      parsed.error.issues[0]?.path[0]?.toString(),
-    )
-  }
-
-  const newName = parsed.data.name
-  if (newName === me.name) {
-    return NextResponse.json({ user: me, changed: false })
-  }
-
-  // audit BEFORE the action (PLAN.md §10): a failed audit blocks the change.
-  await audit({
-    actorId: me.id,
-    action: "user.name_changed",
-    target: { type: "user", id: me.id },
-    meta: { kind: "user.name_changed" },
-    client,
-  })
-
-  await auth.api.updateUser({
-    body: { name: newName },
-    headers: await headers(),
-  })
-
-  return NextResponse.json({ user: { ...me, name: newName }, changed: true })
-}
+export const PATCH = updateNameOp.runFromRequest
 
 export async function DELETE(req: Request) {
   // Op handles auth + audit + anonymize + session-revoke in one pipeline.
