@@ -2,6 +2,7 @@
   "name": "mlabs-template",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -60,7 +61,17 @@
     "lefthook": "^2.1.6",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
+    "turbo": "^2.5.10",
     "typescript": "^5",
     "vitest": "^4.1.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lefthook",
+      "msw",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
