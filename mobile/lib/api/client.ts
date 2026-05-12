@@ -14,7 +14,7 @@
  */
 
 import * as SecureStore from "expo-secure-store";
-import { ApiErrorResponse } from "../schemas/api-error";
+import { ApiErrorResponse } from "@mlabs/validators";
 
 // ---------------------------------------------------------------------------
 // Config

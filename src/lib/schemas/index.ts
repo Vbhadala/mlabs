@@ -1,7 +1,6 @@
-// Pure-Zod schema barrel — shared by web (Next.js routes + RHF forms) and
-// mobile (Expo client validation). NO Drizzle imports anywhere under this
-// directory; eslint-rules/no-drizzle-in-schemas.js fails the build if any
-// file in src/lib/schemas/ pulls in drizzle-orm.
+// Schema barrel — re-exports from @mlabs/validators plus the Next-specific
+// apiError() helper from ./api-error. Kept as a thin wrapper to avoid
+// breaking existing @/lib/schemas imports during the monorepo migration.
 
-export * from "./api-error"
-export * from "./auth"
+export * from "@mlabs/validators";
+export { apiError } from "./api-error";

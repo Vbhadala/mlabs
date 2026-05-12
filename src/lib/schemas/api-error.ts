@@ -1,27 +1,17 @@
-// Locked wire format for /api/* errors (OV7 in PHASE_5_5.md).
+// Next.js helper that builds an ApiErrorResponse-shaped NextResponse.
 //
-// Every route returns one shape so web + mobile clients can branch on `code`
-// instead of parsing a free-form string. The Zod schema doubles as the runtime
-// contract — clients can validate responses before reading them.
-//
-// Pure Zod, no Drizzle (enforced by eslint-rules/no-drizzle-in-schemas.js).
+// The wire-format Zod schema (ApiErrorResponse, ApiErrorBody) lives in the
+// shared @mlabs/validators package — it's pure Zod and consumed by mobile
+// too. This file is the server-side helper that wraps that contract for
+// Next.js route handlers and Server Actions.
 
-import { NextResponse } from "next/server"
-import { z } from "zod"
+import { NextResponse } from "next/server";
+import { ApiErrorResponse } from "@mlabs/validators";
 
-export const ApiErrorResponse = z.object({
-  error: z.object({
-    /** Machine-readable; clients branch on this. snake_case, namespaced by
-     *  feature (e.g. "messages.user_not_found", "auth.unauthenticated"). */
-    code: z.string().min(1),
-    /** Human-readable; safe to surface in toasts/inline errors. */
-    message: z.string().min(1),
-    /** Optional form field this error pertains to (for inline validation). */
-    field: z.string().optional(),
-  }),
-})
-
-export type ApiErrorResponse = z.infer<typeof ApiErrorResponse>
+// Re-export the schema so the existing `import { ApiErrorResponse } from
+// "@/lib/schemas/api-error"` import path keeps working during the migration.
+export { ApiErrorResponse, ApiErrorBody } from "@mlabs/validators";
+export type { ApiErrorResponse as ApiErrorResponseType } from "@mlabs/validators";
 
 /**
  * Server helper — returns a NextResponse matching ApiErrorResponse.
@@ -38,5 +28,5 @@ export function apiError(
   return NextResponse.json<ApiErrorResponse>(
     { error: { code, message, ...(field ? { field } : {}) } },
     { status },
-  )
+  );
 }

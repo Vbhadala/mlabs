@@ -13,7 +13,7 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useSignUp } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
-import { SignUpInput } from "../../lib/schemas/auth";
+import { SignUpSchema } from "@mlabs/validators";
 
 /**
  * Sign-up screen.
@@ -33,7 +33,7 @@ export default function SignUpScreen() {
   const toast = useToast();
 
   const submit = async () => {
-    const parsed = SignUpInput.safeParse({ email, password, name });
+    const parsed = SignUpSchema.safeParse({ email, password, name });
     if (!parsed.success) {
       const next: typeof errors = {};
       for (const issue of parsed.error.issues) {

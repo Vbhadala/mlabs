@@ -5,7 +5,9 @@
     "noUncheckedIndexedAccess": false,
     "baseUrl": ".",
     "paths": {
-      "@mobile/*": ["./*"]
+      "@mobile/*": [
+        "./*"
+      ]
     },
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
@@ -19,7 +21,13 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
   ],
-  "exclude": ["node_modules", ".expo", "ios", "android"]
+  "exclude": [
+    "node_modules",
+    ".expo",
+    "ios",
+    "android"
+  ]
 }

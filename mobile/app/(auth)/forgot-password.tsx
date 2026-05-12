@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useForgotPassword } from "../../features/auth/hooks";
-import { ForgotPasswordInput } from "../../lib/schemas/auth";
+import { ForgotPasswordSchema } from "@mlabs/validators";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = React.useState("");
@@ -21,7 +21,7 @@ export default function ForgotPasswordScreen() {
   const forgot = useForgotPassword();
 
   const submit = async () => {
-    const parsed = ForgotPasswordInput.safeParse({ email });
+    const parsed = ForgotPasswordSchema.safeParse({ email });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message);
       return;

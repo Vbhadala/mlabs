@@ -5,7 +5,10 @@
 // Node-only ORM into the mobile bundle, which then breaks at runtime. Catch
 // it at lint time.
 
-const SCHEMAS_PATH = /(?:^|[\\/])src[\\/]lib[\\/]schemas[\\/]/
+// Match both legacy src/lib/schemas/ and the new packages/validators/src/
+// during the monorepo migration. Once apps/web is in place, src/lib/schemas/
+// will be gone and only the packages/ path will match.
+const SCHEMAS_PATH = /(?:^|[\\/])(?:src[\\/]lib[\\/]schemas|packages[\\/]validators[\\/]src)[\\/]/
 const DRIZZLE_PREFIX = "drizzle-orm"
 
 export default {

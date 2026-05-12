@@ -14,7 +14,7 @@ import { Button } from "../../components/ui/Button";
 import { useLogin, useResendVerify } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api/client";
-import { LoginInput } from "../../lib/schemas/auth";
+import { LoginSchema } from "@mlabs/validators";
 
 export default function LoginScreen() {
   const [email, setEmail] = React.useState("");
@@ -30,7 +30,7 @@ export default function LoginScreen() {
   const toast = useToast();
 
   const submit = async () => {
-    const parsed = LoginInput.safeParse({ email, password });
+    const parsed = LoginSchema.safeParse({ email, password });
     if (!parsed.success) {
       const next: typeof errors = {};
       for (const issue of parsed.error.issues) {

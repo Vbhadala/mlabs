@@ -12,7 +12,7 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useResetPassword } from "../../features/auth/hooks";
 import { useToast } from "../../components/ui/Toast";
-import { ResetPasswordInput } from "../../lib/schemas/auth";
+import { ResetPasswordSchema } from "@mlabs/validators";
 import { ApiError } from "../../lib/api/client";
 
 /**
@@ -33,7 +33,7 @@ export default function ResetPasswordScreen() {
   const toast = useToast();
 
   const submit = async () => {
-    const parsed = ResetPasswordInput.safeParse({ token, password, confirmPassword });
+    const parsed = ResetPasswordSchema.safeParse({ token, password, confirmPassword });
     if (!parsed.success) {
       const next: typeof errors = {};
       for (const issue of parsed.error.issues) {

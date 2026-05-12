@@ -22,7 +22,7 @@ import type {
   LoginInput,
   ForgotPasswordInput,
   ResetPasswordInput,
-} from "../../lib/schemas/auth";
+} from "@mlabs/validators";
 
 export interface User {
   id: string;
