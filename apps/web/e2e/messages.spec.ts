@@ -9,7 +9,7 @@ import { test, expect } from "@playwright/test"
 test("/messages redirects unauthenticated visitors to /login", async ({ page }) => {
   await page.goto("/messages")
   await expect(page).toHaveURL(/\/login$/)
-  await expect(page.getByRole("heading", { level: 1, name: "Sign in" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Welcome back" })).toBeVisible()
 })
 
 test("/messages/[id] redirects unauthenticated visitors to /login", async ({ page }) => {

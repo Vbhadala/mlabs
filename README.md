@@ -125,8 +125,3 @@ in [HANDOVER.md.template](./HANDOVER.md.template).
 - [docs/decisions/](./docs/decisions/) — architecture decisions (start at [0006](./docs/decisions/0006-monorepo.md) and [0007](./docs/decisions/0007-service-layer.md))
 - [docs/generated-artifacts.md](./docs/generated-artifacts.md) — what's generated and when to regenerate
 - [HANDOVER.md.template](./HANDOVER.md.template) — per-client handover
-
-Migration history (W1 → Phase 8) is documented in `PLAN.md`,
-`IMPLEMENTATION.md`, `PHASE_5_5.md`, and the per-phase commits on
-`chore/monorepo-migration`. Useful for context on *why*; not required
-reading to ship a fork.

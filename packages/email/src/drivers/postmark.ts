@@ -1,8 +1,8 @@
 import "server-only"
 
-// Postmark driver — the default for production. Sends inline (no jobs runner;
-// per PLAN.md T9). On failure, throws — caller's Server Action surfaces a
-// retry-able error to the user.
+// Postmark driver — the default for production. Sends inline (no jobs runner).
+// On failure, throws — caller's Server Action surfaces a retry-able error to
+// the user.
 
 import { ServerClient } from "postmark"
 import type { EmailDriver, SendArgs, SendResult } from "../types"

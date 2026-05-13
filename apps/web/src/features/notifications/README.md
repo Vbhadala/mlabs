@@ -21,7 +21,7 @@ In-app notification inbox + nav bell. Composes:
 
 ## Polling vs realtime
 
-Per PLAN.md D3, this feature polls. The bell pauses polling when
+This feature polls. The bell pauses polling when
 `document.visibilityState !== "visible"` to keep idle tab cost negligible
 (important on Neon free tier).
 

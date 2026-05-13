@@ -2,7 +2,7 @@
 //   - skeleton: matches list shape; for content lists (DataList default)
 //   - spinner: action feedback ("Saving…"); for buttons and short waits
 //   - shimmer: card placeholder; for non-list content blocks
-// Per Design Decision D3 (PLAN.md §4): skeleton for lists, spinner for actions.
+// Per Design Decision D3: skeleton for lists, spinner for actions.
 
 import { Loader2 } from "lucide-react"
 import { Skeleton } from "@mlabs/ui-web/skeleton"

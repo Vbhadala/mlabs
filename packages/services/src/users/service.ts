@@ -41,7 +41,7 @@ export async function deleteAccount(
 ): Promise<DeleteAccountResult> {
   const audit = createAudit(db)
 
-  // audit BEFORE the action (PLAN.md §10): a failed audit blocks the change.
+  // audit BEFORE the action: a failed audit blocks the change.
   await audit({
     actorId: ctx.userId,
     action: "user.deleted_anonymized",

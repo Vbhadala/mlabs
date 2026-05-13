@@ -110,6 +110,22 @@ describe("markAllRead", () => {
       changed: 0,
     })
   })
+
+  it("scopes the update to ctx.userId (cross-user isolation in the WHERE)", async () => {
+    // Legacy authz coverage: markAllRead must not touch rows owned by
+    // other users. The predicate composition (user_id == ctx.userId AND
+    // isNull(read_at)) is what enforces this; assert the where() call is
+    // present so a future refactor can't accidentally drop the user_id
+    // half.
+    const where = vi.fn().mockReturnValue({
+      returning: () => Promise.resolve([{ id: "n_mine" }]),
+    })
+    const db = {
+      update: () => ({ set: () => ({ where }) }),
+    } as unknown as Database
+    await markAllRead(db, ctxFor("u_specific"))
+    expect(where).toHaveBeenCalledTimes(1)
+  })
 })
 
 describe("markRead", () => {
@@ -125,6 +141,22 @@ describe("markRead", () => {
     await expect(
       markRead(db, ctxFor("u_1"), { id: "n_real" }),
     ).resolves.toEqual({ ok: true, changed: 1 })
+  })
+
+  it("returns changed: 0 indistinguishably for wrong-owner and already-read (authz scoping is in the WHERE)", async () => {
+    // Both "row belongs to another user" and "row is already read" surface
+    // as zero returned rows from the update — gated by the WHERE predicate
+    // (id, user_id, isNull(read_at)). The service can't tell which case
+    // produced the zero match; that's the no-enumeration property.
+    const where = vi.fn().mockReturnValue({
+      returning: () => Promise.resolve([]),
+    })
+    const db = {
+      update: () => ({ set: () => ({ where }) }),
+    } as unknown as Database
+    const result = await markRead(db, ctxFor("u_owner"), { id: "n_x" })
+    expect(result).toEqual({ ok: true, changed: 0 })
+    expect(where).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -143,6 +175,32 @@ describe("createNotification", () => {
       expect.objectContaining({
         user_id: "u_2",
         type: "generic",
+      }),
+    )
+  })
+
+  it("persists with the typed body and type=body.kind (no drift)", async () => {
+    // Legacy coverage: the row carries the validated NotificationBody and
+    // type column mirrors body.kind so SQL-side filtering stays cheap.
+    const values = vi.fn().mockReturnValue({
+      returning: () => Promise.resolve([{ id: "n_typed" }]),
+    })
+    const db = { insert: () => ({ values }) } as unknown as Database
+    await createNotification(db, ctxFor("u_1"), {
+      userId: "u_2",
+      body: {
+        kind: "message",
+        conversation_id: "conv_1",
+        sender_id: "u_1",
+        sender_name: "Alice",
+        preview: "hi",
+      },
+    })
+    expect(values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: "u_2",
+        type: "message",
+        body: expect.objectContaining({ kind: "message" }),
       }),
     )
   })

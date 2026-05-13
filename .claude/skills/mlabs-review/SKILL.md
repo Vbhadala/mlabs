@@ -33,7 +33,7 @@ Review a `/mlabs-plan` output and produce an approved implementation plan in
 
 2. **Read the plan + codebase context** in parallel:
    - The plan doc itself
-   - `CLAUDE.md`, `AGENTS.md`, `PLAN.md` for hard rules
+   - `CLAUDE.md`, `AGENTS.md` for hard rules
    - The specific files the plan says it'll touch (existing ones, via Read)
    - Sibling files in `src/features/` if the plan adds a new feature module
    - `src/config/` if the plan touches brand/design/env
@@ -42,7 +42,7 @@ Review a `/mlabs-plan` output and produce an approved implementation plan in
    - **Scope clarity** — are in/out lists explicit and tight?
    - **MLabs convention fit** — respects `src/config/` (no hardcoded brand strings),
      `src/features/` removability rule, `import "server-only"` for server code,
-     Zod at boundaries, Drizzle generate-not-push, etc. (see `PLAN.md`).
+     Zod at boundaries, Drizzle generate-not-push, etc. (see `AGENTS.md`).
    - **Edge cases** — auth states, empty states, network failures, idempotency
      for emails/webhooks, concurrent edits.
    - **Acceptance criteria** — checkable? specific? testable?

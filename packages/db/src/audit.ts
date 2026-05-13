@@ -4,7 +4,7 @@ import "server-only"
 //
 // Critical contract: for state-changing actions, call this BEFORE the action.
 // If the audit write fails, the helper throws — the caller's action does NOT
-// proceed (per PLAN.md §10: "audit failure is silent" was a critical gap).
+// proceed ("audit failure is silent" was a critical gap).
 //
 // Metadata uses a typed discriminated-union allowlist. Adding a new action
 // means extending AuditMeta; no free-form strings allowed (GDPR / anonymize-
@@ -28,7 +28,7 @@ export type AuditMeta =
   | { kind: "user.name_changed" }
   | { kind: "user.admin_notified"; title: string }
 
-/** Which client surfaced the action (C4 in PHASE_5_5.md). Derived in route
+/** Which client surfaced the action. Derived in route
  *  handlers from the `X-Client` header set by the mobile API wrapper; defaults
  *  to "web" so existing callers keep their current row shape unchanged. */
 export type AuditClient = "web" | "mobile"

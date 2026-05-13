@@ -12,7 +12,7 @@ Self-contained user profile feature. Composes:
 1. **Account** — display name + email change (re-verifies via current email).
 2. **Security** — change password; revokes other sessions on success.
 3. **Notifications** — placeholder; wires up in `features/notifications` (W7).
-4. **Danger zone** — anonymize-in-place delete (per PLAN.md §4 D6).
+4. **Danger zone** — anonymize-in-place delete.
 
 ## To remove this feature
 

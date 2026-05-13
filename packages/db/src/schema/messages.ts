@@ -16,7 +16,7 @@
 //    SET NULL clause is belt-and-suspenders: if a fork ever switches to row
 //    deletion, message history survives with sender = "Deleted user".
 //
-// Polling cadence (no realtime per PLAN.md D3):
+// Polling cadence (no realtime):
 //   /api/messages/conversations             — inbox list, 10s
 //   /api/messages/conversations/[id]/messages — thread, 2s (cursor by ?after=)
 

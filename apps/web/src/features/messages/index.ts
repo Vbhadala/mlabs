@@ -1,10 +1,10 @@
-// Public surface of features/messages. Server entry points stay under
-// ./server — never barrel them here so client components can't import them
-// by accident. Cross-feature callers should import directly:
+// Public surface of features/messages.
 //
-//   import { sendMessage } from "@/features/messages/server/messages"
-//
-// Components are exported here for the inbox + thread pages to mount.
+// Server logic now lives in @mlabs/services/messages — pages, dev seeds,
+// and operations import from there. This barrel only re-exports the UI
+// components and the shared row types that the components need to talk
+// to API responses. No server modules to hide; the package boundary
+// itself enforces "client can't import server-only code".
 
 export { ConversationsList } from "./components/conversations-list"
 export { Thread } from "./components/thread"

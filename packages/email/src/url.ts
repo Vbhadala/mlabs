@@ -1,6 +1,6 @@
 import "server-only"
 
-// Email URL helpers (C1 in PHASE_5_5.md).
+// Email URL helpers.
 //
 // Two builders so a single template can emit either a web URL or a deep link
 // without sprinkling string concat through the codebase:

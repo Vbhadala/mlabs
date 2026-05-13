@@ -24,7 +24,7 @@ Consult the user on a new feature, then write a structured plan doc to
 ## Steps
 
 1. **Read context** (in parallel):
-   - `CLAUDE.md`, `AGENTS.md`, `PLAN.md`, `README.md` if they exist
+   - `CLAUDE.md`, `AGENTS.md`, `README.md` if they exist
    - `src/` top-level layout via Glob
    - Any existing plan docs in `.mstack/plans/` (so we don't duplicate)
 
@@ -67,7 +67,7 @@ The template includes these sections — keep all of them, even if a section is
   remind them: "/mlabs-code does the implementation after /mlabs-review."
 - **Don't skip context-reading.** Plans for an MLabs MVP must respect
   `src/config/` (rebrand layer), `src/features/` (removable modules), and the
-  hard rules in `PLAN.md` (no raw `process.env`, `import "server-only"`, etc.).
+  hard rules in `AGENTS.md` (no raw `process.env`, `import "server-only"`, etc.).
 - **Don't ship vague acceptance criteria.** If you can't write checkable boxes,
   ask more questions.
 - **Don't propose new top-level deps without flagging it.** MLabs prefers boring

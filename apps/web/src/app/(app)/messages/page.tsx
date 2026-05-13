@@ -1,8 +1,9 @@
 // /messages — inbox. Server-renders the first page of conversations, then
 // the client component polls every 10s for updates.
 
-import { requireUser } from "@/lib/auth/server"
-import { listForUser } from "@/features/messages/server/conversations"
+import { messages } from "@mlabs/services"
+import { db } from "@/lib/db"
+import { getCallerContext } from "@/lib/auth/server"
 import {
   ConversationsList,
   NewConversationForm,
@@ -12,8 +13,8 @@ export const metadata = { title: "Messages" }
 export const dynamic = "force-dynamic"
 
 export default async function MessagesPage() {
-  const me = await requireUser()
-  const items = await listForUser(me.id)
+  const ctx = await getCallerContext()
+  const { items } = await messages.listConversations(db, ctx)
 
   return (
     <div className="space-y-6">

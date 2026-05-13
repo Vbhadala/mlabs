@@ -1,6 +1,6 @@
 // Driver registry. The MLabs default is Replit Object Storage; swap by
 // editing this file (don't introduce a flag — every fork picks one driver
-// at fork time, per PLAN.md "configurable not customizable").
+// at fork time, "configurable not customizable").
 
 import "server-only"
 import { replitDriver } from "./drivers/replit"

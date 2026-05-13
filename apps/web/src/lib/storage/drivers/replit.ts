@@ -1,4 +1,4 @@
-// Replit Object Storage driver — the MLabs default per PLAN.md §2.
+// Replit Object Storage driver — the MLabs default.
 //
 // Important: Replit Object Storage does NOT expose public URLs out of the box
 // (it's GCS-backed, but Replit's wrapper doesn't surface signed URLs). So this

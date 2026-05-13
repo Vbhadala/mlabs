@@ -4,6 +4,8 @@ export {
   openOrCreate1to1,
   listConversations,
   getConversationsFreshness,
+  getOtherParticipant,
+  _requireParticipant,
   listMessages,
   sendMessage,
   markConversationRead,

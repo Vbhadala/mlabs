@@ -1,7 +1,7 @@
 // StorageAdapter interface — the only contract features should depend on.
 // Drivers (Replit Object Storage, S3, Cloudinary, etc.) implement this shape.
 //
-// Per PLAN.md A3: storage abstraction is the one infra concern that genuinely
+// Storage abstraction is the one infra concern that genuinely
 // has the same shape across providers, so the adapter pays for itself the first
 // time a client wants to swap storage providers.
 

@@ -3,7 +3,7 @@
 // Profile server actions. All mutations:
 //   1. Re-enforce auth via requireUser() (cookies → session lookup).
 //   2. Validate input with Zod at the trust boundary.
-//   3. audit() BEFORE the state change (per PLAN.md §10).
+//   3. audit() BEFORE the state change.
 //   4. Return a typed result — never throw past Next's error boundary.
 
 import "server-only"

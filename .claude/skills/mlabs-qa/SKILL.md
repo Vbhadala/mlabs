@@ -79,7 +79,7 @@ If declined, exit cleanly with status `report-only`.
 For each approved issue:
 
 1. TaskUpdate `in_progress`.
-2. Make the fix. Honour MLabs hard rules from `PLAN.md` (no raw `process.env`,
+2. Make the fix. Honour MLabs hard rules from `AGENTS.md` (no raw `process.env`,
    `import "server-only"`, Zod boundaries, Drizzle generate-not-push).
 3. Run typecheck if `.ts`/`.tsx` was touched.
 4. Re-run the failing scenario via Playwright. If it now passes, mark fixed.

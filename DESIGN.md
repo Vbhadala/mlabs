@@ -1,6 +1,6 @@
 # DESIGN.md
 
-The Tianjin template's visual identity, in one document. Pair this with
+The Mlabs template's visual identity, in one document. Pair this with
 `packages/config/src/design.ts` (executable tokens) and `apps/web/src/app/
 (app)/design/page.tsx` (live style guide).
 
@@ -21,12 +21,6 @@ appears nowhere outside `config/`, `templates/`, `legal/`,
 
 **Mood.** Modern, confident, AI-product. Light surface, bold display
 type, single accent in MLabs orange. Not playful; not editorial.
-
-**Visual reference.**
-[`.mstack/mockups/landing-page/v2/index.html`](./.mstack/mockups/landing-page/v2/index.html)
-is the canonical reference for the default landing page (light surface).
-The dark sibling at `v1/index.html` is preserved for Phase 2 when the
-toggle ships.
 
 ---
 
@@ -81,7 +75,7 @@ toggle ships.
 
 ## How to rebrand for a fork
 
-The 10-minute rebrand (per `PLAN.md`'s template promise):
+The 10-minute rebrand:
 
 1. **Brand strings** — edit `packages/config/src/brand.ts`.
    Five fields: `name`, `tagline`, `taglineHighlight`, `supportEmail`,
@@ -151,13 +145,6 @@ yet. To flip the default:
 
 ## Visual reference
 
-- **Landing page mockups:** [`.mstack/mockups/landing-page/v1/
-  index.html`](./.mstack/mockups/landing-page/v1/index.html) (dark) and
-  [`.mstack/mockups/landing-page/v2/index.html`](./.mstack/mockups/landing-page/v2/index.html)
-  (light, **default**). Open `.mstack/mockups/landing-page/COMPARE.html`
-  to view both side-by-side.
-- **Decision log:** [`.mstack/mockups/landing-page/FEEDBACK.md`](./.mstack/mockups/landing-page/FEEDBACK.md)
-  for the locked decisions from the mockup pass.
 - **Live style guide:** `/design` route (auth-gated). The page reads
   exclusively from `@mlabs/config` so it visually drifts the moment a
   token changes.

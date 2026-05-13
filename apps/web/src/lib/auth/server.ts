@@ -5,6 +5,7 @@ import "server-only"
 import { headers } from "next/headers"
 import { notFound, redirect } from "next/navigation"
 import { ApiError } from "@mlabs/api"
+import type { CallerContext, CallerSource, Permission } from "@mlabs/api"
 import { auth } from "./index"
 import { extractBearerToken, verifyAccessToken } from "./jwt"
 
@@ -79,6 +80,29 @@ export async function requireUser() {
     redirect("/login")
   }
   return session.user
+}
+
+/**
+ * Build a fully-formed CallerContext for server-component / Server-Action
+ * callers that talk to @mlabs/services directly (i.e. outside the operation
+ * adapter, which builds its own ctx from the inbound Request).
+ *
+ * Wraps requireUser() — redirects to /login if unauthed. The requestId is
+ * freshly minted here because pages and Server Actions have no inbound
+ * X-Request-Id header to forward.
+ */
+export async function getCallerContext(
+  source: CallerSource = "web",
+): Promise<CallerContext> {
+  const u = await requireUser()
+  const role: Permission =
+    (u as { role?: string }).role === "admin" ? "admin" : "user"
+  return {
+    userId: u.id,
+    user: { id: u.id, email: u.email, role },
+    requestId: crypto.randomUUID(),
+    source,
+  }
 }
 
 /**

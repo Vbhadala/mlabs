@@ -1,5 +1,5 @@
 // Centered-card layout for /login, /signup, /forgot-password, /reset-password,
-// /verify-email per design decision D2 (PLAN.md §4). Polished in Task 6 to
+// /verify-email per design decision D2. Polished in Task 6 to
 // carry the MLabs orange-dot wordmark + a soft top glow that re-uses the
 // landing page hero treatment.
 

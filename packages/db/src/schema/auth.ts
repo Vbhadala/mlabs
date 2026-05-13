@@ -25,7 +25,7 @@ export const user = pgTable(
     // GET on /api/notifications/unread-count + /api/messages/conversations.
     // Never written from app code; INSERT triggers on notifications + messages
     // bump these inside the same transaction as the data write. App-level
-    // writes would race (P1 in PHASE_5_5.md locked decisions).
+    // writes would race.
     notifications_updated_at: timestamp("notifications_updated_at")
       .defaultNow()
       .notNull(),
