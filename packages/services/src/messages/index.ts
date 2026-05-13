@@ -5,6 +5,7 @@ export {
   listConversations,
   getConversationsFreshness,
   getOtherParticipant,
+  _requireParticipant,
   listMessages,
   sendMessage,
   markConversationRead,

@@ -69,8 +69,13 @@ function pairKey(a: string, b: string): string {
  * Throws ApiError("messages.not_found") when the caller isn't a participant
  * in the conversation OR when the conversation doesn't exist. Same error
  * code for both — no enumeration of which is which.
+ *
+ * Exported with an underscore prefix so the messages service test suite can
+ * exercise the predicate directly. External consumers should never need to
+ * call this — every public method (listMessages, sendMessage,
+ * markConversationRead) gates on it internally.
  */
-async function requireParticipant(
+export async function _requireParticipant(
   db: Database,
   conversationId: string,
   userId: string,
@@ -257,7 +262,7 @@ export async function listMessages(
   ctx: CallerContext,
   args: ListMessagesArgs,
 ): Promise<{ items: MessageRow[] }> {
-  await requireParticipant(db, args.conversationId, ctx.userId)
+  await _requireParticipant(db, args.conversationId, ctx.userId)
 
   if (args.cursor) {
     const decoded = decodeCursor(args.cursor)
@@ -334,7 +339,7 @@ export async function sendMessage(
   ctx: CallerContext,
   args: SendMessageArgs,
 ): Promise<{ message: MessageRow }> {
-  await requireParticipant(db, args.conversationId, ctx.userId)
+  await _requireParticipant(db, args.conversationId, ctx.userId)
 
   const parsed = bodySchema.safeParse(args.body)
   if (!parsed.success) {
@@ -477,7 +482,7 @@ export async function markConversationRead(
   ctx: CallerContext,
   args: MarkConversationReadArgs,
 ): Promise<{ ok: true }> {
-  await requireParticipant(db, args.conversationId, ctx.userId)
+  await _requireParticipant(db, args.conversationId, ctx.userId)
   const now = new Date()
 
   await db
