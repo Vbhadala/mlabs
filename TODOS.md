@@ -45,16 +45,6 @@ Items deferred from active phases. Each has a clear trigger condition for when t
 
 ---
 
-## 5. Custom empty-state SVG illustrations
-**Captured:** 2026-05-12, /plan-design-review (Phase 5.5)
-**Why:** Design Pass 4 #3 locked the 3-SVG pattern (inbox, notifications, no-results) but didn't lock who draws them. Default to Lucide icons-as-illustrations is the AI slop fallback we explicitly chose to avoid.
-**Pros:** Removes generic-template vibe at the moments forks see most (empty states).
-**Cons:** ~3 hrs (Figma sketch + vector export + currentColor cleanup) OR AI image gen + vector trace.
-**Trigger:** **Before Phase 5.5 ships.** Block-on-implementation — empty states ship visible.
-**Approach:** Sketch in Figma, export as inlinable `.svg` files at `mobile/assets/illustrations/`. Use `currentColor` for stroke/fill so brand color applies. ~80×80pt nominal size.
-
----
-
 ## 6. Back-fill mobile sections into DESIGN.md.template
 **Captured:** 2026-05-12, /plan-design-review (Phase 5.5)
 **Why:** DESIGN.md.template is scheduled for Phase 7. This review locked many mobile-specific design decisions (nav pattern, state matrix, a11y, splash, avatar fallback, toast position) that should live in the canonical doc.
