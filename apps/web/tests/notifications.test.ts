@@ -145,7 +145,7 @@ import { setActionHeadersResolver } from "@mlabs/api/server"
 setActionHeadersResolver(async () => new Headers())
 
 import { createNotification } from "@/features/notifications/server/create"
-import { markRead, markAllRead } from "@/features/notifications/server/actions"
+import { markRead, markAllRead } from "@/features/notifications/server-actions"
 
 beforeEach(() => {
   store.rows = []

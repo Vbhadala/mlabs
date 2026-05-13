@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useTransition } from "react"
 import { cn } from "@mlabs/ui-web/utils"
 import type { NotificationRow } from "@mlabs/services/notifications"
-import { markRead } from "@/features/notifications/server/actions"
+import { markRead } from "@/features/notifications/server-actions"
 
 interface NotificationItemProps {
   row: NotificationRow
