@@ -59,7 +59,7 @@ Read once, in parallel:
 - `src/config/design.ts` — the source-of-truth tokens
 - `src/app/globals.css` — CSS variables
 - `src/lib/ui/` — base primitives (EmptyState, LoadingState, ErrorState,
-  DataList per `PLAN.md`)
+  DataList)
 - The screen's source (`src/app/.../page.tsx`, plus referenced components)
 
 Critique each screen against:

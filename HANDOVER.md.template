@@ -321,4 +321,3 @@ for non-critical issues.
 - `docs/handover/replit-setup.md` — Replit deploy walkthrough
 - `docs/decisions/0002-polling-load.md` — scaling math
 - `docs/decisions/0004-expo-over-natively.md` — mobile platform choice
-- `PHASE_5_5.md` — Phase 5.5 locked plan (historical)

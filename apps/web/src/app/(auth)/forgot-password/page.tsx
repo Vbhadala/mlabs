@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
   const [errors, setErrors] = useState<{ email?: string }>({})
   const [pending, setPending] = useState(false)
   // Always show success — never reveal whether the email exists (no enumeration).
-  // Per PLAN.md §10: password reset request returns 200 either way.
+  // Password reset request returns 200 either way.
   const [submitted, setSubmitted] = useState(false)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {

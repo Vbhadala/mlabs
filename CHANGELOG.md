@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to the mlabs/muscat template. Tag boundaries follow PHASE_5_5.md → Phase 7 schedule.
+Notable changes to the MLabs template.
 
 ## [Unreleased]
 
@@ -29,7 +29,7 @@ Adds an Expo Router mobile app under `/mobile` covering sign-up, login, password
 - 3 monochrome SVG illustrations using `currentColor` for empty states (inbox, notifications, no-results).
 - `mobile/lib/api/client.ts`: fetch wrapper with bearer + `X-Client: mobile` + 401 auto-refresh (in-flight dedup).
 - `scripts/gen-mobile-tailwind.ts`: generates `mobile/tailwind.config.js` from `src/config/design.ts`. DO-NOT-EDIT header + `--check` flag + pre-commit hook.
-- 11 Maestro flow YAMLs under `mobile/.maestro/` (local-only; promotion to CI tracked in TODOS.md #2).
+- 11 Maestro flow YAMLs under `mobile/.maestro/` (local-only; CI promotion deferred).
 
 **Lane D — deep links + handover + contrast (`b4eb926`)**
 - `public/.well-known/apple-app-site-association` + `assetlinks.json`: placeholder Universal Links / App Links manifests, served with `application/json` content type via `src/app/.well-known/[file]/route.ts`.
@@ -55,14 +55,6 @@ Palette tightened to pass `scripts/check-contrast.ts` against the design review'
 
 **Test count:** 173/173 → 182/182 across 22 files (Lane E added 9 type tests).
 
-**Known follow-ups (not blockers, see TODOS.md):**
-1. Load-test ETag effectiveness (TODOS #1)
-2. Mobile E2E in CI (TODOS #2 — currently local-only)
-3. In-app dark mode toggle (TODOS #3)
-4. iPad-specific layout (TODOS #4)
-5. Custom empty-state illustrations to replace placeholders (TODOS #5)
-6. DESIGN.md.template back-fill in Phase 7 (TODOS #6)
-
 **Mobile-server contract caveats:**
 - `@better-auth/expo@1.6.10` declares peer on `expo-constants >= 17` but Expo SDK 51 ships `~16.0.2` — install requires `--legacy-peer-deps`. Bump Expo SDK in a follow-up.
 - `mobile/lib/schemas/*` deliberately mirrors `src/lib/schemas/*` (Metro can't cross the `src/` → `mobile/` boundary). A future `shared/` package would dedupe.
@@ -70,4 +62,4 @@ Palette tightened to pass `scripts/check-contrast.ts` against the design review'
 
 ## [v1.0.0] — W1-W8 baseline (`124b3a4`, 2026-05-09)
 
-Initial template — see `PLAN.md` and PR #1 for scope. Auth, email, lib primitives, profile, avatar, notifications, messages, admin.
+Initial template — see PR #1 for scope. Auth, email, lib primitives, profile, avatar, notifications, messages, admin.

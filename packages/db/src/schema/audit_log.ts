@@ -1,5 +1,5 @@
 // Audit log — every state-changing admin action lands here.
-// Per PLAN.md §10: write the audit BEFORE the action, so a failed audit blocks
+// Write the audit BEFORE the action, so a failed audit blocks
 // the action (audit() helper enforces this). Metadata is a typed allowlist
 // (see audit.ts) — never free-form strings, so anonymize-in-place stays GDPR-safe.
 

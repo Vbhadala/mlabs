@@ -8,7 +8,7 @@ This doc tells you what to set up in Postmark UI for each fork.
 
 ## Per-fork setup checklist
 
-For each new fork (per the per-project Postmark strategy locked in `PLAN.md §2`):
+For each new fork (per the template's per-project Postmark strategy):
 
 1. **Create a new Server** in [Postmark](https://account.postmarkapp.com/servers)
    (one per project — never share servers across clients)

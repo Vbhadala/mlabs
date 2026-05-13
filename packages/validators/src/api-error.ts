@@ -1,4 +1,4 @@
-// Locked wire format for /api/* errors (OV7 in PHASE_5_5.md).
+// Locked wire format for /api/* errors.
 //
 // Every route returns one shape so web + mobile clients can branch on `code`
 // instead of parsing a free-form string. The Zod schema doubles as the runtime

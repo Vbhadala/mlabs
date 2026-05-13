@@ -4,7 +4,7 @@
 // - warn: console.warn AND a row in error_log
 // - error: console.error AND a row in error_log
 //
-// Persisting errors solves "Replit logs are ephemeral" (PLAN.md §13). The DB
+// Persisting errors solves "Replit logs are ephemeral". The DB
 // write is best-effort: if it fails (DB down), we fall back to console only —
 // we don't want logger.error() itself to throw and bury the original error.
 //

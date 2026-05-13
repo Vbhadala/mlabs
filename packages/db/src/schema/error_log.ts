@@ -1,7 +1,7 @@
 // Persisted error log — every logger.error() also writes a row here so
 // post-incident analysis survives Replit's ephemeral logs.
 //
-// Per PLAN.md §13 + outside-voice critique: Replit logs are ephemeral, so
+// Per outside-voice critique: Replit logs are ephemeral, so
 // without persistence we lose evidence the moment the VM restarts.
 
 import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core"

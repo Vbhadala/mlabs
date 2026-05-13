@@ -57,7 +57,6 @@ Trigger: first fork reaches 500 DAU, OR v1.1 cycle starts — whichever first.
 
 ## See also
 
-- `PHASE_5_5.md` — Phase 5.5 implementation plan
 - `docs/decisions/0002-polling-load.md` — original web-only polling math
 - `TODOS.md` — load-test commitment
 - Outside-voice finding #5 in /plan-eng-review (2026-05-11)

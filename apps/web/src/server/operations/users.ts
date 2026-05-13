@@ -63,7 +63,7 @@ export const updateNameOp = defineOperation({
       }
     }
 
-    // Audit BEFORE the action (PLAN.md §10). A failed audit blocks the
+    // Audit BEFORE the action. A failed audit blocks the
     // write — keeps the audit log authoritative.
     const audit = createAudit(db)
     await audit({

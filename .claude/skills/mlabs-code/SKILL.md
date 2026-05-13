@@ -69,7 +69,7 @@ For each task in order:
    before making edits.
 
 4. **Make the edits.** Follow the task's `What`. Honor MLabs hard rules from
-   `PLAN.md`:
+   `AGENTS.md`:
    - No raw `process.env` outside `src/config/env.ts`
    - No hardcoded brand strings outside `src/config/`
    - `import "server-only"` in `lib/db`, `lib/email`, `features/*/server/`

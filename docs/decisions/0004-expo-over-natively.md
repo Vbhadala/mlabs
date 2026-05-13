@@ -2,13 +2,13 @@
 
 **Status:** accepted
 **Date:** 2026-05-11
-**Replaces:** PLAN.md §12 row "Native mobile codebase — Natively wraps the responsive web app"
+**Replaces:** the original "Native mobile codebase — Natively wraps the responsive web app" strategy
 **Supersedes:** N/A
-**Related:** PLAN.md §4 (monorepo rejected — partial carve-out for `/mobile` sibling app)
+**Related:** the original "monorepo rejected" decision — partial carve-out for `/mobile` sibling app
 
 ## Context
 
-PLAN.md v1 strategy was to ship one responsive Next.js web app and wrap it for iOS/Android via Natively. After W1–W8 shipped, the team revisited this decision before Phase 6 (skills) and Phase 7 (pre-ship).
+The v1 strategy was to ship one responsive Next.js web app and wrap it for iOS/Android via Natively. After W1–W8 shipped, the team revisited this decision before Phase 6 (skills) and Phase 7 (pre-ship).
 
 Two motivations to change course:
 
@@ -46,13 +46,13 @@ The /mobile app does NOT share:
 - **Innovation token spend:** Expo + NativeWind v4 + Better Auth bearer + Maestro + EAS = 4–5 new moving parts on top of the existing 3-token v1. Acknowledged trade-off, not mitigated.
 - **Per-fork mobile setup:** each fork needs Apple Developer ($99/yr), Google Play ($25 one-time), bundle ID, signing certs, App Store Connect setup. Documented in `HANDOVER.md.template`; not template responsibility.
 - **CI complexity:** Maestro E2E suite runs **locally only** in v1 (TODOS.md #2 tracks promotion to CI when a regression slips).
-- **Monorepo-lite:** `/mobile` is a sibling Node project in the same git repo. No turborepo, no workspaces. Imports across the boundary use relative paths. Partially walks back PLAN.md §4's "monorepo rejected" decision.
+- **Monorepo-lite:** `/mobile` is a sibling Node project in the same git repo. No turborepo, no workspaces. Imports across the boundary use relative paths. Partially walks back the original "monorepo rejected" decision.
 
 ## Alternatives considered
 
 | Option | Why rejected |
 |---|---|
-| Natively wrapper (original PLAN.md path) | Lower-quality native feel; can't share schemas/auth/audit; every change is a re-wrap |
+| Natively wrapper (the original path) | Lower-quality native feel; can't share schemas/auth/audit; every change is a re-wrap |
 | Capacitor / Cordova webview wrapper | Same issues as Natively; worse tooling story than Expo |
 | React Native CLI (no Expo) | Loses Expo Router, EAS, expo-secure-store, image-picker, etc. — months of reinvention |
 | Tamagui or react-native-unistyles for styling | Different mental model from web Tailwind; breaks the "edit `src/config/design.ts`, brand both apps" promise |
@@ -60,12 +60,10 @@ The /mobile app does NOT share:
 
 ## Mobile-specific scope locked in Phase 5.5
 
-Sign-up, login, password reset, email verification, profile, avatar upload, messages (1:1 + polling), notifications (polling). See `PHASE_5_5.md` for the full implementation plan.
+Sign-up, login, password reset, email verification, profile, avatar upload, messages (1:1 + polling), notifications (polling).
 
 Out of scope for v1: Expo Push, biometric auth, offline message queue, mobile admin UI, multi-tenancy, OAuth/magic-link providers (off by default same as web).
 
 ## See also
 
-- `PHASE_5_5.md` — implementation plan
 - `docs/decisions/0005-conditional-get-load-math.md` — server-side load implications
-- `~/.gstack/projects/Vbhadala-mlabs/vinod-Vbhadala-muscat-v1-eng-review-test-plan-20260511-221355.md` — test plan artifact from /plan-eng-review

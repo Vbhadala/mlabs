@@ -1,7 +1,7 @@
 // In-app notifications. One row per user-visible event. read_at = null is the
 // truth for "unread"; we don't carry a separate boolean to avoid drift.
 //
-// Per PLAN.md D3: polling, not realtime. Index supports the two hot queries:
+// Polling, not realtime. Index supports the two hot queries:
 //   - unread count for the bell:        WHERE user_id=$1 AND read_at IS NULL
 //   - inbox listing, newest first:      WHERE user_id=$1 ORDER BY created_at DESC
 

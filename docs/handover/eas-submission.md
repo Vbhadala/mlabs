@@ -195,4 +195,3 @@ fallback and never re-try in-app even after you fix it.
 - AASA spec: <https://developer.apple.com/documentation/xcode/supporting-associated-domains>
 - assetlinks spec: <https://developers.google.com/digital-asset-links/v1/getting-started>
 - EAS Submit docs: <https://docs.expo.dev/submit/introduction/>
-- Phase 5.5 decision A3 (deep links): `PHASE_5_5.md`

@@ -7,8 +7,8 @@ import { usePolledFetch } from "@/lib/hooks/use-polled-fetch"
 const POLL_INTERVAL_MS = 5_000
 
 // Bell + unread count badge. Polls every 5s via the shared visibility-gated
-// fetcher (also used by the messages inbox + thread). Per PLAN.md D3 (polling,
-// no realtime) and the outside-voice critique about idle Neon load.
+// fetcher (also used by the messages inbox + thread). Polling, no realtime, per
+// the outside-voice critique about idle Neon load.
 export function NotificationBell() {
   const { data } = usePolledFetch<{ count: number }>({
     url: "/api/v1/notifications/unread-count",

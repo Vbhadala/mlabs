@@ -1,6 +1,6 @@
 // DataList — generic list renderer that REQUIRES empty/loading/error states.
 // Devs writing a list cannot forget the states because the props demand them.
-// Per Design Principle 1 (PLAN.md §7).
+// Per Design Principle 1.
 
 import type { ReactNode } from "react"
 import { LoadingState } from "./loading-state"

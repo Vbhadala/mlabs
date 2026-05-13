@@ -1,5 +1,5 @@
 // EmptyState — every list view renders this when data is empty.
-// Per Design Principle 1 (PLAN.md §7): "No items found." is not a design.
+// Per Design Principle 1: "No items found." is not a design.
 // Always: warmth + a primary action + context.
 
 import type { LucideIcon } from "lucide-react"

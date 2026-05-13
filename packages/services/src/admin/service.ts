@@ -13,7 +13,7 @@ import "server-only"
 //   banUser    — can't ban yourself; idempotent on already-banned user
 //   unbanUser  — idempotent on non-banned user
 //
-// audit() lives in this module (PLAN.md §10: audit BEFORE the mutation,
+// audit() lives in this module (audit BEFORE the mutation,
 // keeps the log authoritative on partial failures). Cross-domain notification
 // fan-out goes through the public surface at @mlabs/services/notifications.
 

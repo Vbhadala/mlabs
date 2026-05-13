@@ -1,7 +1,6 @@
 "use server"
 
-// Dev-only seed action. Removed before v1 ship (see IMPLEMENTATION.md §7.5
-// "delete src/app/_dev/").
+// Dev-only seed action. Delete src/app/_dev/ before v1 ship.
 //
 // Note: this seeds a notification for the CURRENT user (ctx.userId ===
 // args.userId). The service's createNotification doesn't authz-check that

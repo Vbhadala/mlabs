@@ -1,7 +1,7 @@
 # Replit configuration for the MLabs template.
 # Per-fork: this file ships as-is. Individual projects rarely need to touch it.
 #
-# Deployment target: Reserved VM (per PLAN.md §2). Autoscale is incompatible
+# Deployment target: Reserved VM. Autoscale is incompatible
 # with our polling endpoints because each polling request would cold-start.
 
 run = "npm run dev"

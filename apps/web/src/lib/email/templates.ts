@@ -8,8 +8,7 @@ import { createTemplates } from "@mlabs/email/templates"
 import { getEmailDriver } from "./driver"
 
 // Re-exported so call sites that compose CTA URLs do it through the helpers
-// instead of `${env.BETTER_AUTH_URL}/path?token=${tok}` string concat (C1 in
-// PHASE_5_5.md).
+// instead of `${env.BETTER_AUTH_URL}/path?token=${tok}` string concat.
 export { buildAppLinkUrl, buildAuthUrl } from "./url"
 
 const templates = createTemplates({

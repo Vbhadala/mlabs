@@ -66,7 +66,7 @@ describe("migration 0005 — notification timestamp triggers", () => {
   it("triggers run AFTER INSERT (race-safe: NEW row is committed-visible)", () => {
     // BEFORE INSERT would let the timestamp move before the row is real —
     // a poller could see the new ts, race back to query notifications, and
-    // miss the row that hasn't been written yet. P1 in PHASE_5_5.md locks AFTER.
+    // miss the row that hasn't been written yet. The locked decision is AFTER.
     expect(migration).not.toMatch(/BEFORE INSERT ON notifications/)
     expect(migration).not.toMatch(/BEFORE INSERT ON messages/)
   })

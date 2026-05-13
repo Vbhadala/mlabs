@@ -2,7 +2,7 @@
 // Until features/admin (W8) ships its "send notification" tool, this is how
 // you exercise the bell + inbox locally. Visit while signed in.
 //
-// Delete src/app/_dev/ before v1 ship (already in IMPLEMENTATION.md §7.5).
+// Delete src/app/_dev/ before v1 ship.
 
 import Link from "next/link"
 import { Button } from "@mlabs/ui-web/button"

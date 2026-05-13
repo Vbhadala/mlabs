@@ -6,7 +6,7 @@ import "server-only"
 //
 // Email/password is enabled with email verification REQUIRED — users must
 // click the verify link before login is allowed. Email send is inline (no
-// jobs runner; per PLAN.md T9): if the email provider fails, the auth flow
+// jobs runner): if the email provider fails, the auth flow
 // surfaces the error to the caller — UI shows a retry-able message.
 
 import { betterAuth } from "better-auth"
