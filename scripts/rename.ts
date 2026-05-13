@@ -194,6 +194,24 @@ const SKIP_PATH_SUFFIXES = [
   // .well-known files use {{PLACEHOLDER}} substitution; forks fill manually.
   path.join("apps", "web", "public", ".well-known", "apple-app-site-association"),
   path.join("apps", "web", "public", ".well-known", "assetlinks.json"),
+  // The rename script itself — its docstring + info() messages reference
+  // literal "@mlabs", "Muscat", "muscat" as the canonical source patterns.
+  // Letting the script rewrite itself produces self-contradictory output
+  // (e.g., "Target: @mlabs → @acme | ACME App → ACME App") and obscures
+  // future maintenance of the script.
+  path.join("scripts", "rename.ts"),
+  // The rename script's test file — test cases contain literal @mlabs/...
+  // and Muscat strings as transform() inputs. Rewriting them makes the
+  // assertions tautologies (input == output) and breaks the dry-run test.
+  path.join("apps", "web", "tests", "rename.test.ts"),
+]
+
+const SKIP_PATH_PREFIXES = [
+  // The rename script's test fixture — frozen reference of the canonical
+  // pre-rename state. The rename test copies this fixture to a temp dir
+  // and runs the script against it. If we rewrite the fixture in-place
+  // during a fork, the test loses its reference state.
+  path.join("apps", "web", "tests", "fixtures") + path.sep,
 ]
 
 // File extensions whose contents we rewrite. Other files are left untouched.
@@ -232,6 +250,7 @@ function shouldRewrite(absPath: string, repoRoot: string): boolean {
   const base = path.basename(absPath)
   if (SKIP_FILES.has(base)) return false
   if (SKIP_PATH_SUFFIXES.some((suffix) => rel === suffix)) return false
+  if (SKIP_PATH_PREFIXES.some((prefix) => rel.startsWith(prefix))) return false
   const ext = path.extname(absPath)
   // The .well-known/ files have no extension; they're already in
   // SKIP_PATH_SUFFIXES so we won't reach here for them.
@@ -266,8 +285,12 @@ export function transform(content: string, cfg: ForkConfig): string {
   // Maestro YAML: muscat://something
   out = out.replaceAll("muscat://", `${cfg.scheme}://`)
 
-  // Deep-link host (appears as a quoted string literal in app.config.ts).
-  out = out.replaceAll('"muscat.example.com"', `"${cfg.deeplinkHost}"`)
+  // Deep-link host. Appears in two shapes in app.config.ts:
+  //   host: "muscat.example.com"                  → just the bare host
+  //   associatedDomains: ["applinks:muscat.example.com"]   → with applinks: prefix
+  // Replace the bare hostname (unquoted) so both forms get handled in one pass.
+  // muscat.example.com is unique enough not to collide with unrelated prose.
+  out = out.replaceAll("muscat.example.com", cfg.deeplinkHost)
 
   // app.config.ts name (`name: "Muscat"`) + permission strings + JSX headers.
   // Word-bounded `Muscat` matches all of: `name: "Muscat"`, `>Muscat<`,
