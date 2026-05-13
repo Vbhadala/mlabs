@@ -75,13 +75,38 @@ Items deferred from active phases. Each has a clear trigger condition for when t
 
 ---
 
-## 32. Drop legacy duplicate server modules in apps/web
+## 32. Drop legacy duplicate server modules in apps/web — **DEFERRED to follow-up PR**
 **Captured:** 2026-05-13, Phase 9 review (other session)
-**Why:** `apps/web/src/features/messages/server/*` and `apps/web/src/features/notifications/server/{create,queries,actions}.ts` still duplicate logic that now lives in `@mlabs/services`. They survive only because `apps/web/tests/{messages-server,notifications}.test.ts` target them directly with `vi.mock` setups.
-**Pros:** Removes the "which is canonical?" ambiguity. Shrinks apps/web surface area. Forces service-level tests, which are simpler than route-level mock chains.
-**Cons:** ~20-30 `vi.mock` entries to rewire. Risk of test-coverage gap if the route-level paths exercised something the service tests miss.
-**Trigger:** Bundled cleanup PR after the monorepo migration lands, OR a follow-up commit on `chore/monorepo-migration` before merge.
-**Approach:** Mirror what Phase 8 Part A did for admin actions — migrate the two test files to `packages/services/src/{messages,notifications}/__tests__/service.test.ts`. Once tests pass at the service layer, delete the duplicated `apps/web/src/features/.../server/` files. Run the full pipeline (typecheck/lint/test/bundle-scan) before commit.
+**Re-scoped:** 2026-05-13, Phase 11 prep (this session)
+**Status:** DEFERRED to its own focused PR after the monorepo migration merges. Reasoning at bottom.
+
+**Why:** `apps/web/src/features/messages/server/*` (4 files: conversations.ts, cursor.ts, errors.ts, messages.ts) and `apps/web/src/features/notifications/server/{create,queries,actions}.ts` duplicate logic that now lives in `@mlabs/services`. **The actual scope is wider than the original TODO described** — these aren't just duplicate test targets. They're consumed by pages, API routes, dev seeds, UI components, and cross-feature imports.
+
+**Discovered consumers (13 sites):**
+- `features/notifications/server/`: `mark-all-read/route.ts`, `(app)/notifications/page.tsx`, `notification-list.tsx`, `notification-item.tsx`, `_dev/notifications/_seed-action.ts`, `features/messages/server/messages.ts` (cross-feature), `features/notifications/index.ts` (barrel), `apps/web/tests/notifications.test.ts`
+- `features/messages/server/`: `messages/page.tsx`, `messages/[id]/page.tsx`, `_dev/messages/_seed-action.ts`, `features/messages/index.ts` (barrel), `features/notifications/types.ts` (cross-feature type), `apps/web/tests/messages-server.test.ts`
+
+**Function-name aliasing required.** The legacy modules and `@mlabs/services` expose the same logic under different names. Example: pages call `listForUser` (legacy) but the service exports `listConversations`. Each consumer rewrite is an import path change + sometimes a name change.
+
+**Pros:** Removes the "which is canonical?" ambiguity. Shrinks apps/web surface area. Forces service-level tests (already partially in place — `packages/services/src/notifications/__tests__/service.test.ts` exists at 163 lines).
+
+**Cons:** Bigger than originally framed. Realistic shape: **5-7 commits** —
+  1. Rewire notifications consumers (route, page, UI components, dev seed, cross-feature)
+  2. Rewire messages consumers (pages, dev seed, cross-feature)
+  3. Port `apps/web/tests/messages-server.test.ts` (556 lines) → `packages/services/src/messages/__tests__/service.test.ts` (currently empty)
+  4. Verify `packages/services/src/notifications/__tests__/service.test.ts` (already exists, 163 lines) covers what `apps/web/tests/notifications.test.ts` (249 lines) does; close gaps
+  5. Delete `apps/web/tests/{messages-server,notifications}.test.ts`
+  6. Delete `apps/web/src/features/{messages,notifications}/server/*` modules
+  7. Optional: cleanup commit for any imports/types that surface
+
+**Trigger:** Open its own focused PR after the monorepo migration PR merges. Branch off main; ~3-5 hours of focused work.
+
+**Why deferred from the migration PR:**
+- Migration PR is already 54 commits; reviewer cognitive load is already high
+- #32 scope is "rewire 13 consumers" not "delete 4 files" — that's feature-shaped work, not cleanup
+- The final post-#32 state is identical whether done now or in a follow-up PR; only thing that changes is whether the diff is in this PR or another
+- Phase 11 verification gates don't depend on #32 (the duplicate modules work; they're just aesthetically unfortunate)
+- Each consumer rewrite has independent risk (UI page imports breaking, types not matching, name aliasing edge cases); 5-7 commits in their own PR are more reviewable than mixed in with structural-migration commits
 
 ---
 
