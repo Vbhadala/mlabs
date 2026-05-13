@@ -2,16 +2,17 @@
 // the polling side; this page is a snapshot at request time, refreshed when
 // the user marks rows read (revalidatePath in the actions).
 
-import { requireUser } from "@/lib/auth/server"
-import { listInbox } from "@/features/notifications/server/queries"
+import { notifications } from "@mlabs/services"
+import { db } from "@/lib/db"
+import { getCallerContext } from "@/lib/auth/server"
 import { NotificationList } from "@/features/notifications"
 
 export const metadata = { title: "Notifications" }
 export const dynamic = "force-dynamic"
 
 export default async function NotificationsPage() {
-  const me = await requireUser()
-  const rows = await listInbox(me.id)
+  const ctx = await getCallerContext()
+  const { rows } = await notifications.listInbox(db, ctx)
 
   return (
     <div className="space-y-6">
