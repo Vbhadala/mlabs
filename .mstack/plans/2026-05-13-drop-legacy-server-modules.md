@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-13
 **Slug:** 2026-05-13-drop-legacy-server-modules
-**Status:** reviewed
+**Status:** implemented
 **Author:** Vinod
 **Source TODO:** #32 in `TODOS.md`
 
