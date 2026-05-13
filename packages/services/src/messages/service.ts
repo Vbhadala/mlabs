@@ -432,6 +432,42 @@ export async function sendMessage(
   }
 }
 
+/**
+ * Header lookup for the thread view: returns the OTHER participant (single
+ * row, LIMIT 1) without re-loading the inbox. Matches the legacy
+ * conversations.getOtherParticipant contract — for v2 group conversations,
+ * "first non-self participant" stays the documented semantic until the
+ * group surface gets its own design pass.
+ *
+ * No participant check here: this is read-only, returns null for non-existent
+ * conversations or conversations the caller isn't in (no enumeration). The
+ * thread page calls listMessages() first, which already throws messages.not_found
+ * via requireParticipant() — so by the time we reach this query the caller has
+ * been authorized.
+ */
+export async function getOtherParticipant(
+  db: Database,
+  ctx: CallerContext,
+  args: { conversationId: string },
+): Promise<{ otherUser: { id: string; name: string; image: string | null } | null }> {
+  const [row] = await db
+    .select({
+      id: user.id,
+      name: user.name,
+      image: user.image,
+    })
+    .from(conversation_participants)
+    .innerJoin(user, eq(user.id, conversation_participants.user_id))
+    .where(
+      and(
+        eq(conversation_participants.conversation_id, args.conversationId),
+        ne(conversation_participants.user_id, ctx.userId),
+      ),
+    )
+    .limit(1)
+  return { otherUser: row ?? null }
+}
+
 export interface MarkConversationReadArgs {
   conversationId: string
 }
