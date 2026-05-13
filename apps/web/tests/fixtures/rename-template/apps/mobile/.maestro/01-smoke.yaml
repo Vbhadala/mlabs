@@ -1,0 +1,4 @@
+appId: com.example.muscat
+---
+- openLink: "muscat://verify?token=abc"
+- assertVisible: "Welcome to Muscat"

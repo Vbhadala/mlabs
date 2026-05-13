@@ -1,7 +1,7 @@
 /**
  * check-contrast
  * --------------
- * Reads `src/config/design.ts`, computes the WCAG 2.1 contrast ratio for
+ * Reads `packages/config/src/design.ts`, computes the WCAG 2.1 contrast ratio for
  * every meaningful foreground/background token pair in BOTH the light and
  * dark themes, and exits non-zero if any pair fails the bar.
  *
@@ -208,7 +208,8 @@ interface Themes {
  */
 export async function loadDesignThemes(file?: string): Promise<Themes> {
   const target =
-    file ?? path.join(process.cwd(), "src", "config", "design.ts")
+    file ??
+    path.join(process.cwd(), "packages", "config", "src", "design.ts")
   // tsx handles TS on import. The relative path back from this file is
   // computed at runtime; we resolve to file:// so Windows works too.
   const mod = (await import(/* @vite-ignore */ "file://" + target)) as {
@@ -284,11 +285,11 @@ export async function main(): Promise<number> {
   try {
     themes = await loadDesignThemes()
   } catch (err) {
-    console.error(`${RED}✗ failed to load src/config/design.ts:${RESET} ${(err as Error).message}`)
+    console.error(`${RED}✗ failed to load packages/config/src/design.ts:${RESET} ${(err as Error).message}`)
     return 1
   }
 
-  console.log(`${BOLD}check-contrast${RESET} — WCAG AA against src/config/design.ts`)
+  console.log(`${BOLD}check-contrast${RESET} — WCAG AA against packages/config/src/design.ts`)
   const results = evaluatePairs(themes)
   const passed = printResults(results)
   console.log()
@@ -303,7 +304,7 @@ export async function main(): Promise<number> {
     `${RED}${BOLD}✗ ${failed.length} contrast pair(s) below WCAG AA${RESET}`,
   )
   console.log(
-    `${YELLOW}Fix the palette in src/config/design.ts (and mirror to src/app/globals.css) before committing.${RESET}`,
+    `${YELLOW}Fix the palette in packages/config/src/design.ts (and mirror to src/app/globals.css) before committing.${RESET}`,
   )
   return 1
 }

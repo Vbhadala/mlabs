@@ -13,16 +13,16 @@ pre-commit:
   jobs:
     - name: check-migrations
       run: bash .lefthook/pre-commit/check-migrations.sh
-    # WCAG-AA contrast guard. Reads src/config/design.ts and fails if any
-    # foreground/background pair falls below 4.5:1 (body) or 3:1 (large /
-    # interactive). Fast — runs every commit rather than as a glob-scoped
-    # hook because palette tweaks ripple through tokens that aren't always
-    # named in the diff.
+    # WCAG-AA contrast guard. Reads packages/config/src/design.ts and fails
+    # if any foreground/background pair falls below 4.5:1 (body) or 3:1
+    # (large / interactive). Fast — runs every commit rather than as a
+    # glob-scoped hook because palette tweaks ripple through tokens that
+    # aren't always named in the diff.
     - name: check-contrast
-      run: npm run --silent check-contrast
+      run: pnpm --silent check-contrast
     # Mobile Tailwind config drift guard. Only runs when the relevant inputs
-    # change. Forces the generated mobile/tailwind.config.js to stay in sync
-    # with src/config/design.ts.
+    # change. Forces the generated apps/mobile/tailwind.config.js to stay in sync
+    # with packages/config/src/design.ts.
     - name: check-mobile-tailwind
-      glob: "{src/config/design.ts,mobile/tailwind.config.js,scripts/gen-mobile-tailwind.ts}"
-      run: npm run gen:mobile-tw:check
+      glob: "{packages/config/src/design.ts,apps/mobile/tailwind.config.js,scripts/gen-mobile-tailwind.ts}"
+      run: pnpm gen:mobile-tw:check
