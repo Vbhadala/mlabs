@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
-      <form onSubmit={onSubmit} noValidate className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
             </p>
           ) : null}
         </div>
-        <Button type="submit" className="w-full" disabled={pending}>
+        <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? "Sending…" : "Send reset link"}
         </Button>
       </form>

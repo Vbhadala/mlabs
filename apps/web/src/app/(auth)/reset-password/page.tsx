@@ -61,7 +61,7 @@ function ResetPasswordForm() {
           Choose something at least 8 characters long.
         </p>
       </div>
-      <form onSubmit={onSubmit} noValidate className="space-y-4">
+      <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="password">New password</Label>
           <PasswordInput
@@ -83,7 +83,7 @@ function ResetPasswordForm() {
             {errors.form}
           </p>
         )}
-        <Button type="submit" className="w-full" disabled={pending}>
+        <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? "Updating…" : "Update password"}
         </Button>
       </form>
