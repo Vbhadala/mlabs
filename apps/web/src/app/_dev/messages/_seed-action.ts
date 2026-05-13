@@ -12,9 +12,8 @@ import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { eq } from "drizzle-orm"
 import { user as userTable } from "@mlabs/db/schema"
-import { requireUser } from "@/lib/auth/server"
-import { openOrCreate1to1 } from "@/features/messages/server/conversations"
-import { sendMessage } from "@/features/messages/server/messages"
+import { messages } from "@mlabs/services"
+import { getCallerContext } from "@/lib/auth/server"
 
 const PARTNER_EMAIL = "dev-partner@example.test"
 const PARTNER_PASSWORD = "dev-partner-pass-1234"
@@ -52,15 +51,13 @@ export async function seedPartner(): Promise<{
 }
 
 export async function seedDM(): Promise<void> {
-  const me = await requireUser()
+  const ctx = await getCallerContext()
   await seedPartner()
-  const { id } = await openOrCreate1to1({
-    meId: me.id,
+  const { id } = await messages.openOrCreate1to1(db, ctx, {
     otherEmail: PARTNER_EMAIL,
   })
-  await sendMessage({
+  await messages.sendMessage(db, ctx, {
     conversationId: id,
-    senderId: me.id,
     body: `Test message at ${new Date().toLocaleTimeString()}`,
   })
 }
