@@ -6,7 +6,7 @@ test("/notifications redirects unauthenticated visitors to /login", async ({
   await page.goto("/notifications")
   await expect(page).toHaveURL(/\/login$/)
   await expect(
-    page.getByRole("heading", { level: 1, name: "Sign in" }),
+    page.getByRole("heading", { level: 1, name: "Welcome back" }),
   ).toBeVisible()
 })
 
