@@ -237,6 +237,7 @@ const TEXT_EXTENSIONS = new Set([
   ".cjs",
   ".json",
   ".jsonc",
+  ".jsonl",
   ".md",
   ".mdx",
   ".yaml",
