@@ -1,10 +1,20 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import type { NextConfig } from "next"
+
+// Note: this is .mjs (not .ts). Next.js 16's TypeScript-config compiler
+// emits a .compiled.js with CommonJS semantics when the config file uses
+// `import.meta.url` / `__dirname` rebinds (which we need for
+// outputFileTracingRoot). With `"type": "module"` in apps/web/package.json,
+// the `.js` extension is treated as ESM by Node, and the CJS `exports = …`
+// in the compiled output throws `ReferenceError: exports is not defined in
+// ES module scope`. Authoring as `.mjs` sidesteps the entire pipeline —
+// Next loads it directly as ESM without a transpile step. Typing is
+// preserved via the JSDoc annotation below.
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const nextConfig: NextConfig = {
+/** @type {import("next").NextConfig} */
+const nextConfig = {
   // Self-contained runtime in .next/standalone/ so the deploy image doesn't
   // need the full workspace node_modules at runtime. Without this, the
   // Replit Reserved VM image easily exceeds the 8 GiB cap (workspace
