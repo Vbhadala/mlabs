@@ -188,6 +188,19 @@ const SKIP_FILES = new Set([
   ".fork-config.json",
 ])
 
+// Extensionless / non-standard config files we DO want to rewrite. Without
+// this list, shouldRewrite() returns false on `path.extname() === ""` and
+// drops the file silently. Hit on the BetFrnd fork (2026-05-13): the rename
+// missed `.replit`'s `pnpm --filter @mlabs/web` workflow args, the dev
+// server bound port 5000 with no server, and the Replit preview 500'd.
+// See docs/template/TEMPLATE.md recommendation #13.
+const KNOWN_FILES = new Set([
+  ".replit",        // Replit deployment / workflow / entrypoint refs
+  ".gitignore",     // sometimes references project paths
+  ".tool-versions", // asdf / mise
+  "Dockerfile",     // if a fork ever adds one
+])
+
 const SKIP_PATH_SUFFIXES = [
   // Generated mobile config — regenerated via pnpm gen:mobile-tw post-rename.
   path.join("apps", "mobile", "tailwind.config.js"),
@@ -251,6 +264,8 @@ function shouldRewrite(absPath: string, repoRoot: string): boolean {
   if (SKIP_FILES.has(base)) return false
   if (SKIP_PATH_SUFFIXES.some((suffix) => rel === suffix)) return false
   if (SKIP_PATH_PREFIXES.some((prefix) => rel.startsWith(prefix))) return false
+  // Allow named extensionless config files BEFORE the ext === "" guard.
+  if (KNOWN_FILES.has(base)) return true
   const ext = path.extname(absPath)
   // The .well-known/ files have no extension; they're already in
   // SKIP_PATH_SUFFIXES so we won't reach here for them.
@@ -297,6 +312,13 @@ export function transform(content: string, cfg: ForkConfig): string {
   // `"Muscat needs..."`. Anchor on \b so we don't accidentally touch
   // substrings inside larger identifiers.
   out = out.replace(/\bMuscat\b/g, cfg.displayName)
+
+  // Standalone "MLabs" in comments and template headers (e.g.
+  // `# Replit configuration for the MLabs template.`). Word-bounded so
+  // unrelated identifiers aren't touched. Forks that want to keep "MLabs"
+  // as an attribution credit should add the file to SKIP_PATH_SUFFIXES.
+  // See docs/template/TEMPLATE.md recommendation #14.
+  out = out.replace(/\bMLabs\b/g, cfg.displayName)
 
   // Root package.json: "name": "mlabs-template"
   out = out.replaceAll('"name": "mlabs-template"', `"name": "${cfg.slug}-template"`)
