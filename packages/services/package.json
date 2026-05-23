@@ -10,7 +10,8 @@
     "./notifications": "./src/notifications/index.ts",
     "./messages": "./src/messages/index.ts",
     "./users": "./src/users/index.ts",
-    "./admin": "./src/admin/index.ts"
+    "./admin": "./src/admin/index.ts",
+    "./billing": "./src/billing/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -22,6 +23,7 @@
     "@mlabs/db": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
+    "stripe": "^22.1.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
