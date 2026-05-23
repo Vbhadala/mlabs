@@ -72,3 +72,12 @@ The template includes these sections — keep all of them, even if a section is
   ask more questions.
 - **Don't propose new top-level deps without flagging it.** MLabs prefers boring
   deps; new ones need explicit user buy-in.
+- **Don't propose a session-level advisory lock through a pooler.**
+  `pg_try_advisory_lock` + PgBouncer (Neon, Supabase poolers, etc.) is a
+  documented anti-pattern: if the lock-holding process dies before its
+  `finally`-unlock runs, the pooler keeps the backend session alive and the
+  lock is held indefinitely, bricking subsequent deploys. Use
+  `pg_advisory_xact_lock` (transaction-scoped, auto-released by COMMIT /
+  ROLLBACK) or trust deploy serialization (Replit Reserved VM serializes
+  per app). See [ADR 0008](../../../docs/decisions/0008-codebase-conventions.md)
+  + [TEMPLATE.md #19](../../../docs/template/TEMPLATE.md).
