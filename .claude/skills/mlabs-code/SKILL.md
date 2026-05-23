@@ -173,6 +173,13 @@ Then:
 - [ ] **Task 2:** …
 ```
 
+## Gotchas to watch for
+
+- **After deleting an app-router `page.tsx`,** run `rm -rf apps/web/.next`
+  before `pnpm typecheck`. Stale `.next/types/validator.ts` files import the
+  now-missing `page.js` and `tsc` fails until `.next` is cleared. (Surfaced
+  on BetFrnd 2026-05-13; see [ADR 0008](../../../docs/decisions/0008-codebase-conventions.md).)
+
 ## Anti-patterns
 
 - **Don't run e2e/Playwright tests.** That's `/mlabs-qa`'s job.
