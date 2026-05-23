@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-23
 **Slug:** 2026-05-23-template-hardening
-**Status:** reviewed — see `.mstack/reviews/2026-05-23-template-hardening.md`
+**Status:** implemented — see `.mstack/implementations/2026-05-23-template-hardening/report.md`
 **Author:** Vbhadala (with Claude)
 
 ---
