@@ -128,7 +128,9 @@ vi.mock("drizzle-orm", () => {
 type Predicate = (r: Record<string, unknown>) => boolean
 
 function makeDb() {
-  const db = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- forward ref captured by transaction stub
+  const db: any = {}
+  Object.assign(db, {
     select: (cols: Record<string, unknown>) => ({
       from: (table: { _name: "users" | "sessions" }) => {
         const firstColumn = Object.values(cols)[0] as
@@ -226,16 +228,10 @@ function makeDb() {
         }
       },
     }),
-    batch: async (
-      builders: Array<{ then: (r: (v: unknown) => void) => void }>,
-    ) => {
-      const results: unknown[] = []
-      for (const b of builders) {
-        results.push(await new Promise<unknown>((resolve) => b.then(resolve)))
-      }
-      return results
+    transaction: async <T>(cb: (tx: typeof db) => Promise<T>): Promise<T> => {
+      return cb(db)
     },
-  }
+  })
   return db
 }
 

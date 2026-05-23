@@ -351,18 +351,14 @@ export async function sendMessage(
   const body = parsed.data
   const preview = body.length > 200 ? body.slice(0, 200) : body
 
-  // Neon's HTTP driver supports atomic batches over the same HTTP
-  // transaction endpoint. db.batch is on the production NeonHttpDatabase
-  // type — services that hand in a non-Neon db (e.g., a test mock) need to
-  // provide their own batch().
-  const batchableDb = db as Database & {
-    batch: (
-      queries: unknown[],
-    ) => Promise<[Array<MessageInsertReturn>, unknown, Array<SenderRow>]>
-  }
-
-  const [insertedRows, _updated, senderRows] = await batchableDb.batch([
-    db
+  // Atomic transaction across insert + conversation-timestamp update +
+  // sender lookup. Used to be db.batch() (neon-http only) but the
+  // neon-serverless WS Pool doesn't expose it; db.transaction() is the
+  // cross-driver equivalent with stronger semantics (real BEGIN/COMMIT
+  // vs neon-http's pseudo-atomic batched HTTP request). Tests pass a
+  // mock db whose .transaction(cb) invokes cb(db) directly.
+  const { row, sender } = await db.transaction(async (tx) => {
+    const insertedRows: Array<MessageInsertReturn> = await tx
       .insert(messagesTable)
       .values({
         conversation_id: args.conversationId,
@@ -375,25 +371,23 @@ export async function sendMessage(
         sender_id: messagesTable.sender_id,
         body: messagesTable.body,
         created_at: messagesTable.created_at,
-      }),
-    db
+      })
+    await tx
       .update(conversations)
       .set({
         last_message_at: sql`now()`,
         last_message_preview: preview,
       })
-      .where(eq(conversations.id, args.conversationId)),
-    db
+      .where(eq(conversations.id, args.conversationId))
+    const senderRows: Array<SenderRow> = await tx
       .select({ id: user.id, name: user.name })
       .from(user)
       .where(eq(user.id, ctx.userId))
-      .limit(1),
-  ])
-  void _updated
+      .limit(1)
+    return { row: insertedRows[0], sender: senderRows[0] }
+  })
 
-  const row = insertedRows[0]
   if (!row) throw ApiError.internal("messages.send_failed", "Send failed")
-  const sender = senderRows[0]
 
   // Fan out to the OTHER participants. Best-effort.
   try {
