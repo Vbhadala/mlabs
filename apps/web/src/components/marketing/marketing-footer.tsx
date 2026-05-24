@@ -2,21 +2,21 @@ import Link from "next/link"
 import { brand } from "@mlabs/config"
 
 const productLinks = [
-  { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#customers", label: "Customers" },
+  { href: "#why", label: "Why mstack" },
+  { href: "#mstack", label: "mstack flow" },
+  { href: "#packages", label: "Packages" },
+  { href: "#start", label: "Start a feature" },
   { href: "/design", label: "Design system" },
 ]
 
 const resourcesLinks = [
-  { href: "#", label: "Docs" },
-  { href: "#", label: "Changelog" },
-  { href: "#", label: "Status" },
-  { href: "#", label: "GitHub" },
+  { href: "/dev/states", label: "Component states" },
+  { href: "/dev/emails", label: "Email previews" },
+  { href: "/dev/notifications", label: "Notification previews" },
+  { href: "/admin", label: "Admin" },
 ]
 
 const companyLinks = [
-  { href: "#", label: "About" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ]

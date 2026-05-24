@@ -19,14 +19,17 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
         </Link>
 
         <nav className="hidden items-center gap-9 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground md:flex">
-          <Link href="#features" className="transition hover:text-foreground">
-            Features
+          <Link href="#why" className="transition hover:text-foreground">
+            Why
           </Link>
-          <Link href="#how-it-works" className="transition hover:text-foreground">
-            How it works
+          <Link href="#mstack" className="transition hover:text-foreground">
+            mstack
           </Link>
-          <Link href="#customers" className="transition hover:text-foreground">
-            Customers
+          <Link href="#packages" className="transition hover:text-foreground">
+            Packages
+          </Link>
+          <Link href="#start" className="transition hover:text-foreground">
+            Start
           </Link>
           <Link href="/design" className="transition hover:text-foreground">
             Design
@@ -35,20 +38,32 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
 
         <div className="flex items-center gap-3">
           {signedIn ? (
-            <Link href="/" className={cn(buttonVariants({ size: "sm" }))}>
+            <Link
+              href="/"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "h-11 px-6 text-[14px]"
+              )}
+            >
               Go to dashboard
             </Link>
           ) : (
             <>
               <Link
                 href="/login"
-                className="hidden text-[13px] font-medium text-muted-foreground hover:text-foreground sm:inline"
+                className={cn(
+                  buttonVariants({ size: "lg", variant: "outline" }),
+                  "hidden h-11 px-6 text-[14px] sm:inline-flex"
+                )}
               >
                 Sign in
               </Link>
               <Link
                 href="/signup"
-                className={cn(buttonVariants({ size: "sm" }))}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "h-11 px-6 text-[14px]"
+                )}
               >
                 Get started
               </Link>

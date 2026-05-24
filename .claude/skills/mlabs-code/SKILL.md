@@ -5,7 +5,7 @@ description: |
   /mlabs-review and executes the implementation plan autonomously, one atomic
   commit per task. Pauses on ambiguity (destructive migrations, brand/design
   layer changes, new deps, failing acceptance criteria). Writes a task ledger
-  and run log to .mstack/implementations/<slug>/ so a partial run can be
+  and run log to .mstack/code/<slug>/ so a partial run can be
   resumed by re-invoking on the same review.
   Use when the user says "implement the plan", "run the implementation",
   "code it", or invokes /mlabs-code. Errors clearly if no approved review
@@ -46,7 +46,7 @@ per task.
      stash.
 
 4. **Initialise the implementation directory.** Create
-   `.mstack/implementations/<review-slug>/` with:
+   `.mstack/code/<review-slug>/` with:
    - `tasks.md` — task ledger (template below)
    - `log.md` — empty, appended to as the run progresses
    - If the directory already exists with an in-progress `tasks.md`, treat this
@@ -130,7 +130,7 @@ These always cause a pause, regardless of what the review says:
 ## Final report
 
 When the loop ends (complete, aborted, or all-paused-then-stopped), write
-`.mstack/implementations/<slug>/report.md` with:
+`.mstack/code/<slug>/report.md` with:
 
 - **Status** — complete | partial | aborted
 - **Tasks** — table: `✓ done` / `⏸ paused` / `⊘ skipped`, each with commit SHA
@@ -173,6 +173,13 @@ Then:
 - [ ] **Task 2:** …
 ```
 
+## Gotchas to watch for
+
+- **After deleting an app-router `page.tsx`,** run `rm -rf apps/web/.next`
+  before `pnpm typecheck`. Stale `.next/types/validator.ts` files import the
+  now-missing `page.js` and `tsc` fails until `.next` is cleared. (Surfaced
+  on BetFrnd 2026-05-13; see [ADR 0008](../../../docs/decisions/0008-codebase-conventions.md).)
+
 ## Anti-patterns
 
 - **Don't run e2e/Playwright tests.** That's `/mlabs-qa`'s job.
@@ -186,5 +193,5 @@ Then:
 - **Don't push.** This skill creates commits locally only. Pushing is the
   user's call (or a future `/mlabs-ship`).
 - **Don't loop on a failing verification.** One retry max, then pause.
-- **Don't skip the resume check.** If `.mstack/implementations/<slug>/` exists
+- **Don't skip the resume check.** If `.mstack/code/<slug>/` exists
   with in-progress tasks, ask before clobbering or resuming.

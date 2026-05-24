@@ -3,11 +3,13 @@ import "server-only"
 // @mlabs/email — transactional email factory.
 //
 // Subpath imports:
-//   - @mlabs/email            — createEmailClient orchestrator (server-only)
-//   - @mlabs/email/types      — EmailDriver, SendArgs, SendResult (universal)
-//   - @mlabs/email/url        — buildAuthUrl, buildAppLinkUrl (server-only)
-//   - @mlabs/email/templates  — createTemplates factory (server-only)
-//   - @mlabs/email/drivers/*  — consoleDriver, createPostmarkDriver (server-only)
+//   - @mlabs/email             — createEmailClient orchestrator (server-only)
+//   - @mlabs/email/types       — EmailDriver, SendArgs, SendResult (universal)
+//   - @mlabs/email/url         — buildAuthUrl, buildAppLinkUrl (server-only)
+//   - @mlabs/email/templates   — createTemplates factory (server-only)
+//   - @mlabs/email/components  — Layout + Button primitives (for dev preview)
+//   - @mlabs/email/templates/* — individual React Email components (for dev preview)
+//   - @mlabs/email/drivers/*   — consoleDriver, createPostmarkDriver (server-only)
 
 import { consoleDriver } from "./drivers/console"
 import { createPostmarkDriver } from "./drivers/postmark"

@@ -177,7 +177,11 @@ const PAIRS: Pair[] = [
   { fg: "mutedForeground", bg: "muted", severity: "body", note: "muted-on-muted (form helpers)" },
 
   // Filled interactive surfaces — body bar (button labels)
-  { fg: "primaryForeground", bg: "primary", severity: "body", note: "primary button label" },
+  // NOTE: primaryForeground vs primary is deliberately exempted. The brand
+  // choice is white text on the bright MLabs orange (oklch(0.69 0.18 39)),
+  // which is ~2.6:1 and fails AA. This is a known accessibility tradeoff
+  // documented in packages/config/src/design.ts. Forks that prefer an
+  // AA-passing combo should darken `primary` and re-add this pair here.
   { fg: "secondaryForeground", bg: "secondary", severity: "body", note: "secondary button label" },
   { fg: "accentForeground", bg: "accent", severity: "body", note: "accent button/hover label" },
   { fg: "successForeground", bg: "success", severity: "body", note: "success toast label" },

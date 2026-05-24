@@ -2,7 +2,7 @@
   "name": "mlabs-template",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.26.1",
   "scripts": {
     "dev": "pnpm --filter @mlabs/web dev",
     "build": "turbo run build",
@@ -16,6 +16,8 @@
     "db:migrate": "pnpm --filter @mlabs/db migrate",
     "db:studio": "pnpm --filter @mlabs/db studio",
     "verify:deeplinks": "tsx scripts/verify-deeplinks.ts",
+    "email:smoke": "tsx scripts/email-smoke.ts",
+    "stripe:webhook-setup": "tsx scripts/stripe-webhook-setup.ts",
     "check-contrast": "tsx scripts/check-contrast.ts",
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",

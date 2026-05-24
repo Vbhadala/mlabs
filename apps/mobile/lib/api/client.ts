@@ -14,6 +14,7 @@
  */
 
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 import { ApiErrorResponse } from "@mlabs/validators";
 
 // ---------------------------------------------------------------------------
@@ -25,6 +26,57 @@ export const API_BASE_URL =
 
 const KEY_ACCESS = "auth.access";
 const KEY_REFRESH = "auth.refresh";
+
+// ---------------------------------------------------------------------------
+// Storage shim
+//
+// expo-secure-store's web build is `export default {}` — calling any of its
+// `*ValueWithKeyAsync` methods throws `TypeError: ... is not a function`.
+// The Expo web preview is the QA surface for entry/auth flow validation, so
+// we route web reads/writes through localStorage instead. Native (Expo Go,
+// EAS) continues to use the real SecureStore implementation. Tokens persist
+// across hard refreshes on web, matching native Keychain/Keystore semantics
+// closely enough for dev QA.
+//
+// See docs/template/TEMPLATE.md lesson #28 (mobile WebView intercept) +
+// gotcha 122 in .mstack/learnings.jsonl.
+
+const isWeb = Platform.OS === "web";
+
+const tokenStore = {
+  async get(key: string): Promise<string | null> {
+    if (isWeb) {
+      try {
+        return globalThis.localStorage?.getItem(key) ?? null;
+      } catch {
+        return null;
+      }
+    }
+    return SecureStore.getItemAsync(key);
+  },
+  async set(key: string, value: string): Promise<void> {
+    if (isWeb) {
+      try {
+        globalThis.localStorage?.setItem(key, value);
+      } catch {
+        /* private mode / quota — drop the write, app behaves as signed-out */
+      }
+      return;
+    }
+    await SecureStore.setItemAsync(key, value);
+  },
+  async remove(key: string): Promise<void> {
+    if (isWeb) {
+      try {
+        globalThis.localStorage?.removeItem(key);
+      } catch {
+        /* noop */
+      }
+      return;
+    }
+    await SecureStore.deleteItemAsync(key);
+  },
+};
 
 // ---------------------------------------------------------------------------
 // Error type
@@ -47,24 +99,24 @@ export class ApiError extends Error {
 // Token helpers (exported for auth feature use)
 
 export async function getAccessToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(KEY_ACCESS);
+  return tokenStore.get(KEY_ACCESS);
 }
 
 export async function getRefreshToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(KEY_REFRESH);
+  return tokenStore.get(KEY_REFRESH);
 }
 
 export async function setTokens(args: {
   access: string;
   refresh: string;
 }): Promise<void> {
-  await SecureStore.setItemAsync(KEY_ACCESS, args.access);
-  await SecureStore.setItemAsync(KEY_REFRESH, args.refresh);
+  await tokenStore.set(KEY_ACCESS, args.access);
+  await tokenStore.set(KEY_REFRESH, args.refresh);
 }
 
 export async function clearTokens(): Promise<void> {
-  await SecureStore.deleteItemAsync(KEY_ACCESS);
-  await SecureStore.deleteItemAsync(KEY_REFRESH);
+  await tokenStore.remove(KEY_ACCESS);
+  await tokenStore.remove(KEY_REFRESH);
 }
 
 // ---------------------------------------------------------------------------
@@ -95,7 +147,7 @@ async function performRefresh(): Promise<string | null> {
     expiresIn: number;
     tokenType: string;
   };
-  await SecureStore.setItemAsync(KEY_ACCESS, data.accessToken);
+  await tokenStore.set(KEY_ACCESS, data.accessToken);
   return data.accessToken;
 }
 

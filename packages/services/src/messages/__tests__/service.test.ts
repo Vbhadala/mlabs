@@ -253,15 +253,13 @@ const mockDb = {
     }
     return builder
   },
-  // Batch runs each builder in order, returns array of results. Each
-  // entry is the resolved value from awaiting that builder. Matches Neon
-  // HTTP's batch contract closely enough for the test surface.
-  batch: async (builders: Array<{ then: (r: (v: unknown) => void) => void }>) => {
-    const results: unknown[] = []
-    for (const b of builders) {
-      results.push(await new Promise<unknown>((resolve) => b.then(resolve)))
-    }
-    return results
+  // Transaction stub — invokes the callback with the same mock db so the
+  // test surface stays one-layer (no real BEGIN/COMMIT semantics). Mirrors
+  // the production neon-serverless drizzle behaviour where `tx` is a typed
+  // Database proxy. mockDb is referenced lazily inside the closure so the
+  // forward ref is fine at runtime.
+  transaction: async <T>(cb: (tx: Database) => Promise<T>): Promise<T> => {
+    return cb(mockDb as unknown as Database)
   },
 } as unknown as Database
 

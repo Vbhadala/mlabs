@@ -97,11 +97,14 @@ pnpm rename \
 
 Rewrites every `@mlabs/<pkg>` package name, workspace dependency,
 import statement, and path alias to your scope; replaces the
-`"Muscat"` display name, `"muscat"` slug + scheme, deep-link host,
-and `"muscat-mobile"` JWT issuer; writes `.fork-config.json` for
-idempotent re-runs. `.well-known/` placeholders and bundle IDs stay
-manual on purpose — they need real Apple Team IDs and Google Play
-SHA-256 fingerprints, which the script can't guess.
+`"MLabs Template"` display-name phrase, `"mlabs"` slug + scheme,
+deep-link host, and `"mlabs-mobile"` JWT issuer; writes
+`.fork-config.json` for idempotent re-runs. Bare references to
+"MLabs" in agency-attribution prose (HANDOVER, DESIGN, AGENTS,
+`.replit`) stay intact by design. `.well-known/` placeholders
+and bundle IDs stay manual on purpose — they need real Apple
+Team IDs and Google Play SHA-256 fingerprints, which the script
+can't guess.
 
 After the rename:
 
@@ -121,7 +124,8 @@ in [HANDOVER.md.template](./HANDOVER.md.template).
 ## Learn more
 
 - [docs/forking-guide.md](./docs/forking-guide.md) — three tiers of change (safe / extend / don't touch)
+- [docs/template/TEMPLATE.md](./docs/template/TEMPLATE.md) — Replit import runbook + 29 lessons from the first fork (BetFrnd, 2026-05). Read before your first Replit `Publish`.
 - [docs/api-versioning.md](./docs/api-versioning.md) — `/api/v1/*` evolution policy
-- [docs/decisions/](./docs/decisions/) — architecture decisions (start at [0006](./docs/decisions/0006-monorepo.md) and [0007](./docs/decisions/0007-service-layer.md))
+- [docs/decisions/](./docs/decisions/) — architecture decisions (start at [0006](./docs/decisions/0006-monorepo.md), [0007](./docs/decisions/0007-service-layer.md), [0008](./docs/decisions/0008-codebase-conventions.md))
 - [docs/generated-artifacts.md](./docs/generated-artifacts.md) — what's generated and when to regenerate
 - [HANDOVER.md.template](./HANDOVER.md.template) — per-client handover

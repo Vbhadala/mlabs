@@ -1,4 +1,4 @@
-appId: com.example.muscat
+appId: com.example.mlabs
 ---
-- openLink: "muscat://verify?token=abc"
-- assertVisible: "Welcome to Muscat"
+- openLink: "mlabs://verify?token=abc"
+- assertVisible: "Welcome to MLabs Template"

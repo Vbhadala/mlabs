@@ -19,7 +19,7 @@ export function Hero() {
       <div className="relative mx-auto max-w-5xl px-6 pb-20 pt-20 text-center">
         <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-[12px] font-medium text-primary ring-1 ring-primary/25">
           <span className="inline-block size-1.5 rounded-full bg-primary" />
-          Now in private beta · join the waitlist
+          Internal · the MLabs way to build MVP features
         </div>
 
         <h1 className="text-balance text-5xl font-extrabold leading-[0.98] tracking-tighter sm:text-6xl md:text-7xl">
@@ -27,38 +27,85 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-7 max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
-          The AI workspace that learns your team&apos;s context — from the
-          docs you&apos;ve written to the conversations you have. Ask once,
-          get the answer your team would have given.
+          <span className="font-semibold text-foreground">mstack</span> is
+          four Claude Code skills —{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+            /mlabs-plan
+          </code>{" "}
+          →{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+            /mlabs-review
+          </code>{" "}
+          →{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+            /mlabs-code
+          </code>{" "}
+          →{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+            /mlabs-qa
+          </code>{" "}
+          — that take a feature from idea to shipped code without
+          vibe-coding it. They run against this template, so every MVP we
+          ship looks the same way.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/signup"
+            href="#why"
             className={cn(buttonVariants({ size: "lg" }), "h-11 px-6 text-[14px]")}
           >
-            Get started — it&apos;s free
+            Why mstack
           </Link>
           <Link
-            href="#how-it-works"
+            href="#mstack"
             className={cn(
               buttonVariants({ size: "lg", variant: "outline" }),
               "h-11 px-6 text-[14px]"
             )}
           >
-            See it in action
+            See the flow
           </Link>
         </div>
 
-        <div className="mt-12 flex items-center justify-center gap-6 text-[12px] text-muted-foreground">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12px] text-muted-foreground">
           <span className="inline-flex items-center gap-2">
-            <CheckIcon className="text-primary" /> No credit card
+            <CheckIcon className="text-primary" /> Plan before code
           </span>
-          <span className="hidden items-center gap-2 sm:inline-flex">
-            <CheckIcon className="text-primary" /> SOC 2 in progress
+          <span className="inline-flex items-center gap-2">
+            <CheckIcon className="text-primary" /> Review before merge
           </span>
-          <span className="hidden items-center gap-2 sm:inline-flex">
-            <CheckIcon className="text-primary" /> Your data stays yours
+          <span className="inline-flex items-center gap-2">
+            <CheckIcon className="text-primary" /> One commit per task
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <CheckIcon className="text-primary" /> QA before ship
+          </span>
+        </div>
+
+        <div className="mx-auto mt-6 inline-flex max-w-md items-center justify-center gap-3 rounded-xl border border-border bg-muted/30 px-5 py-3 text-[13px] text-foreground/80">
+          <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <rect width="14" height="20" x="5" y="2" rx="2" />
+              <path d="M12 18h.01" />
+            </svg>
+          </span>
+          <span>
+            <span className="font-semibold text-foreground">Web + mobile out of the box.</span>{" "}
+            Next.js (
+            <code className="font-mono text-[12px]">apps/web</code>) and
+            Expo (
+            <code className="font-mono text-[12px]">apps/mobile</code>)
+            share auth, validators, and config.
           </span>
         </div>
       </div>

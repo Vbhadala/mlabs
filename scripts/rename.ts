@@ -2,13 +2,24 @@
 /**
  * rename.ts
  *
- * One-shot rebrand for a fork. Rewrites:
+ * One-shot rebrand for a fork. The template uses a SINGLE brand placeholder
+ * identifier — "mlabs" (lowercase) for code-level tokens and "MLabs Template"
+ * for the user-visible product name. Rewrites:
  *   - @mlabs/* workspace package names + every import / dep / path-alias
- *   - "Muscat" display name, "muscat" slug + scheme, deep-link host,
- *     "muscat-mobile" slug+JWT issuer, "mlabs-template" root pkg name
+ *   - "MLabs Template" phrase → displayName (handles README heading,
+ *     app.config.ts name, DESIGN.md attribution)
+ *   - "mlabs-mobile" slug + JWT issuer
+ *   - scheme: "mlabs" + mlabs:// deep-link URIs
+ *   - mlabs.example.com deep-link host
+ *   - "mlabs-template" root pkg name
  *
- * Does NOT rewrite bundle IDs, .well-known/ placeholders, or the pnpm
- * lockfile — those are listed in FORK_CHECKLIST.md.
+ * Does NOT rewrite:
+ *   - Bundle IDs (com.example.mlabs) — manual per FORK_CHECKLIST.md
+ *   - .well-known/ placeholders — fork fills via manual substitution
+ *   - pnpm lockfile — regenerated post-rename
+ *   - Bare "MLabs" or bare lowercase "mlabs" outside the anchored contexts
+ *     above — preserved as agency attribution in HANDOVER.md.template,
+ *     DESIGN.md, AGENTS.md, tooling/eslint-config/**, .replit
  *
  * Usage:
  *   pnpm rename \
@@ -188,6 +199,19 @@ const SKIP_FILES = new Set([
   ".fork-config.json",
 ])
 
+// Extensionless / non-standard config files we DO want to rewrite. Without
+// this list, shouldRewrite() returns false on `path.extname() === ""` and
+// drops the file silently. Hit on the BetFrnd fork (2026-05-13): the rename
+// missed `.replit`'s `pnpm --filter @mlabs/web` workflow args, the dev
+// server bound port 5000 with no server, and the Replit preview 500'd.
+// See docs/template/TEMPLATE.md recommendation #13.
+const KNOWN_FILES = new Set([
+  ".replit",        // Replit deployment / workflow / entrypoint refs
+  ".gitignore",     // sometimes references project paths
+  ".tool-versions", // asdf / mise
+  "Dockerfile",     // if a fork ever adds one
+])
+
 const SKIP_PATH_SUFFIXES = [
   // Generated mobile config — regenerated via pnpm gen:mobile-tw post-rename.
   path.join("apps", "mobile", "tailwind.config.js"),
@@ -195,14 +219,14 @@ const SKIP_PATH_SUFFIXES = [
   path.join("apps", "web", "public", ".well-known", "apple-app-site-association"),
   path.join("apps", "web", "public", ".well-known", "assetlinks.json"),
   // The rename script itself — its docstring + info() messages reference
-  // literal "@mlabs", "Muscat", "muscat" as the canonical source patterns.
-  // Letting the script rewrite itself produces self-contradictory output
-  // (e.g., "Target: @mlabs → @acme | ACME App → ACME App") and obscures
-  // future maintenance of the script.
+  // literal "@mlabs", "mlabs", "MLabs Template" as the canonical source
+  // patterns. Letting the script rewrite itself produces self-contradictory
+  // output and obscures future maintenance of the script.
   path.join("scripts", "rename.ts"),
   // The rename script's test file — test cases contain literal @mlabs/...
-  // and Muscat strings as transform() inputs. Rewriting them makes the
-  // assertions tautologies (input == output) and breaks the dry-run test.
+  // and "MLabs Template" / "mlabs-mobile" strings as transform() inputs.
+  // Rewriting them makes the assertions tautologies (input == output) and
+  // breaks the dry-run test.
   path.join("apps", "web", "tests", "rename.test.ts"),
 ]
 
@@ -212,6 +236,10 @@ const SKIP_PATH_PREFIXES = [
   // and runs the script against it. If we rewrite the fixture in-place
   // during a fork, the test loses its reference state.
   path.join("apps", "web", "tests", "fixtures") + path.sep,
+  // mstack planning history — .mstack/ stores plans, reviews, code logs,
+  // qa reports, and learnings. These are time-frozen artifacts that
+  // document the template's evolution. Rewriting them rewrites history.
+  ".mstack" + path.sep,
 ]
 
 // File extensions whose contents we rewrite. Other files are left untouched.
@@ -224,6 +252,7 @@ const TEXT_EXTENSIONS = new Set([
   ".cjs",
   ".json",
   ".jsonc",
+  ".jsonl",
   ".md",
   ".mdx",
   ".yaml",
@@ -251,6 +280,8 @@ function shouldRewrite(absPath: string, repoRoot: string): boolean {
   if (SKIP_FILES.has(base)) return false
   if (SKIP_PATH_SUFFIXES.some((suffix) => rel === suffix)) return false
   if (SKIP_PATH_PREFIXES.some((prefix) => rel.startsWith(prefix))) return false
+  // Allow named extensionless config files BEFORE the ext === "" guard.
+  if (KNOWN_FILES.has(base)) return true
   const ext = path.extname(absPath)
   // The .well-known/ files have no extension; they're already in
   // SKIP_PATH_SUFFIXES so we won't reach here for them.
@@ -271,40 +302,45 @@ interface FileEdit {
 export function transform(content: string, cfg: ForkConfig): string {
   let out = content
 
-  // Group B — brand strings (do these first; none collide with @mlabs/).
-  // Order within the group matters: longer-prefix matches first.
+  // Group B — brand strings. Run before Group A namespace handling.
+  // Order within the group matters: the "MLabs Template" PHRASE matcher
+  // runs first so the displayName replaces the entire phrase cleanly
+  // (no lingering "Template" word). All other matchers are anchored to
+  // unique contexts so bare "mlabs" / "MLabs" elsewhere is preserved
+  // as agency attribution (HANDOVER.md.template, DESIGN.md, AGENTS.md,
+  // tooling/eslint-config/**, .replit).
+
+  // app.config.ts `name: "MLabs Template"`, DESIGN.md attribution, README
+  // headings. Phrase match so we cleanly swap to displayName alone.
+  out = out.replaceAll("MLabs Template", cfg.displayName)
 
   // packages/auth/src/jwt.ts JWT issuer + apps/mobile/app.config.ts slug.
-  // Match the literal "muscat-mobile" string (with quotes) so we never
-  // touch a bare `muscat-mobile` in unrelated prose.
-  out = out.replaceAll('"muscat-mobile"', `"${cfg.slug}-mobile"`)
+  // Bare-token match (no quote anchoring) so we catch both `"mlabs-mobile"`
+  // (TypeScript source) and `` `mlabs-mobile` `` (CHANGELOG.md backtick
+  // form). The literal `mlabs-mobile` is unique enough across the
+  // codebase that there's no realistic collision risk.
+  out = out.replaceAll("mlabs-mobile", `${cfg.slug}-mobile`)
 
   // app.config.ts scheme + Maestro deep-link URIs.
-  // For scheme:, only match `scheme: "muscat"` exactly.
-  out = out.replaceAll('scheme: "muscat"', `scheme: "${cfg.scheme}"`)
-  // Maestro YAML: muscat://something
-  out = out.replaceAll("muscat://", `${cfg.scheme}://`)
+  // For scheme:, only match `scheme: "mlabs"` exactly.
+  out = out.replaceAll('scheme: "mlabs"', `scheme: "${cfg.scheme}"`)
+  // Maestro YAML: mlabs://something
+  out = out.replaceAll("mlabs://", `${cfg.scheme}://`)
 
   // Deep-link host. Appears in two shapes in app.config.ts:
-  //   host: "muscat.example.com"                  → just the bare host
-  //   associatedDomains: ["applinks:muscat.example.com"]   → with applinks: prefix
+  //   host: "mlabs.example.com"                  → just the bare host
+  //   associatedDomains: ["applinks:mlabs.example.com"]   → with applinks: prefix
   // Replace the bare hostname (unquoted) so both forms get handled in one pass.
-  // muscat.example.com is unique enough not to collide with unrelated prose.
-  out = out.replaceAll("muscat.example.com", cfg.deeplinkHost)
-
-  // app.config.ts name (`name: "Muscat"`) + permission strings + JSX headers.
-  // Word-bounded `Muscat` matches all of: `name: "Muscat"`, `>Muscat<`,
-  // `"Muscat needs..."`. Anchor on \b so we don't accidentally touch
-  // substrings inside larger identifiers.
-  out = out.replace(/\bMuscat\b/g, cfg.displayName)
+  // mlabs.example.com is unique enough not to collide with unrelated prose.
+  out = out.replaceAll("mlabs.example.com", cfg.deeplinkHost)
 
   // Root package.json: "name": "mlabs-template"
   out = out.replaceAll('"name": "mlabs-template"', `"name": "${cfg.slug}-template"`)
 
-  // CHANGELOG.md historical mention: "mlabs/muscat template"
-  // Use the namespace without the leading @.
+  // CHANGELOG.md historical mention: "mlabs/mlabs template". Use the
+  // namespace without the leading @.
   const nsBare = cfg.namespace.replace(/^@/, "")
-  out = out.replaceAll("mlabs/muscat template", `${nsBare}/${cfg.slug} template`)
+  out = out.replaceAll("mlabs/mlabs template", `${nsBare}/${cfg.slug} template`)
 
   // Group A — @mlabs/<pkg>(/<subpath>) → @<namespace>/<pkg>(/<subpath>)
   // Anchored regex: requires the slash after @mlabs, so @mlabs-foo etc.
@@ -316,6 +352,14 @@ export function transform(content: string, cfg: ForkConfig): string {
   out = out.replace(namespaceRe, (_match, pkg, subpath) => {
     return `${cfg.namespace}/${pkg}${subpath ?? ""}`
   })
+
+  // NOTE: bare `MLabs` (capital M, word-bounded) and bare lowercase `mlabs`
+  // outside the anchored contexts above are INTENTIONALLY NOT REWRITTEN.
+  // They preserve agency attribution in HANDOVER.md.template, DESIGN.md,
+  // AGENTS.md, tooling/eslint-config/**, .replit — places where "MLabs"
+  // refers to the agency that delivered the template, not the template's
+  // product name. The "MLabs Template" phrase matcher above covers the
+  // template-self-naming cases.
 
   return out
 }
@@ -405,7 +449,7 @@ function main() {
     })
   }
 
-  info(`Target: @mlabs → ${cfg.namespace} | Muscat → "${cfg.displayName}" | muscat → ${cfg.slug}`)
+  info(`Target: @mlabs → ${cfg.namespace} | MLabs Template → "${cfg.displayName}" | mlabs → ${cfg.slug}`)
   if (args.dryRun) warn("Dry run — no files will be written")
 
   const { filesChanged, edits } = runRename({

@@ -8,6 +8,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 export interface PasswordInputProps
   extends Omit<TextInputProps, "style" | "secureTextEntry"> {
@@ -57,9 +58,11 @@ export const PasswordInput = React.forwardRef<TextInput, PasswordInputProps>(
             className="absolute inset-y-0 right-0 w-12 items-center justify-center"
             hitSlop={8}
           >
-            <Text className="text-sm font-semibold text-mutedForeground">
-              {visible ? "Hide" : "Show"}
-            </Text>
+            <Feather
+              name={visible ? "eye-off" : "eye"}
+              size={20}
+              color="#737373"
+            />
           </Pressable>
         </View>
         {error ? (

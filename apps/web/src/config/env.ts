@@ -34,6 +34,21 @@ export const env = createEnv({
     // installed Expo app directly. When unset (web-only fork), buildAppLinkUrl
     // falls back to BETTER_AUTH_URL so the email opens the browser.
     EXPO_SCHEME: z.string().optional(),
+
+    // Replit dev domain (Replit-injected). Set automatically by Replit's
+    // workspace runtime to the public preview host (e.g. `xxx.replit.dev`).
+    // Used as a fallback when BETTER_AUTH_URL is unset (so cookies sign under
+    // the right baseUrl) and to populate trustedOrigins in the CORS
+    // middleware for cross-port Expo web dev. Unset outside Replit.
+    REPLIT_DEV_DOMAIN: z.string().optional(),
+
+    // Stripe — added in template hardening (2026-05-23). The template ships
+    // the generic webhook idempotency + dispatcher; forks add their event
+    // handlers + provision the webhook endpoint via `pnpm stripe:webhook-setup`
+    // (once that script lands). `.optional()` so the template still boots
+    // without Stripe configured.
+    STRIPE_SECRET_KEY: z.string().optional(),
+    STRIPE_WEBHOOK_SECRET: z.string().optional(),
   },
   client: {
     // Public env vars must be prefixed NEXT_PUBLIC_
@@ -49,6 +64,9 @@ export const env = createEnv({
     REPLIT_OBJECT_STORAGE_BUCKET_ID: process.env.REPLIT_OBJECT_STORAGE_BUCKET_ID,
     INITIAL_ADMIN_EMAIL: process.env.INITIAL_ADMIN_EMAIL,
     EXPO_SCHEME: process.env.EXPO_SCHEME,
+    REPLIT_DEV_DOMAIN: process.env.REPLIT_DEV_DOMAIN,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   },
   // During first-deploy / fork, secrets may not be set yet. Skip validation
   // unless explicitly requested. Set SKIP_ENV_VALIDATION=1 for build steps

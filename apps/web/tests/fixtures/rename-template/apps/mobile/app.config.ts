@@ -2,21 +2,21 @@ import type { ExpoConfig, ConfigContext } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "Muscat",
-  slug: "muscat-mobile",
-  scheme: "muscat",
+  name: "MLabs Template",
+  slug: "mlabs-mobile",
+  scheme: "mlabs",
   ios: {
-    bundleIdentifier: "com.example.muscat",
-    associatedDomains: ["applinks:muscat.example.com"],
+    bundleIdentifier: "com.example.mlabs",
+    associatedDomains: ["applinks:mlabs.example.com"],
   },
   android: {
-    package: "com.example.muscat",
-    intentFilters: [{ data: [{ scheme: "https", host: "muscat.example.com" }] }],
+    package: "com.example.mlabs",
+    intentFilters: [{ data: [{ scheme: "https", host: "mlabs.example.com" }] }],
   },
   plugins: [
     [
       "expo-image-picker",
-      { photosPermission: "Muscat needs access to your photos." },
+      { photosPermission: "MLabs Template needs access to your photos." },
     ],
   ],
 });

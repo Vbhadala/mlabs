@@ -131,14 +131,17 @@ export async function banUser(
     client: auditClient(ctx),
   })
 
-  // Atomic batch — either everything lands or nothing does.
-  await db.batch([
-    db
+  // Atomic transaction — either everything lands or nothing does. Used to
+  // be db.batch() but the neon-serverless WS Pool driver doesn't expose it;
+  // db.transaction() is the cross-driver equivalent with stronger semantics
+  // (real BEGIN/COMMIT vs neon-http's pseudo-atomic batched HTTP request).
+  await db.transaction(async (tx) => {
+    await tx
       .update(userTable)
       .set({ banned_at: sql`now()`, banned_reason: reason ?? null })
-      .where(eq(userTable.id, targetId)),
-    db.delete(sessionTable).where(eq(sessionTable.userId, targetId)),
-  ])
+      .where(eq(userTable.id, targetId))
+    await tx.delete(sessionTable).where(eq(sessionTable.userId, targetId))
+  })
 
   // Trailing audit for the session revocations, scoped under the same actor
   // so the timeline reads cleanly on user-detail.

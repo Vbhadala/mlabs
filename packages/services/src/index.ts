@@ -16,8 +16,12 @@
 //   - @mlabs/services/admin          — changeRole, banUser, unbanUser,
 //                                       preparePasswordReset,
 //                                       sendAdminNotification
+//   - @mlabs/services/billing        — getStripe, handleStripeEvent
+//                                       (generic Stripe primitives; forks
+//                                       add handlers)
 
 export * as notifications from "./notifications"
 export * as messages from "./messages"
 export * as users from "./users"
 export * as admin from "./admin"
+export * as billing from "./billing"

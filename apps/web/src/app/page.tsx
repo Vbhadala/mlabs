@@ -7,6 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { ProductMock } from "@/components/marketing/product-mock"
 import { Testimonial } from "@/components/marketing/testimonial"
+import { WhyMstack } from "@/components/marketing/why-mstack"
 
 export default async function Home() {
   const session = await getSession()
@@ -17,6 +18,7 @@ export default async function Home() {
       <MarketingNav signedIn={signedIn} />
       <main className="flex flex-1 flex-col">
         <Hero />
+        <WhyMstack />
         <ProductMock />
         <LogoStrip />
         <FeatureGrid />

@@ -13,14 +13,33 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
+  // Runs once before any project. Creates the e2e test user and writes a
+  // signed BetterAuth cookie to STORAGE_STATE_PATH; the `authed` project
+  // loads that storageState. See apps/web/e2e/global-setup.ts.
+  globalSetup: "./e2e/global-setup.ts",
   use: {
     baseURL: "http://127.0.0.1:3000",
     trace: "on-first-retry",
   },
   projects: [
     {
+      // Default project — unauthed specs (home, signup, login flows that
+      // need a signed-out starting state). Explicitly ignores
+      // *.authed.spec.ts so the authed-only specs don't run here without
+      // storageState.
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: ["**/*.authed.spec.ts"],
+    },
+    {
+      // Authed project — loads the signed cookie minted in globalSetup.
+      // Any spec named *.authed.spec.ts starts already logged in.
+      name: "authed",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/user.json",
+      },
+      testMatch: "**/*.authed.spec.ts",
     },
   ],
   webServer: {

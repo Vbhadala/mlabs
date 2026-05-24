@@ -12,35 +12,54 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 ## The workflow
 
 ```
-/mlabs-plan ──→ .mstack/plans/<slug>.md
+/mlabs-research ──→ .mstack/research/<slug>.md      (optional, before /mlabs-plan)
        │
        ▼
-/mlabs-review ──→ .mstack/reviews/<slug>.md  (approved + implementation plan)
+/mlabs-plan ──────→ .mstack/plans/<slug>.md
        │
        ▼
-/mlabs-code ──→ .mstack/implementations/<slug>/  (code + commits + report)
+/mlabs-review ────→ .mstack/reviews/<slug>.md       (approved + implementation plan
+       │                                             + UI-Significant: yes|no flag)
+       │
+       │ if review's UI-Significant: yes
+       ▼
+/mlabs-mockup ────→ .mstack/mockups/<feature>/      (optional design exploration)
+       │            (winner referenced in FEEDBACK.md)
        │
        ▼
-/mlabs-qa ──→ .mstack/qa/<run>/  (scenario-driven test report)
+/mlabs-code ──────→ .mstack/code/<slug>/            (code + commits + report)
+       │
+       ▼
+/mlabs-qa ────────→ .mstack/qa/<run>/               (scenario-driven test report)
+       │
+       │ (escalate paused / un-RCA'd issues)
+       ▼
+/mlabs-debug ─────→ .mstack/debug/<slug>/  ──→ /mlabs-code  (bug fix, RCA-first)
+
+/mlabs-ux-audit ──→ .mstack/ux-audits/<run>/        (post-ship visual + UX polish)
 ```
 
-`/mlabs-mockup` and `/mlabs-design-review` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates.
+**Only `/mlabs-code` edits source code.** Every other skill writes artifacts to `.mstack/` and hands off via the chain.
+
+`/mlabs-auto` chains plan → review → (mockup if UI-significant) → code with confirmation gates. `/mlabs-research`, `/mlabs-debug`, and `/mlabs-ux-audit` are user-triggered by design.
 
 ## When to use which skill
 
 | Skill | Use when | Edits code? |
 |---|---|---|
+| `/mlabs-research` | Tech choice / stack research with sources + second opinion | No |
 | `/mlabs-plan` | Designing a new feature; producing a plan doc | No |
 | `/mlabs-review` | Reviewing a plan + producing the task list `/mlabs-code` will execute | No |
 | `/mlabs-code` | Executing an approved review autonomously | **Yes (primary)** |
+| `/mlabs-debug` | A specific bug is reported → reproduce → RCA → fix proposal | No (hands to `/mlabs-code`) |
 | `/mlabs-qa` | Scenario-driven QA testing → report → approve → fix | Only post-approval |
-| `/mlabs-mockup` | Generating UI design variants for exploration | No (HTML in `.mstack/mockups/`) |
-| `/mlabs-design-review` | Visual UX audit of live screens → report → approve → fix | Only post-approval |
-| `/mlabs-auto` | Chaining plan → review → code in one pass | Delegates |
+| `/mlabs-mockup` | Generating UI design variants — standalone, or in-chain via `--from-review` when review is UI-significant | No (HTML in `.mstack/mockups/`) |
+| `/mlabs-ux-audit` | Post-ship UX audit (visual + copy + flow + a11y) → report → approve → fix | Only post-approval |
+| `/mlabs-auto` | Chaining plan → review → (optional mockup) → code in one pass | Delegates |
 
 ## Hard rules
 
-- **`/mlabs-code` is the only skill that edits code as its primary purpose.** `/mlabs-qa` and `/mlabs-design-review` edit code only after an explicit user approval gate on a written report.
+- **`/mlabs-code` is the only skill that edits code as its primary purpose.** `/mlabs-qa` and `/mlabs-ux-audit` edit code only after an explicit user approval gate on a written report.
 - **Plan → review → code is a strict pipeline.** `/mlabs-review` requires a plan doc; `/mlabs-code` requires an `approved` review.
 - **One commit per task** in `/mlabs-code`. Never `--no-verify`. Never amend across tasks.
 - **Pause on ambiguity.** Destructive migrations, edits to `src/config/brand.ts` / `src/config/design.ts` (rebrand layer), new top-level deps, CI config changes, env var rename/remove → always pause and ask.

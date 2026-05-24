@@ -24,10 +24,17 @@ allowed-tools:
 
 # mlabs-auto
 
-Chain: `/mlabs-plan` → gate → `/mlabs-review` → gate → `/mlabs-code`.
+Chain: `/mlabs-plan` → gate A → `/mlabs-review` → gate B → *(optional gate C
+when UI-significant)* `/mlabs-mockup` → `/mlabs-code`.
 
 This skill orchestrates — it does not duplicate logic. Each underlying skill
 runs as if invoked directly, with its full behaviour and artifact output.
+
+**Not included by design:** `/mlabs-research` and `/mlabs-debug` are user-
+triggered, never chained from `/mlabs-auto`. Research is an optional upstream
+step (run before `/mlabs-auto` if the feature needs a tech-choice decision);
+debug is a separate reactive flow that feeds `/mlabs-code` directly.
+`/mlabs-ux-audit` is a post-ship polish step, never auto-chained.
 
 ## Pre-flight
 
@@ -68,8 +75,24 @@ normal — don't try to suppress them.
 **Gate B** — show the user the review path and a summary (N tasks, any
 deferred concerns). Ask:
 
-- **Continue** — proceed to code
+- **Continue** — proceed to Gate C (if UI-significant) or Step 3
 - **Stop** — exit cleanly; the review stays for manual `/mlabs-code` later
+
+## Step 2b — Optional mockup gate (UI-significant only)
+
+Read the `UI-Significant` field from the review doc's frontmatter.
+
+- If `UI-Significant: no` → skip silently, proceed to Step 3.
+- If `UI-Significant: yes` → fire **Gate C**:
+
+**Gate C** — show the user the count of UI files touched and which routes are
+affected. Ask:
+
+- **Mockup first** — invoke `/mlabs-mockup --from-review <slug>`; when mockup
+  finishes (winner selected, `FEEDBACK.md` written), resume to Step 3.
+- **Skip mockup, go to Code** — proceed to Step 3 directly.
+- **Stop** — exit cleanly; both review and (if produced) mockup stay for
+  manual continuation.
 
 ## Step 3 — Code
 
@@ -85,7 +108,7 @@ When `/mlabs-code` completes, summarise the whole run:
 mlabs-auto complete
   Plan:    .mstack/plans/<slug>.md
   Review:  .mstack/reviews/<slug>.md
-  Code:    .mstack/implementations/<slug>/report.md
+  Code:    .mstack/code/<slug>/report.md
   Commits: N · Tasks done: N/M · Paused: N · Skipped: N
   Recommended next step: /mlabs-qa with focus on <area>
 ```

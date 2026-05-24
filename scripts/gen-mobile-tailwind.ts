@@ -68,6 +68,11 @@ function build(): string {
   const sizes = fontSize();
   const radius = design.radius;
   const config = {
+    // NativeWind v4's web runtime needs `class` mode so it can apply
+    // dark-mode classes on <html>. With the default `media`, react-native-
+    // css-interop throws "Cannot manually set color scheme" the moment
+    // anything observes the OS preference change.
+    darkMode: "class",
     content: [
       "./app/**/*.{js,jsx,ts,tsx}",
       "./components/**/*.{js,jsx,ts,tsx}",

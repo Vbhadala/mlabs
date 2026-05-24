@@ -105,6 +105,17 @@ Fixed: N · Paused: N · Deferred: N · Report-only: N
 Recommended next step: <if anything paused/deferred> | <if all clean: "ship">
 ```
 
+**Escalation hook — un-RCA'd issues → /mlabs-debug.** If any issue ended
+`⏸ paused` or `⊘ deferred` *because root cause wasn't obvious* (not because
+the user chose to defer), the "Recommended next step" line MUST suggest:
+
+```
+/mlabs-debug --from-qa <YYYY-MM-DD-HHMM>
+```
+
+This is a *suggestion*, not an auto-spawn — the user invokes it. `/mlabs-debug`
+will read the issue from this run's `report.md` and do a focused RCA.
+
 Append a learning if anything non-obvious surfaced (e.g. a flaky selector,
 a hidden auth requirement). Use `append-learning.sh`.
 
