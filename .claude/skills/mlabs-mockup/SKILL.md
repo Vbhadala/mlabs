@@ -25,7 +25,9 @@ winner. Output is static HTML; nothing under `src/` is touched.
 
 ## Phase 1 — Brief
 
-Ask the user (one batch via AskUserQuestion):
+Two intake paths:
+
+**A. Standalone (no args)** — ask the user (one batch via AskUserQuestion):
 
 - **Feature/screen** — what is being designed (e.g. "billing portal landing",
   "messages thread view")?
@@ -33,6 +35,18 @@ Ask the user (one batch via AskUserQuestion):
 - **Variant axis** — what should the variants differ on (layout density vs
   visual style vs hierarchy vs all three)?
 - **Number of variants** — default 3, max 5.
+
+**B. From a review (`--from-review <slug>`)** — slot in the main chain after
+`/mlabs-review`. Read `.mstack/reviews/<slug>.md`:
+
+- Derive **Feature/screen** from the review's title + first task's `Files`
+  field (the routes/components being touched).
+- Derive **Users** from the underlying plan doc (linked in the review
+  frontmatter as `Plan reviewed`) — the plan's "Persona" / "User" section.
+- **Still ask** for Variant axis + Number of variants (those are taste
+  decisions per-mockup, not pre-decided by the review).
+- Confirm the derived Feature/Users back to the user before generating, so
+  they can correct if the auto-derivation missed something.
 
 ## Phase 2 — Read brand context
 
@@ -100,6 +114,14 @@ adjustments. Repeat until the user says "done" or hits max 5 variants.
 When done, write `<feature-slug>/FEEDBACK.md` with the winning variant + the
 final feedback summary, so a future `/mlabs-plan` for this feature can pick
 it up.
+
+**Next-step suggestion based on invocation:**
+
+- If invoked standalone → "Mockup complete. Use `/mlabs-plan` to turn the
+  chosen variant into an implementation plan."
+- If invoked with `--from-review <slug>` → "Mockup complete. Reference
+  `.mstack/mockups/<feature-slug>/FEEDBACK.md` (winner: vN) and run
+  `/mlabs-code` on review `<slug>` next."
 
 Append a learning if a variant axis or pattern worked well (or notably failed)
 — useful for future mockup runs.
