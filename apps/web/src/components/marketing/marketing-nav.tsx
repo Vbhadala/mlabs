@@ -38,7 +38,13 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
 
         <div className="flex items-center gap-3">
           {signedIn ? (
-            <Link href="/" className={cn(buttonVariants({ size: "sm" }))}>
+            <Link
+              href="/"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "h-11 px-6 text-[14px]"
+              )}
+            >
               Go to dashboard
             </Link>
           ) : (
@@ -46,15 +52,18 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
               <Link
                 href="/login"
                 className={cn(
-                  buttonVariants({ size: "sm", variant: "ghost" }),
-                  "hidden sm:inline-flex"
+                  buttonVariants({ size: "lg", variant: "outline" }),
+                  "hidden h-11 px-6 text-[14px] sm:inline-flex"
                 )}
               >
                 Sign in
               </Link>
               <Link
                 href="/signup"
-                className={cn(buttonVariants({ size: "sm" }))}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "h-11 px-6 text-[14px]"
+                )}
               >
                 Get started
               </Link>
