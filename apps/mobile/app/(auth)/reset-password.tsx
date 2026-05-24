@@ -17,7 +17,7 @@ import { ApiError } from "../../lib/api/client";
 import { brand } from "@mlabs/config";
 
 /**
- * Reset password screen — deep-link target. URL: muscat://reset-password?token=…
+ * Reset password screen — deep-link target. URL: mlabs://reset-password?token=…
  * Routed via Expo Router's `useLocalSearchParams`.
  */
 export default function ResetPasswordScreen() {
