@@ -26,7 +26,7 @@ const packages = [
   },
   {
     name: "@mlabs/email",
-    body: "Postmark driver + typed sends for verify-email, password-reset, and notification. Console driver for local dev. Templates currently live in the Postmark UI — React Email replacement is the next refactor.",
+    body: "Postmark driver + typed sends for verify-email, password-reset, and notification. Templates are React Email components branded from @mlabs/config — preview them live at /_dev/emails. Console driver for local dev.",
     icon: <MailIcon />,
   },
   {
