@@ -45,7 +45,10 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
             <>
               <Link
                 href="/login"
-                className="hidden text-[13px] font-medium text-muted-foreground hover:text-foreground sm:inline"
+                className={cn(
+                  buttonVariants({ size: "sm", variant: "ghost" }),
+                  "hidden sm:inline-flex"
+                )}
               >
                 Sign in
               </Link>
