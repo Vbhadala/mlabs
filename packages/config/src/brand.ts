@@ -18,6 +18,24 @@ export const brand = {
   socialHandle: "@mlabs",
   legalEntity: "Million Labs Ltd",
   url: "https://example.com",
+
+  // Email-client-safe sRGB hex palette. Gmail, Outlook, and Yahoo do not
+  // support oklch() in inline CSS, so React Email templates cannot import
+  // design.colors directly. These are hand-tuned hex equivalents of
+  // design.colors.light (see packages/config/src/design.ts). Keep in sync
+  // when the design tokens change.
+  //
+  // `border` is the one deliberate divergence: design uses ~#9C9C9C (3:1
+  // on-screen visibility); emails read better with a softer separator.
+  emailColors: {
+    primary:           "#FF6B2C",  // oklch(0.69 0.18 39)
+    primaryForeground: "#1F1F1F",  // oklch(0.205 0 0) — WCAG AA on primary
+    background:        "#FFFFFF",  // oklch(1 0 0)
+    foreground:        "#1A1A1A",  // oklch(0.145 0 0)
+    muted:             "#F5F5F5",  // oklch(0.97 0.003 80)
+    mutedForeground:   "#7A7A7A",  // oklch(0.48 0 0)
+    border:            "#E5E5E5",  // softer than design.border for email
+  },
 } as const
 
 export type Brand = typeof brand
