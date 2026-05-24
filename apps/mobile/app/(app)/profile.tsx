@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar } from "../../components/ui/Avatar";
 import { Dialog } from "../../components/ui/Dialog";
@@ -180,7 +179,9 @@ export default function ProfileScreen() {
         destructive
         onConfirm={async () => {
           await signOut.mutateAsync();
-          router.replace("/(auth)/login");
+          // useSignOut's onSuccess calls qc.clear(), which flips useMe()
+          // to undefined; the (app) gate at _layout.tsx then redirects to
+          // /(auth)/welcome. One source of redirection truth.
         }}
       />
       <Dialog
@@ -193,7 +194,8 @@ export default function ProfileScreen() {
         onConfirm={async () => {
           try {
             await deleteAccount.mutateAsync();
-            router.replace("/(auth)/login");
+            // Same as sign-out: (app) gate handles the redirect to welcome
+            // once useMe is invalidated server-side.
           } catch (e) {
             toast.show({
               message:
