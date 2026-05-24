@@ -18,7 +18,13 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 /mlabs-plan ──────→ .mstack/plans/<slug>.md
        │
        ▼
-/mlabs-review ────→ .mstack/reviews/<slug>.md       (approved + implementation plan)
+/mlabs-review ────→ .mstack/reviews/<slug>.md       (approved + implementation plan
+       │                                             + UI-Significant: yes|no flag)
+       │
+       │ if review's UI-Significant: yes
+       ▼
+/mlabs-mockup ────→ .mstack/mockups/<feature>/      (optional design exploration)
+       │            (winner referenced in FEEDBACK.md)
        │
        ▼
 /mlabs-code ──────→ .mstack/code/<slug>/            (code + commits + report)
@@ -29,11 +35,13 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
        │ (escalate paused / un-RCA'd issues)
        ▼
 /mlabs-debug ─────→ .mstack/debug/<slug>/  ──→ /mlabs-code  (bug fix, RCA-first)
+
+/mlabs-ux-audit ──→ .mstack/ux-audits/<run>/        (post-ship visual + UX polish)
 ```
 
 **Only `/mlabs-code` edits source code.** Every other skill writes artifacts to `.mstack/` and hands off via the chain.
 
-`/mlabs-mockup` and `/mlabs-ux-audit` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates (does **not** include `/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
+`/mlabs-auto` chains plan → review → (mockup if UI-significant) → code with confirmation gates. `/mlabs-research`, `/mlabs-debug`, and `/mlabs-ux-audit` are user-triggered by design.
 
 ## When to use which skill
 
@@ -45,9 +53,9 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 | `/mlabs-code` | Executing an approved review autonomously | **Yes (primary)** |
 | `/mlabs-debug` | A specific bug is reported → reproduce → RCA → fix proposal | No (hands to `/mlabs-code`) |
 | `/mlabs-qa` | Scenario-driven QA testing → report → approve → fix | Only post-approval |
-| `/mlabs-mockup` | Generating UI design variants for exploration | No (HTML in `.mstack/mockups/`) |
-| `/mlabs-ux-audit` | Visual UX audit of live screens → report → approve → fix | Only post-approval |
-| `/mlabs-auto` | Chaining plan → review → code in one pass | Delegates |
+| `/mlabs-mockup` | Generating UI design variants — standalone, or in-chain via `--from-review` when review is UI-significant | No (HTML in `.mstack/mockups/`) |
+| `/mlabs-ux-audit` | Post-ship UX audit (visual + copy + flow + a11y) → report → approve → fix | Only post-approval |
+| `/mlabs-auto` | Chaining plan → review → (optional mockup) → code in one pass | Delegates |
 
 ## Hard rules
 

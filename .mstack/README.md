@@ -42,14 +42,19 @@ show up in PRs and travel with the repo across cloud workspaces.
 ## Workflow
 
 ```
-/mlabs-research ─→ plans/ ─→ reviews/ ─→ code/        (greenfield)
-                   /mlabs-debug ────────→ code/       (bug fix, RCA-first)
-                   /mlabs-qa  ─(escalate)→ /mlabs-debug (discovery → RCA)
+/mlabs-research ─→ plans/ ─→ reviews/ ─→ [mockups/] ─→ code/ ─→ qa/   (greenfield)
+                                          ↑
+                                          only when review's
+                                          UI-Significant: yes
+
+                   /mlabs-debug ──────────────────→ code/             (bug fix, RCA-first)
+                   /mlabs-qa  ──(escalate paused)─→ /mlabs-debug      (discovery → RCA)
+                   /mlabs-ux-audit ──────────(post-ship visual + UX polish)
 ```
 
-`/mlabs-mockup` and `/mlabs-ux-audit` run in parallel when UI is involved.
-`/mlabs-auto` chains plan → review → code in one shot (does not include
-`/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
+`/mlabs-auto` chains the main path including the optional mockup gate.
+`/mlabs-research`, `/mlabs-debug`, and `/mlabs-ux-audit` are user-triggered
+by design — auto never spawns them.
 
 ## Golden rule
 
