@@ -33,7 +33,7 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 
 **Only `/mlabs-code` edits source code.** Every other skill writes artifacts to `.mstack/` and hands off via the chain.
 
-`/mlabs-mockup` and `/mlabs-design-review` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates (does **not** include `/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
+`/mlabs-mockup` and `/mlabs-ux-audit` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates (does **not** include `/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
 
 ## When to use which skill
 
@@ -46,12 +46,12 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 | `/mlabs-debug` | A specific bug is reported → reproduce → RCA → fix proposal | No (hands to `/mlabs-code`) |
 | `/mlabs-qa` | Scenario-driven QA testing → report → approve → fix | Only post-approval |
 | `/mlabs-mockup` | Generating UI design variants for exploration | No (HTML in `.mstack/mockups/`) |
-| `/mlabs-design-review` | Visual UX audit of live screens → report → approve → fix | Only post-approval |
+| `/mlabs-ux-audit` | Visual UX audit of live screens → report → approve → fix | Only post-approval |
 | `/mlabs-auto` | Chaining plan → review → code in one pass | Delegates |
 
 ## Hard rules
 
-- **`/mlabs-code` is the only skill that edits code as its primary purpose.** `/mlabs-qa` and `/mlabs-design-review` edit code only after an explicit user approval gate on a written report.
+- **`/mlabs-code` is the only skill that edits code as its primary purpose.** `/mlabs-qa` and `/mlabs-ux-audit` edit code only after an explicit user approval gate on a written report.
 - **Plan → review → code is a strict pipeline.** `/mlabs-review` requires a plan doc; `/mlabs-code` requires an `approved` review.
 - **One commit per task** in `/mlabs-code`. Never `--no-verify`. Never amend across tasks.
 - **Pause on ambiguity.** Destructive migrations, edits to `src/config/brand.ts` / `src/config/design.ts` (rebrand layer), new top-level deps, CI config changes, env var rename/remove → always pause and ask.

@@ -1,13 +1,14 @@
 ---
-name: mlabs-design-review
+name: mlabs-ux-audit
 description: |
-  Review a live UI screen (or set of screens) against MLabs design tokens,
-  hierarchy, spacing, typography, accessibility, and AI-slop patterns. Drives
-  Playwright to capture screenshots at desktop and mobile, writes a structured
-  report to .mstack/design-reviews/, then after user approval applies fixes
-  and re-verifies. May edit code, but only after an explicit approval gate.
-  Use when the user says "design review the X page", "audit the visual design",
-  "polish the UI", or invokes /mlabs-design-review.
+  Audit a live UI screen (or set of screens) against MLabs design tokens,
+  hierarchy, spacing, typography, accessibility, copy clarity, flow friction,
+  and AI-slop patterns. Drives Playwright to capture screenshots at desktop
+  and mobile, writes a structured report to .mstack/ux-audits/, then after
+  user approval applies fixes and re-verifies. May edit code, but only after
+  an explicit approval gate.
+  Use when the user says "ux audit the X page", "audit the experience",
+  "polish the UI", "review how this looks/reads", or invokes /mlabs-ux-audit.
 allowed-tools:
   - Read
   - Glob
@@ -21,9 +22,10 @@ allowed-tools:
   - TaskList
 ---
 
-# mlabs-design-review
+# mlabs-ux-audit
 
-Visual UX audit: capture → review → report → approve → fix → re-verify.
+User-centric UX audit (visual + copy + flow + accessibility): capture →
+review → report → approve → fix → re-verify.
 
 ## Phase 1 — Scope
 
@@ -41,7 +43,7 @@ If localhost, verify the dev server is up; offer to start it.
 
 ## Phase 2 — Capture
 
-Initialise `.mstack/design-reviews/<YYYY-MM-DD-HHMM>/` with `report.md` and
+Initialise `.mstack/ux-audits/<YYYY-MM-DD-HHMM>/` with `report.md` and
 `assets/`.
 
 For each screen:
@@ -100,7 +102,7 @@ Per issue:
    ```
    style(design): <issue title>
 
-   Addresses issue N from .mstack/design-reviews/<run>/report.md
+   Addresses issue N from .mstack/ux-audits/<run>/report.md
 
    Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
    ```
@@ -121,7 +123,7 @@ Per issue:
 ## Final summary
 
 ```
-Design review complete: <path-to-report.md>
+UX audit complete: <path-to-report.md>
 Fixed: N · Paused: N · Deferred: N · Report-only: N
 ```
 
@@ -131,12 +133,12 @@ empty-state slot — recurring need").
 ## report.md scaffold
 
 ```markdown
-# Design review — <YYYY-MM-DD HH:MM>
+# UX audit — <YYYY-MM-DD HH:MM>
 
 **Scope:** <screens reviewed>
 **Env:** <localhost:3000 | URL>
 **Status:** in_progress | issues_found | clean | report-only
-**Reviewer:** /mlabs-design-review
+**Reviewer:** /mlabs-ux-audit
 
 ## Screens
 | Screen | Desktop | Mobile |

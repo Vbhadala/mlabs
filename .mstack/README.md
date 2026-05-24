@@ -1,7 +1,7 @@
 # .mstack/
 
 Workspace storage for the **mstack** Claude Code skill suite (`mlabs-plan`,
-`mlabs-review`, `mlabs-code`, `mlabs-qa`, `mlabs-mockup`, `mlabs-design-review`,
+`mlabs-review`, `mlabs-code`, `mlabs-qa`, `mlabs-mockup`, `mlabs-ux-audit`,
 `mlabs-debug`, `mlabs-research`, `mlabs-auto`).
 
 Everything in here is **committed to git** so reviews, plans, and learnings
@@ -35,7 +35,7 @@ show up in PRs and travel with the repo across cloud workspaces.
 │   └── <feature>/
 │       ├── v1/ … vN/
 │       └── FEEDBACK.md
-└── design-reviews/              # /mlabs-design-review output
+└── ux-audits/                   # /mlabs-ux-audit output
     └── YYYY-MM-DD-<slug>.md
 ```
 
@@ -47,7 +47,7 @@ show up in PRs and travel with the repo across cloud workspaces.
                    /mlabs-qa  ─(escalate)→ /mlabs-debug (discovery → RCA)
 ```
 
-`/mlabs-mockup` and `/mlabs-design-review` run in parallel when UI is involved.
+`/mlabs-mockup` and `/mlabs-ux-audit` run in parallel when UI is involved.
 `/mlabs-auto` chains plan → review → code in one shot (does not include
 `/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
 
