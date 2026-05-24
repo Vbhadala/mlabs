@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../components/ui/Input";
 import { PasswordInput } from "../../components/ui/PasswordInput";
@@ -46,7 +46,9 @@ export default function LoginScreen() {
     setUnverified(false);
     try {
       await login.mutateAsync(parsed.data);
-      router.replace("/(app)");
+      // Gate at (auth)/_layout.tsx redirects to /(app) once useMe()
+      // refetches and returns emailVerified: true. Single source of truth
+      // for authenticated transitions — no explicit replace here.
     } catch (e) {
       if (e instanceof ApiError && e.code === "email_not_verified") {
         setUnverified(true);

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/ui/Button";
 import { useResendVerify, useVerifyEmail } from "../../features/auth/hooks";
@@ -14,6 +15,7 @@ export default function VerifyScreen() {
   const email = (params.email as string | undefined) ?? "";
   const verify = useVerifyEmail();
   const resend = useResendVerify();
+  const qc = useQueryClient();
   const [status, setStatus] = React.useState<Status>("pending");
 
   // Auto-run verification on mount.
@@ -28,7 +30,12 @@ export default function VerifyScreen() {
       .then(() => {
         if (cancelled) return;
         setStatus("success");
-        setTimeout(() => router.replace("/(app)"), 700);
+        // 700ms dwell so "You're verified" is readable, then invalidate
+        // useMe — the (auth) gate then redirects to /(app). Single source
+        // of routing truth lives in the gate, not here.
+        setTimeout(() => {
+          qc.invalidateQueries({ queryKey: ["auth", "me"] });
+        }, 700);
       })
       .catch(() => {
         if (cancelled) return;
