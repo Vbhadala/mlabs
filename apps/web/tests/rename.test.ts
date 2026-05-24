@@ -71,26 +71,49 @@ describe("transform()", () => {
     expect(out).toBe("@mlabs-template")
   })
 
-  it("replaces 'Muscat' display name (word-bounded)", () => {
-    expect(transform('name: "Muscat"', ACME_CFG)).toBe('name: "ACME App"')
-    expect(transform("Welcome to Muscat!", ACME_CFG)).toBe(
+  it("replaces 'MLabs Template' phrase cleanly (no leftover 'Template' word)", () => {
+    expect(transform('name: "MLabs Template"', ACME_CFG)).toBe('name: "ACME App"')
+    expect(transform("# MLabs Template", ACME_CFG)).toBe("# ACME App")
+    expect(transform("Welcome to MLabs Template!", ACME_CFG)).toBe(
       "Welcome to ACME App!",
     )
   })
 
-  it("replaces 'muscat-mobile' slug + JWT issuer", () => {
-    expect(transform('"muscat-mobile"', ACME_CFG)).toBe('"acme-mobile"')
+  it("preserves bare 'MLabs' as agency attribution (does NOT rewrite)", () => {
+    // HANDOVER.md.template, DESIGN.md, AGENTS.md, .replit, and
+    // tooling/eslint-config/** all use 'MLabs' as the agency name. After
+    // consolidation the bare \bMLabs\b matcher is dropped so these stay
+    // intact for forks.
+    expect(transform("Built by MLabs in 2026.", ACME_CFG)).toBe(
+      "Built by MLabs in 2026.",
+    )
+    expect(transform("# mstack — the MLabs skill suite", ACME_CFG)).toBe(
+      "# mstack — the MLabs skill suite",
+    )
   })
 
-  it("replaces scheme: \"muscat\" and muscat:// URIs", () => {
-    expect(transform('scheme: "muscat"', ACME_CFG)).toBe('scheme: "acme"')
-    expect(transform("muscat://verify?token=abc", ACME_CFG)).toBe(
+  it("preserves bare lowercase 'mlabs' outside anchored contexts", () => {
+    // Only the anchored contexts (slug "mlabs-mobile", scheme "mlabs",
+    // mlabs://, mlabs.example.com, mlabs-template, mlabs/mlabs template,
+    // @mlabs/) get rewritten. Bare lowercase 'mlabs' stays.
+    expect(transform("see mlabs convention in CONTRIBUTING", ACME_CFG)).toBe(
+      "see mlabs convention in CONTRIBUTING",
+    )
+  })
+
+  it("replaces 'mlabs-mobile' slug + JWT issuer", () => {
+    expect(transform('"mlabs-mobile"', ACME_CFG)).toBe('"acme-mobile"')
+  })
+
+  it("replaces scheme: \"mlabs\" and mlabs:// URIs", () => {
+    expect(transform('scheme: "mlabs"', ACME_CFG)).toBe('scheme: "acme"')
+    expect(transform("mlabs://verify?token=abc", ACME_CFG)).toBe(
       "acme://verify?token=abc",
     )
   })
 
   it("replaces deep-link host literal", () => {
-    expect(transform('"muscat.example.com"', ACME_CFG)).toBe(
+    expect(transform('"mlabs.example.com"', ACME_CFG)).toBe(
       '"app.acme.com"',
     )
   })
@@ -101,8 +124,8 @@ describe("transform()", () => {
     )
   })
 
-  it("rewrites CHANGELOG 'mlabs/muscat template' reference", () => {
-    expect(transform("Changes to the mlabs/muscat template.", ACME_CFG)).toBe(
+  it("rewrites CHANGELOG 'mlabs/mlabs template' reference", () => {
+    expect(transform("Changes to the mlabs/mlabs template.", ACME_CFG)).toBe(
       "Changes to the acme/acme template.",
     )
   })
@@ -149,7 +172,7 @@ describe("runRename() on fixture", () => {
     expect(appCfg).toContain('"app.acme.com"')
     expect(appCfg).toContain('"ACME App needs access to your photos."')
     // bundle IDs untouched
-    expect(appCfg).toContain('bundleIdentifier: "com.example.muscat"')
+    expect(appCfg).toContain('bundleIdentifier: "com.example.mlabs"')
 
     const jwt = readFileSync(
       join(workdir, "packages/auth/src/jwt.ts"),
@@ -164,7 +187,7 @@ describe("runRename() on fixture", () => {
     expect(maestro).toContain('"acme://verify?token=abc"')
     expect(maestro).toContain('"Welcome to ACME App"')
     // bundle ID in appId stays manual
-    expect(maestro).toContain("appId: com.example.muscat")
+    expect(maestro).toContain("appId: com.example.mlabs")
   })
 
   it("preserves .well-known/ placeholders byte-for-byte", () => {
@@ -228,7 +251,7 @@ describe("runRename() on fixture", () => {
     expect(second.filesChanged).toBe(0)
   })
 
-  it("completeness: post-rename, no @mlabs or 'Muscat' text remains in non-skipped files", () => {
+  it("completeness: post-rename, no @mlabs/, no 'MLabs Template', no anchored mlabs tokens remain", () => {
     runRename({ repoRoot: workdir, config: ACME_CFG, dryRun: false })
 
     function walkPaths(dir: string): string[] {
@@ -261,15 +284,34 @@ describe("runRename() on fixture", () => {
       const content = readFileSync(file, "utf8")
       // Brand IDs that are intentionally manual stay; everything else must go.
       const cleaned = content
-        .replaceAll("com.example.muscat", "")
-        .replaceAll("appId: com.example.muscat", "")
+        .replaceAll("com.example.mlabs", "")
+        .replaceAll("appId: com.example.mlabs", "")
       expect(
         cleaned.includes("@mlabs/"),
         `${file} still contains @mlabs/`,
       ).toBe(false)
       expect(
-        /\bMuscat\b/.test(cleaned),
-        `${file} still contains 'Muscat'`,
+        cleaned.includes("MLabs Template"),
+        `${file} still contains 'MLabs Template' phrase`,
+      ).toBe(false)
+      // Bare lowercase `mlabs` in anchored contexts (slug, scheme, host,
+      // template-name, mlabs/mlabs template) must all be gone. Bare
+      // `mlabs` in unrelated prose is allowed (preserved as attribution).
+      expect(
+        cleaned.includes("mlabs-mobile"),
+        `${file} still contains 'mlabs-mobile'`,
+      ).toBe(false)
+      expect(
+        cleaned.includes("mlabs.example.com"),
+        `${file} still contains 'mlabs.example.com'`,
+      ).toBe(false)
+      expect(
+        cleaned.includes("mlabs-template"),
+        `${file} still contains 'mlabs-template'`,
+      ).toBe(false)
+      expect(
+        cleaned.includes("mlabs/mlabs template"),
+        `${file} still contains 'mlabs/mlabs template'`,
       ).toBe(false)
     }
   })
