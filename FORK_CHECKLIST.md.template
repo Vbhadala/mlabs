@@ -21,7 +21,7 @@ at the bottom for the happy-path flow.
 - [ ] Create Postmark server + sender signature.
 - [ ] Set up OAuth apps (Google, Apple, if used by the fork).
 - [ ] Edit `apps/mobile/app.config.ts`:
-  - [ ] `ios.bundleIdentifier`: replace `com.example.muscat` with the real reverse-domain ID.
+  - [ ] `ios.bundleIdentifier`: replace `com.example.mlabs` with the real reverse-domain ID.
   - [ ] `android.package`: same value as above (Android convention).
   - [ ] `ios.associatedDomains`: verify `applinks:{{DEEPLINK_HOST}}` matches the deployed host.
 - [ ] Edit `apps/web/public/.well-known/apple-app-site-association`:
@@ -48,7 +48,7 @@ Bundle smoke (mobile):
 
 ```
 pnpm --filter {{NAMESPACE}}/mobile exec expo export --platform ios --output-dir /tmp/expo-bundle
-grep -rlE "@mlabs|\bMuscat\b" . --exclude-dir=node_modules --exclude=pnpm-lock.yaml || true
+grep -rlE "@mlabs/|MLabs Template|mlabs-mobile|mlabs\.example\.com" . --exclude-dir=node_modules --exclude=pnpm-lock.yaml || true
 ```
 
 Both should come back clean (the grep should print nothing).
