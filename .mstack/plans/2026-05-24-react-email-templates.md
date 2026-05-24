@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-24
 **Slug:** 2026-05-24-react-email-templates
-**Status:** reviewed
+**Status:** implemented — see `.mstack/code/2026-05-24-react-email-templates/report.md`
 **Author:** VB
 
 ---
