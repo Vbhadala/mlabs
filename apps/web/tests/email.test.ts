@@ -26,7 +26,7 @@ afterEach(() => {
 })
 
 describe("sendVerifyEmail", () => {
-  it("calls the active driver with the verify-email template + expected vars", async () => {
+  it("renders the verify-email template and sends rendered HTML + text", async () => {
     const { driver, calls } = recordingDriver()
     _setDriverForTesting(driver)
 
@@ -37,21 +37,23 @@ describe("sendVerifyEmail", () => {
     })
 
     expect(calls).toHaveLength(1)
-    expect(calls[0]).toMatchObject({
-      templateAlias: "verify-email",
-      to: "alice@example.com",
-      fromName: brand.name,
-      variables: {
-        brand_name: brand.name,
-        name: "Alice",
-        verify_url: "https://app.example.com/verify-email?token=abc",
-      },
-    })
+    const args = calls[0]!
+    expect(args.to).toBe("alice@example.com")
+    expect(args.fromName).toBe(brand.name)
+    expect(args.subject).toBe(`Verify your ${brand.name} email`)
+    expect(args.html).toContain("Alice")
+    expect(args.html).toContain(
+      "https://app.example.com/verify-email?token=abc",
+    )
+    expect(args.text).toContain("Alice")
+    expect(args.text).toContain(
+      "https://app.example.com/verify-email?token=abc",
+    )
   })
 })
 
 describe("sendPasswordResetEmail", () => {
-  it("uses password-reset template, default expires_in_minutes = 60", async () => {
+  it("renders password reset with default 60-minute expiry", async () => {
     const { driver, calls } = recordingDriver()
     _setDriverForTesting(driver)
 
@@ -61,12 +63,15 @@ describe("sendPasswordResetEmail", () => {
       resetUrl: "https://app.example.com/reset?token=xyz",
     })
 
-    expect(calls[0].templateAlias).toBe("password-reset")
-    expect(calls[0].variables.expires_in_minutes).toBe(60)
-    expect(calls[0].variables.reset_url).toBe("https://app.example.com/reset?token=xyz")
+    const args = calls[0]!
+    expect(args.subject).toBe(`Reset your ${brand.name} password`)
+    expect(args.html).toContain("https://app.example.com/reset?token=xyz")
+    // React Email interleaves text nodes with HTML comments, so check
+    // plaintext for the literal "60 minutes" phrase.
+    expect(args.text).toContain("60 minutes")
   })
 
-  it("respects custom expires_in_minutes", async () => {
+  it("respects custom expiresInMinutes", async () => {
     const { driver, calls } = recordingDriver()
     _setDriverForTesting(driver)
 
@@ -77,12 +82,13 @@ describe("sendPasswordResetEmail", () => {
       expiresInMinutes: 15,
     })
 
-    expect(calls[0].variables.expires_in_minutes).toBe(15)
+    const args = calls[0]!
+    expect(args.text).toContain("15 minutes")
   })
 })
 
 describe("sendNotificationEmail", () => {
-  it("passes title/body and CTA defaults to empty strings when omitted", async () => {
+  it("uses the title as the subject and renders body without a CTA", async () => {
     const { driver, calls } = recordingDriver()
     _setDriverForTesting(driver)
 
@@ -92,16 +98,14 @@ describe("sendNotificationEmail", () => {
       body: "Your bet on team X just settled.",
     })
 
-    expect(calls[0].templateAlias).toBe("notification-generic")
-    expect(calls[0].variables).toMatchObject({
-      title: "Bet settled",
-      body: "Your bet on team X just settled.",
-      cta_label: "",
-      cta_url: "",
-    })
+    const args = calls[0]!
+    expect(args.subject).toBe("Bet settled")
+    expect(args.html).toContain("Bet settled")
+    expect(args.html).toContain("Your bet on team X just settled.")
+    expect(args.text).toContain("Your bet on team X just settled.")
   })
 
-  it("propagates CTA when given", async () => {
+  it("renders the CTA when ctaLabel + ctaUrl are provided", async () => {
     const { driver, calls } = recordingDriver()
     _setDriverForTesting(driver)
 
@@ -113,8 +117,9 @@ describe("sendNotificationEmail", () => {
       ctaUrl: "https://app.example.com/signals/42",
     })
 
-    expect(calls[0].variables.cta_label).toBe("View signal")
-    expect(calls[0].variables.cta_url).toBe("https://app.example.com/signals/42")
+    const args = calls[0]!
+    expect(args.html).toContain("View signal")
+    expect(args.html).toContain("https://app.example.com/signals/42")
   })
 })
 

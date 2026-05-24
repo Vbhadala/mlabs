@@ -1,21 +1,24 @@
-// Driver interface for transactional email. The MLabs default is Postmark;
-// the console driver is a dev fallback so devs can build features without
-// provisioning Postmark first.
-//
-// Templates live in the email provider's UI (Postmark) — code never holds
-// the body content. This is a deliberate handover win: clients can edit copy
-// in Postmark without touching the codebase.
+// Driver interface for transactional email. Drivers receive fully-rendered
+// HTML and plaintext bodies — no provider-specific template aliases leak
+// through this seam. This is what lets the same EmailTemplates layer drive
+// Postmark today and (later) Resend / SES / Mailgun without touching call
+// sites.
 
 export interface SendArgs {
-  templateAlias: string
+  /** Recipient address. */
   to: string
-  variables: Record<string, string | number | null | undefined>
+  /** Subject line. */
+  subject: string
+  /** Fully-rendered HTML body. */
+  html: string
+  /** Plaintext body (rendered alongside HTML for deliverability). */
+  text: string
   /** From-name override (default comes from POSTMARK_FROM_EMAIL config). */
   fromName?: string
 }
 
 export interface SendResult {
-  /** Provider's message ID (for tracing in Postmark dashboard). */
+  /** Provider's message ID (for tracing in the provider dashboard). */
   messageId: string
 }
 
