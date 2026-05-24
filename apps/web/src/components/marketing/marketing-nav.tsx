@@ -19,14 +19,17 @@ export function MarketingNav({ signedIn = false }: MarketingNavProps) {
         </Link>
 
         <nav className="hidden items-center gap-9 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground md:flex">
-          <Link href="#features" className="transition hover:text-foreground">
-            Features
+          <Link href="#why" className="transition hover:text-foreground">
+            Why
           </Link>
-          <Link href="#how-it-works" className="transition hover:text-foreground">
-            How it works
+          <Link href="#mstack" className="transition hover:text-foreground">
+            mstack
           </Link>
-          <Link href="#customers" className="transition hover:text-foreground">
-            Customers
+          <Link href="#packages" className="transition hover:text-foreground">
+            Packages
+          </Link>
+          <Link href="#start" className="transition hover:text-foreground">
+            Start
           </Link>
           <Link href="/design" className="transition hover:text-foreground">
             Design

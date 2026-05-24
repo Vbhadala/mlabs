@@ -1,5 +1,5 @@
-// Decorative product preview — static dashboard mock. Reinforces the hero
-// claim by showing a realistic-feeling AI workspace surface.
+// Repo map for new devs landing on the template. Shows what's in /apps
+// and /packages so the monorepo layout is the first thing they see.
 
 export function ProductMock() {
   return (
@@ -10,98 +10,67 @@ export function ProductMock() {
           <span className="size-2.5 rounded-full bg-[#FEBC2E]" />
           <span className="size-2.5 rounded-full bg-[#28C840]" />
           <span className="ml-4 font-mono text-[11px] text-muted-foreground">
-            app.example.com / inbox
+            ~/hat-yai
           </span>
         </div>
-        <div className="grid min-h-[260px] grid-cols-1 md:grid-cols-[200px_1fr]">
-          <aside className="hidden space-y-1 border-r border-border p-4 text-[12px] md:block">
-            <div className="rounded-lg bg-primary/10 px-3 py-2 font-semibold text-primary">
-              Inbox
-            </div>
-            <div className="px-3 py-2 text-muted-foreground hover:text-foreground">
-              Threads
-            </div>
-            <div className="px-3 py-2 text-muted-foreground hover:text-foreground">
-              Knowledge
-            </div>
-            <div className="px-3 py-2 text-muted-foreground hover:text-foreground">
-              Integrations
-            </div>
-            <div className="px-3 py-2 text-muted-foreground hover:text-foreground">
-              Settings
-            </div>
-          </aside>
-          <div className="space-y-4 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  This week
-                </div>
-                <div className="text-lg font-bold">Your team, summarised</div>
-              </div>
-              <div className="text-[11px] text-muted-foreground">Last 7 days</div>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <Stat label="Questions answered" value="248" delta="▲ 18%" />
-              <Stat label="Avg time saved" value="3.4h" delta="▲ per person" />
-              <Stat label="Coverage" value="92%" delta="— stable" muted />
-            </div>
-            <div className="relative h-24 overflow-hidden rounded-lg border border-border">
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 14%, transparent), transparent)",
-                }}
-              />
-              <svg
-                viewBox="0 0 400 80"
-                preserveAspectRatio="none"
-                className="size-full"
-                aria-hidden
-              >
-                <polyline
-                  points="0,60 40,55 80,48 120,52 160,40 200,30 240,34 280,22 320,28 360,14 400,18"
-                  fill="none"
-                  stroke="var(--color-primary)"
-                  strokeWidth="2"
-                />
-              </svg>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-0 md:grid-cols-2">
+          <TreeColumn
+            title="apps/"
+            subtitle="User-facing surfaces"
+            entries={[
+              { name: "web", note: "Next.js 15 — marketing, auth, admin, billing, messaging, storage" },
+              { name: "mobile", note: "Expo + expo-router, BetterAuth shared with web, NativeWind, image picker, secure store, Maestro e2e" },
+            ]}
+          />
+          <TreeColumn
+            title="packages/"
+            subtitle="Shared workspace libraries"
+            entries={[
+              { name: "api", note: "tRPC routers — typed server ↔ client contract" },
+              { name: "auth", note: "BetterAuth setup + session helpers" },
+              { name: "config", note: "brand, design tokens, single source of truth" },
+              { name: "db", note: "Drizzle schema, migrations, client" },
+              { name: "email", note: "Resend client + React Email templates" },
+              { name: "services", note: "Billing (Stripe), messaging, admin, webhooks" },
+              { name: "ui-web", note: "shadcn-style components, Tailwind v4" },
+              { name: "validators", note: "Zod schemas shared across apps + api" },
+            ]}
+          />
         </div>
       </div>
     </div>
   )
 }
 
-function Stat({
-  label,
-  value,
-  delta,
-  muted,
+function TreeColumn({
+  title,
+  subtitle,
+  entries,
 }: {
-  label: string
-  value: string
-  delta: string
-  muted?: boolean
+  title: string
+  subtitle: string
+  entries: ReadonlyArray<{ name: string; note: string }>
 }) {
   return (
-    <div className="rounded-lg border border-border p-3">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-        {label}
+    <div className="border-b border-border p-6 last:border-b-0 md:border-b-0 md:[&:not(:last-child)]:border-r">
+      <div className="mb-1 font-mono text-[13px] font-bold text-primary">
+        {title}
       </div>
-      <div className="mt-1 text-xl font-bold">{value}</div>
-      <div
-        className={
-          muted
-            ? "mt-1 text-[11px] text-muted-foreground"
-            : "mt-1 text-[11px] text-primary"
-        }
-      >
-        {delta}
+      <div className="mb-4 text-[11px] uppercase tracking-widest text-muted-foreground">
+        {subtitle}
       </div>
+      <ul className="space-y-2">
+        {entries.map((e) => (
+          <li key={e.name} className="flex items-baseline gap-3">
+            <span className="font-mono text-[13px] font-semibold text-foreground">
+              {e.name}
+            </span>
+            <span className="text-[13px] leading-snug text-muted-foreground">
+              {e.note}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

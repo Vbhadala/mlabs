@@ -9,11 +9,11 @@
 
 export const brand = {
   name: "MLabs Template",
-  tagline: "Ship MVPs in days, not months",
+  tagline: "AI engineering with guardrails, conventions, and a paper trail",
   // Substring of `tagline` rendered in `text-primary` on the landing hero.
   // First-match split; case-sensitive. If the substring doesn't appear in
   // `tagline`, the hero renders the tagline as plain text.
-  taglineHighlight: "days",
+  taglineHighlight: "paper trail",
   supportEmail: "support@example.com",
   socialHandle: "@mlabs",
   legalEntity: "Million Labs Ltd",
