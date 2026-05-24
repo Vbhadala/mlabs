@@ -18,7 +18,7 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 /mlabs-review ──→ .mstack/reviews/<slug>.md  (approved + implementation plan)
        │
        ▼
-/mlabs-code ──→ .mstack/implementations/<slug>/  (code + commits + report)
+/mlabs-code ──→ .mstack/code/<slug>/  (code + commits + report)
        │
        ▼
 /mlabs-qa ──→ .mstack/qa/<run>/  (scenario-driven test report)

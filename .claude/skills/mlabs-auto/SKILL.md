@@ -85,7 +85,7 @@ When `/mlabs-code` completes, summarise the whole run:
 mlabs-auto complete
   Plan:    .mstack/plans/<slug>.md
   Review:  .mstack/reviews/<slug>.md
-  Code:    .mstack/implementations/<slug>/report.md
+  Code:    .mstack/code/<slug>/report.md
   Commits: N · Tasks done: N/M · Paused: N · Skipped: N
   Recommended next step: /mlabs-qa with focus on <area>
 ```
