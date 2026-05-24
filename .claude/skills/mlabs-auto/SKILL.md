@@ -29,6 +29,11 @@ Chain: `/mlabs-plan` → gate → `/mlabs-review` → gate → `/mlabs-code`.
 This skill orchestrates — it does not duplicate logic. Each underlying skill
 runs as if invoked directly, with its full behaviour and artifact output.
 
+**Not included by design:** `/mlabs-research` and `/mlabs-debug` are user-
+triggered, never chained from `/mlabs-auto`. Research is an optional upstream
+step (run before `/mlabs-auto` if the feature needs a tech-choice decision);
+debug is a separate reactive flow that feeds `/mlabs-code` directly.
+
 ## Pre-flight
 
 1. Verify git state up front (same checks as `/mlabs-code`):
