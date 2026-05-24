@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-24
 **Slug:** 2026-05-24-brand-consolidation
-**Status:** reviewed — see [.mstack/reviews/2026-05-24-brand-consolidation.md](../reviews/2026-05-24-brand-consolidation.md)
+**Status:** implemented — see [.mstack/code/2026-05-24-brand-consolidation/report.md](../code/2026-05-24-brand-consolidation/report.md)
 **Author:** VB
 
 ---
