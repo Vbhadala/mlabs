@@ -4,6 +4,7 @@
 **Slug:** {{SLUG}}
 **Plan reviewed:** [{{PLAN_FILENAME}}](../plans/{{PLAN_FILENAME}})
 **Status:** approved
+**UI-Significant:** {{UI_SIGNIFICANT}}
 **Reviewer:** {{AUTHOR}}
 
 ---

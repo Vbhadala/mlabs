@@ -64,10 +64,30 @@ Review a `/mlabs-plan` output and produce an approved implementation plan in
      would require dropping a column with data")
    - Ordered so each task leaves the codebase in a working state if possible
 
+5b. **Compute the `UI-Significant` flag.** Walk the task list's `Files` fields
+    and apply the heuristic:
+
+    The change is **UI-Significant: yes** when the implementation plan touches
+    **any** of:
+
+    - `apps/web/src/app/**/page.tsx` (route page added or modified)
+    - `apps/web/src/app/**/layout.tsx`
+    - `apps/web/src/features/*/components/**/*.tsx`
+    - `apps/web/src/components/**/*.tsx` (excluding `marketing/*` — that's
+      content, not UI shell)
+    - Any **new** route under `apps/web/src/app/`
+
+    …**AND** either (a) the count of such files is **≥3**, OR (b) any file in
+    the set is a **new** `page.tsx`. Otherwise **UI-Significant: no**.
+
+    This flag is the single source of truth for the optional `/mlabs-mockup`
+    gate in the main chain — `/mlabs-auto` and the manual chain both read it.
+
 6. **Write the review doc** using the template at
    `.claude/skills/mlabs-shared/templates/review.md`. Filename matches the plan
    slug (e.g. plan `2026-05-12-billing-portal.md` → review
-   `2026-05-12-billing-portal.md`).
+   `2026-05-12-billing-portal.md`). Populate the `UI-Significant` frontmatter
+   field with the value from step 5b.
 
 7. **Update the plan's status** from `draft` to `reviewed` via Edit.
 
@@ -76,7 +96,11 @@ Review a `/mlabs-plan` output and produce an approved implementation plan in
    a rejected approach worth remembering. Use
    `.claude/skills/mlabs-shared/bin/append-learning.sh`.
 
-9. **Hand off**: tell the user "Review written to <path>. Run /mlabs-code next."
+9. **Hand off** based on `UI-Significant`:
+   - If `yes`: tell the user "Review written to <path>. Recommended next:
+     `/mlabs-mockup --from-review <slug>` to explore designs before code, or
+     `/mlabs-code` to skip straight to implementation."
+   - If `no`: tell the user "Review written to <path>. Run /mlabs-code next."
 
 ## What "Pause if" should capture
 
