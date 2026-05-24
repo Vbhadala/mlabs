@@ -77,6 +77,8 @@ Critique each screen against:
 | **Responsive** | Mobile screenshot survives? Tap targets ≥44px? |
 | **Slop patterns** | Generic "modern dashboard" tropes? Trust-fall gradients? Stock illustrations? Random emoji? |
 | **Brand fidelity** | Brand name + tagline used per `src/config/brand.ts`? |
+| **Copy clarity** | CTAs verb-led ("Start free trial", not "Click here")? Jargon minimised? Error messages tell the user what to do next? |
+| **Flow friction** | Dead-ends visible from this screen (no obvious next action)? Primary path requires more clicks/decisions than necessary? |
 
 For each issue, capture: screen, dimension, severity (critical/high/medium/low),
 suspected file:line, and a concrete fix.
@@ -149,7 +151,7 @@ empty-state slot — recurring need").
 
 ### Issue 1: <title>
 - **Screen:** /dashboard
-- **Dimension:** spacing | hierarchy | tokens | typography | contrast | states | responsive | slop | brand
+- **Dimension:** spacing | hierarchy | tokens | typography | contrast | states | responsive | slop | brand | copy | flow
 - **Severity:** critical | high | medium | low
 - **Where:** src/features/foo/Bar.tsx:42 (suspected)
 - **Observation:** what's wrong (with screenshot ref if helpful)
