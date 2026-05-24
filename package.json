@@ -17,6 +17,7 @@
     "db:studio": "pnpm --filter @mlabs/db studio",
     "verify:deeplinks": "tsx scripts/verify-deeplinks.ts",
     "email:smoke": "tsx scripts/email-smoke.ts",
+    "stripe:webhook-setup": "tsx scripts/stripe-webhook-setup.ts",
     "check-contrast": "tsx scripts/check-contrast.ts",
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
