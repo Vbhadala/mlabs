@@ -29,7 +29,7 @@ export const brand = {
   // on-screen visibility); emails read better with a softer separator.
   emailColors: {
     primary:           "#FF6B2C",  // oklch(0.69 0.18 39)
-    primaryForeground: "#1F1F1F",  // oklch(0.205 0 0) — WCAG AA on primary
+    primaryForeground: "#FFFFFF",  // oklch(0.985 0 0) — brand choice, AA-exempt (see design.ts)
     background:        "#FFFFFF",  // oklch(1 0 0)
     foreground:        "#1A1A1A",  // oklch(0.145 0 0)
     muted:             "#F5F5F5",  // oklch(0.97 0.003 80)

@@ -15,10 +15,13 @@ export const design = {
       cardForeground:       "oklch(0.145 0 0)",
       popover:              "oklch(1 0 0)",
       popoverForeground:    "oklch(0.145 0 0)",
-      // MLabs orange (~#FF6B2C). Dark ink on orange to meet WCAG AA
-      // (white-on-orange ≈3.4:1 fails; dark-on-orange ≈6:1 passes).
+      // MLabs orange (~#FF6B2C). White-on-orange is a deliberate brand
+      // choice — it does not meet WCAG AA body text contrast (~2.6:1 vs
+      // 4.5:1 required) but is preferred visually for the brand CTA. The
+      // primaryForeground / primary pair is intentionally exempted from
+      // the check-contrast guard; see scripts/check-contrast.ts.
       primary:              "oklch(0.69 0.18 39)",
-      primaryForeground:    "oklch(0.205 0 0)",
+      primaryForeground:    "oklch(0.985 0 0)",
       secondary:            "oklch(0.97 0 0)",
       secondaryForeground:  "oklch(0.205 0 0)",
       muted:                "oklch(0.97 0.003 80)",
@@ -45,9 +48,10 @@ export const design = {
       cardForeground:       "oklch(0.985 0 0)",
       popover:              "oklch(0.22 0.03 260)",
       popoverForeground:    "oklch(0.985 0 0)",
-      // Same brand orange in dark mode; dark ink stays the foreground for AA.
+      // Same brand orange in dark mode; white foreground matches light
+      // theme (deliberate AA exemption — see light-theme comment above).
       primary:              "oklch(0.69 0.18 39)",
-      primaryForeground:    "oklch(0.205 0 0)",
+      primaryForeground:    "oklch(0.985 0 0)",
       secondary:            "oklch(0.27 0.02 260)",
       secondaryForeground:  "oklch(0.985 0 0)",
       muted:                "oklch(0.27 0.02 260)",

@@ -20,9 +20,11 @@
   --card-foreground:       oklch(0.145 0 0);
   --popover:               oklch(1 0 0);
   --popover-foreground:    oklch(0.145 0 0);
-  /* MLabs orange (~#FF6B2C). Dark-on-orange foreground for WCAG AA. */
+  /* MLabs orange (~#FF6B2C). White-on-orange is a deliberate brand
+     choice; does not meet WCAG AA body text (~2.6:1). The pair is
+     exempted from check-contrast — see scripts/check-contrast.ts. */
   --primary:               oklch(0.69 0.18 39);
-  --primary-foreground:    oklch(0.205 0 0);
+  --primary-foreground:    oklch(0.985 0 0);
   --secondary:             oklch(0.97 0 0);
   --secondary-foreground:  oklch(0.205 0 0);
   --muted:                 oklch(0.97 0.003 80);
@@ -66,7 +68,7 @@
   --popover:               oklch(0.22 0.03 260);
   --popover-foreground:    oklch(0.985 0 0);
   --primary:               oklch(0.69 0.18 39);
-  --primary-foreground:    oklch(0.205 0 0);
+  --primary-foreground:    oklch(0.985 0 0);
   --secondary:             oklch(0.27 0.02 260);
   --secondary-foreground:  oklch(0.985 0 0);
   --muted:                 oklch(0.27 0.02 260);
