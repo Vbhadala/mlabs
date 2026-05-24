@@ -12,27 +12,38 @@ This repo ships with **mstack**, a vendored Claude Code skill suite tailored to 
 ## The workflow
 
 ```
-/mlabs-plan ──→ .mstack/plans/<slug>.md
+/mlabs-research ──→ .mstack/research/<slug>.md      (optional, before /mlabs-plan)
        │
        ▼
-/mlabs-review ──→ .mstack/reviews/<slug>.md  (approved + implementation plan)
+/mlabs-plan ──────→ .mstack/plans/<slug>.md
        │
        ▼
-/mlabs-code ──→ .mstack/code/<slug>/  (code + commits + report)
+/mlabs-review ────→ .mstack/reviews/<slug>.md       (approved + implementation plan)
        │
        ▼
-/mlabs-qa ──→ .mstack/qa/<run>/  (scenario-driven test report)
+/mlabs-code ──────→ .mstack/code/<slug>/            (code + commits + report)
+       │
+       ▼
+/mlabs-qa ────────→ .mstack/qa/<run>/               (scenario-driven test report)
+       │
+       │ (escalate paused / un-RCA'd issues)
+       ▼
+/mlabs-debug ─────→ .mstack/debug/<slug>/  ──→ /mlabs-code  (bug fix, RCA-first)
 ```
 
-`/mlabs-mockup` and `/mlabs-design-review` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates.
+**Only `/mlabs-code` edits source code.** Every other skill writes artifacts to `.mstack/` and hands off via the chain.
+
+`/mlabs-mockup` and `/mlabs-design-review` run in parallel when UI is involved. `/mlabs-auto` chains plan → review → code with two confirmation gates (does **not** include `/mlabs-research` or `/mlabs-debug` — those are user-triggered by design).
 
 ## When to use which skill
 
 | Skill | Use when | Edits code? |
 |---|---|---|
+| `/mlabs-research` | Tech choice / stack research with sources + second opinion | No |
 | `/mlabs-plan` | Designing a new feature; producing a plan doc | No |
 | `/mlabs-review` | Reviewing a plan + producing the task list `/mlabs-code` will execute | No |
 | `/mlabs-code` | Executing an approved review autonomously | **Yes (primary)** |
+| `/mlabs-debug` | A specific bug is reported → reproduce → RCA → fix proposal | No (hands to `/mlabs-code`) |
 | `/mlabs-qa` | Scenario-driven QA testing → report → approve → fix | Only post-approval |
 | `/mlabs-mockup` | Generating UI design variants for exploration | No (HTML in `.mstack/mockups/`) |
 | `/mlabs-design-review` | Visual UX audit of live screens → report → approve → fix | Only post-approval |
