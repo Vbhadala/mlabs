@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-24
 **Slug:** 2026-05-24-stripe-route-and-e2e-fixture
-**Status:** reviewed — see `.mstack/reviews/2026-05-24-stripe-route-and-e2e-fixture.md`
+**Status:** implemented — see `.mstack/code/2026-05-24-stripe-route-and-e2e-fixture/report.md`
 **Author:** Vbhadala (with Claude)
 
 ---
