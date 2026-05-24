@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { Text, View } from "react-native";
+import { useMe } from "../../features/auth/hooks";
 import { useUnreadCount } from "../../features/notifications/hooks";
 import { useConversations } from "../../features/messages/hooks";
 
@@ -49,8 +50,28 @@ function Badge({ count }: { count: number }) {
 }
 
 export default function AppLayout() {
+  // Session guard. Cold launch is splash-covered by app/index.tsx, so null
+  // during the first-load isPending window is fine. On 401 / no session /
+  // unverified, bounce to welcome — the gate is the single source of truth
+  // for unauthenticated routing (sign-out in profile.tsx relies on this).
+  //
+  // The badge queries below fire even when about to redirect because hook
+  // call order must stay stable. They're cheap (single GET each) and
+  // react-query will dedupe on remount post-redirect.
+  //
+  // FIXME: deep-link intent loss — when a push notification deep-links into
+  // /(app)/messages/<id> from an expired session, the user lands on welcome
+  // with no breadcrumb back to the original target. Pending-target
+  // preservation is out of scope for this commit.
+  const me = useMe();
   const unread = useUnreadCount();
   const conversations = useConversations();
+
+  if (me.isPending && !me.isFetched) return null;
+  if (me.isError || !me.data?.emailVerified) {
+    return <Redirect href="/(auth)/welcome" />;
+  }
+
   const unreadConvos = (conversations.data ?? []).filter((c) => c.unread).length;
 
   return (
