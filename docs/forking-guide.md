@@ -132,16 +132,23 @@ Load-bearing. Breaking these breaks every fork.
   mobile-Tailwind staleness. If a hook is wrong, fix the hook; don't
   bypass it
 
-## Manual rename map (pre-Phase-10)
+## What `pnpm rename` actually rewrites
 
-Until `pnpm rename` lands, perform these find/replaces per fork:
+Reference for understanding (and debugging) what the rename script
+substitutes. The script anchors every match in a unique context so
+collisions with unrelated prose are impossible.
 
 | Find | Replace with | Where |
 |------|--------------|-------|
-| `@mlabs/` | `@<client>/` | All `package.json`, all source imports |
-| `mlabs-template` | `<client>-app` | Root `package.json`'s `name` field |
-| `MLabs` (in user-facing strings) | client name | Only outside the allowlisted dirs (config/, templates/, legal/, docs/, tests/, e2e/) — the ESLint rule enforces this |
-| `mlabs/no-brand-string-literal` reads from | `@mlabs/config`'s `brand.name` | Edit `packages/config/src/brand.ts` (or wherever brand lives) — the rule re-reads on the next lint pass |
+| `@mlabs/<pkg>` (+ subpaths) | `@<namespace>/<pkg>` | All `package.json`, all source imports, path aliases |
+| `"mlabs-template"` | `"<slug>-template"` | Root `package.json`'s `name` field |
+| `MLabs Template` (phrase) | display name | `app.config.ts` `name`, README heading, DESIGN.md, photo permission strings — replaced as a single phrase so no "Template" word lingers |
+| `mlabs-mobile` | `<slug>-mobile` | `apps/mobile/app.config.ts` `slug`, `packages/auth/src/jwt.ts` `ISSUER`, Maestro IDs, CHANGELOG mentions |
+| `scheme: "mlabs"`, `mlabs://`, `mlabs.example.com` | client scheme + deep-link host | Mobile deep-link config + Maestro YAMLs |
+| Bare `MLabs` (capital, word-bounded) | **stays** | Agency attribution preserved in HANDOVER.md.template, DESIGN.md, AGENTS.md, `.replit`, `tooling/eslint-config/**` |
+| Bare lowercase `mlabs` outside anchored contexts | **stays** | Same reason — preserved as code-level identifier in comments + docs |
+| Bundle IDs (`com.example.mlabs`) | **stays** | Manual per `FORK_CHECKLIST.md` — they need real Apple/Google reverse-domains |
+| `.well-known/*` files | **stays** | Manual — need real Apple Team ID + Android SHA-256 |
 
 The rest (bundle IDs, AASA appID, assetlinks SHA, OAuth callbacks,
 Postmark sender signatures, EAS project ID, Neon DB branch) lives in

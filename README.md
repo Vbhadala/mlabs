@@ -97,11 +97,14 @@ pnpm rename \
 
 Rewrites every `@mlabs/<pkg>` package name, workspace dependency,
 import statement, and path alias to your scope; replaces the
-`"Muscat"` display name, `"muscat"` slug + scheme, deep-link host,
-and `"muscat-mobile"` JWT issuer; writes `.fork-config.json` for
-idempotent re-runs. `.well-known/` placeholders and bundle IDs stay
-manual on purpose — they need real Apple Team IDs and Google Play
-SHA-256 fingerprints, which the script can't guess.
+`"MLabs Template"` display-name phrase, `"mlabs"` slug + scheme,
+deep-link host, and `"mlabs-mobile"` JWT issuer; writes
+`.fork-config.json` for idempotent re-runs. Bare references to
+"MLabs" in agency-attribution prose (HANDOVER, DESIGN, AGENTS,
+`.replit`) stay intact by design. `.well-known/` placeholders
+and bundle IDs stay manual on purpose — they need real Apple
+Team IDs and Google Play SHA-256 fingerprints, which the script
+can't guess.
 
 After the rename:
 

@@ -157,11 +157,14 @@ or before running `/mlabs-qa`.
   a `TEXT_EXTENSIONS` allowlist (`.ts, .tsx, .json, .yaml, …`) and
   bails on extensionless files via `if (ext === "") return false`.
   `.replit` has no extension, so it's silently skipped.
-- Also missed by the same script: the literal word **"MLabs"** in
-  `.replit`'s header comment ("Replit configuration for the MLabs
-  template."). The rename script's substitution list covers
-  `@mlabs/*`, `mlabs-template`, `mlabs/muscat template`, `Muscat`,
-  `muscat`, and friends — but not standalone `MLabs`.
+- The literal word **"MLabs"** in `.replit`'s header comment ("Replit
+  configuration for the MLabs template.") is intentionally preserved
+  post-rename — it reads as agency attribution ("the template that
+  MLabs delivered"). The rename script's substitution list covers
+  `@mlabs/*`, `mlabs-template`, `mlabs/mlabs template`, `MLabs Template`
+  (phrase), `mlabs-mobile`, `scheme: "mlabs"`, `mlabs://`,
+  `mlabs.example.com` — but deliberately not standalone bare `MLabs`
+  or bare lowercase `mlabs` (preserved as attribution).
 - **Fix** (manual, this fork): edit `.replit`. Replace `@mlabs/web` with
   `@mlabs/web` in the workflows task; update the header comment; also
   fix the stale top-level `run = "npm run dev"` → `pnpm dev`, and
@@ -527,18 +530,18 @@ deployment block") with more specific gaps observed mid-fork.
     This unblocks the `.replit` rewrite without opening every dotfile
     to rewrites.
 
-14. **Add `\bMLabs\b` to the rename substitutions.** The script
-    currently substitutes `@mlabs/*`, `mlabs-template`, and
-    `mlabs/muscat template` but leaves the standalone word "MLabs" in
-    comments and headers (e.g. `# Replit configuration for the MLabs
-    template.`). Suggested insertion alongside the existing word-bounded
-    `Muscat` rewrite in `transform()`:
-    ```ts
-    out = out.replace(/\bMuscat\b/g, cfg.displayName)
-    out = out.replace(/\bMLabs\b/g, cfg.displayName)   // ← new
-    ```
-    Forks that prefer to keep "MLabs" as a credit line in attributions
-    can opt out by adding the file to `SKIP_PATH_SUFFIXES`.
+14. **~~Add `\bMLabs\b` to the rename substitutions.~~**
+    *Superseded by the 2026-05-24 brand-consolidation review.* The
+    `\bMLabs\b` matcher was added (per this original recommendation),
+    then dropped again — it over-rewrote agency-attribution prose in
+    `HANDOVER.md.template`, `DESIGN.md`, `AGENTS.md`,
+    `tooling/eslint-config/**`, and `.replit`. Current approach: only
+    the `"MLabs Template"` phrase matcher rewrites the capital-M form
+    (catches README heading, `app.config.ts` name, DESIGN.md
+    attribution). Bare `MLabs` stays as agency credit — no
+    `SKIP_PATH_SUFFIXES` opt-out needed. See
+    `.mstack/reviews/2026-05-24-brand-consolidation.md` for the
+    rationale.
 
 15. **Pre-include Chromium runtime deps in the shipped `replit.nix`.**
     mstack's `/mlabs-qa` is a first-class part of the template
@@ -567,14 +570,18 @@ deployment block") with more specific gaps observed mid-fork.
     QA run.
 
 17. **Document the `.replit` workflow + entrypoint as rename targets
-    in `FORK_CHECKLIST.md.template`.** Until #13 and #14 land, every
-    fork has to manually `grep -r @mlabs .replit` and `grep MLabs
-    .replit` after rename. The fork checklist should call out:
-    > After `pnpm rename`, also manually edit `.replit`:
-    > - Replace any `@mlabs/<pkg>` filters with `@<your-scope>/<pkg>`
-    > - Replace "MLabs" in the header comment with your display name
+    in `FORK_CHECKLIST.md.template`.** #13 lands the `.replit`
+    rewrite for `@mlabs/<pkg>` filters and `mlabs-template` references.
+    Per #14 (superseded), `MLabs` in the header comment now stays
+    intentionally as agency attribution. The remaining manual edit
+    is the entrypoint:
+    > After `pnpm rename`, also check `.replit`:
+    > - `@mlabs/<pkg>` filters are auto-rewritten by the rename
+    >   script (since `.replit` is in `KNOWN_FILES`).
+    > - `# Replit configuration for the MLabs template` header stays
+    >   intentionally — preserves agency attribution.
     > - Update `entrypoint` if you moved the marketing page (the
-    >   default `src/app/page.tsx` becomes wrong after route groups)
+    >   default `src/app/page.tsx` becomes wrong after route groups).
 
 18. **Ship `migrate.ts` using the WebSocket driver (`neon-serverless` +
     `Pool`), not the HTTP driver (`neon-http` + `neon()`).** The HTTP
