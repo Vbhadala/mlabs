@@ -128,8 +128,8 @@ vi.mock("drizzle-orm", () => {
 type Predicate = (r: Record<string, unknown>) => boolean
 
 function makeDb() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- forward ref captured by transaction stub
-  const db: any = {}
+  // Forward ref captured by transaction stub — methods are added via Object.assign below.
+  const db: Record<string, unknown> = {}
   Object.assign(db, {
     select: (cols: Record<string, unknown>) => ({
       from: (table: { _name: "users" | "sessions" }) => {
