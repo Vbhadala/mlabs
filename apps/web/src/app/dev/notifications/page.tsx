@@ -2,7 +2,7 @@
 // Until features/admin (W8) ships its "send notification" tool, this is how
 // you exercise the bell + inbox locally. Visit while signed in.
 //
-// Delete src/app/_dev/ before v1 ship.
+// Delete src/app/dev/ before v1 ship.
 
 import Link from "next/link"
 import { Button } from "@mlabs/ui-web/button"
@@ -29,7 +29,7 @@ export default async function DevSeedNotificationsPage() {
         </Button>
       </form>
       <p className="mt-8 text-xs text-muted-foreground">
-        This route lives under <code>src/app/_dev/</code> and is deleted
+        This route lives under <code>src/app/dev/</code> and is deleted
         before v1 ship.
       </p>
     </main>

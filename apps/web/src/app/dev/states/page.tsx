@@ -1,8 +1,8 @@
-// Storybook-style demo for the state primitives. Lives under /_dev/ so it
+// Storybook-style demo for the state primitives. Lives under /dev/ so it
 // doesn't pollute the marketing or app routes — and so the pre-ship checklist
-// reminds us to delete the whole src/app/_dev/ tree before v1 ships.
+// reminds us to delete the whole src/app/dev/ tree before v1 ships.
 //
-// Hit it locally at: http://localhost:3000/_dev/states
+// Hit it locally at: http://localhost:3000/dev/states
 
 "use client"
 
@@ -42,7 +42,7 @@ export default function StatesDemoPage() {
       <header>
         <h1 className="text-2xl font-semibold">State primitives demo</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Internal route. Delete <code className="text-foreground">src/app/_dev/</code>{" "}
+          Internal route. Delete <code className="text-foreground">src/app/dev/</code>{" "}
           before v1 ship.
         </p>
       </header>

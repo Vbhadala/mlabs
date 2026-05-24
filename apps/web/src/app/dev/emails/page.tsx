@@ -2,7 +2,7 @@
 // in an isolated iframe (srcDoc) so the email styles don't leak into the
 // page chrome. Returns 404 in production so the dev affordance never ships.
 //
-// Delete src/app/_dev/ before v1 ship.
+// Delete src/app/dev/ before v1 ship.
 
 import { notFound } from "next/navigation"
 import { brand } from "@mlabs/config"

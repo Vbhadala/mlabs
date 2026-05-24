@@ -3,7 +3,7 @@
 // sides of the polling loop locally: keep this tab open as yourself, open
 // /login in an incognito window and sign in as the partner.
 //
-// Delete src/app/_dev/ before v1 ship.
+// Delete src/app/dev/ before v1 ship.
 
 import Link from "next/link"
 import { Button } from "@mlabs/ui-web/button"
@@ -31,7 +31,7 @@ export default async function DevSeedMessagesPage() {
         </Button>
       </form>
       <p className="mt-8 text-xs text-muted-foreground">
-        This route lives under <code>src/app/_dev/</code> and is deleted
+        This route lives under <code>src/app/dev/</code> and is deleted
         before v1 ship.
       </p>
     </main>

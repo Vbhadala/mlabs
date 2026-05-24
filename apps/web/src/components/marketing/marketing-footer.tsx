@@ -10,9 +10,9 @@ const productLinks = [
 ]
 
 const resourcesLinks = [
-  { href: "/_dev/states", label: "Component states" },
-  { href: "/_dev/messages", label: "Email previews" },
-  { href: "/_dev/notifications", label: "Notification previews" },
+  { href: "/dev/states", label: "Component states" },
+  { href: "/dev/emails", label: "Email previews" },
+  { href: "/dev/notifications", label: "Notification previews" },
   { href: "/admin", label: "Admin" },
 ]
 
