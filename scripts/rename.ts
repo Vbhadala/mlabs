@@ -337,9 +337,8 @@ export function transform(content: string, cfg: ForkConfig): string {
   // Root package.json: "name": "mlabs-template"
   out = out.replaceAll('"name": "mlabs-template"', `"name": "${cfg.slug}-template"`)
 
-  // CHANGELOG.md historical mention: "mlabs/mlabs template" (post-
-  // consolidation; previously "mlabs/muscat template"). Use the namespace
-  // without the leading @.
+  // CHANGELOG.md historical mention: "mlabs/mlabs template". Use the
+  // namespace without the leading @.
   const nsBare = cfg.namespace.replace(/^@/, "")
   out = out.replaceAll("mlabs/mlabs template", `${nsBare}/${cfg.slug} template`)
 
