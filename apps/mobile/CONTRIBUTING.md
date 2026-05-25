@@ -14,6 +14,22 @@ npx expo start
 Press `i` to open iOS simulator (Mac only), `a` for Android emulator. Hot
 reload on save.
 
+### On Replit (no local Xcode/Android Studio needed)
+
+The repo's `.replit` ships three mobile workflows:
+
+- **Mobile (Expo Web)** — fastest preview; serves `expo start --web` on
+  port 8080. No native APIs.
+- **Mobile (Native Simulator)** — starts Metro with
+  `EXPO_PACKAGER_PROXY_URL` + `REACT_NATIVE_PACKAGER_HOSTNAME` pointing at
+  `$REPLIT_DEV_DOMAIN`, so Replit's built-in iOS/Android preview pane can
+  attach to the real native bundle on port 8081.
+- **Expo Go (Tunnel)** — `expo start --tunnel` for connecting a physical
+  device running Expo Go.
+
+EAS shortcuts (`EAS Init`, `EAS Update`, `EAS Publish Preview iOS`, `EAS
+Publish Preview Android`) are also wired as one-click workflows.
+
 ## Token regeneration
 
 Tailwind config is generated from `src/config/design.ts`. Never hand-edit

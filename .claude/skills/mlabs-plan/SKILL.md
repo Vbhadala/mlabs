@@ -27,6 +27,9 @@ Consult the user on a new feature, then write a structured plan doc to
    - `CLAUDE.md`, `AGENTS.md`, `README.md` if they exist
    - `src/` top-level layout via Glob
    - Any existing plan docs in `.mstack/plans/` (so we don't duplicate)
+   - `.mstack/design-system/DESIGN.md` if present (so the plan respects
+     locked design decisions). If the feature is UI-heavy and no
+     `DESIGN.md` exists, suggest `/mlabs-design-system` first.
 
 2. **Ask the user** (one batch via AskUserQuestion):
    - **Persona** — who is this for?
