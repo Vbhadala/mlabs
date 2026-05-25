@@ -48,3 +48,12 @@ next-env.d.ts
 
 # turborepo
 .turbo/
+
+# Claude Code — keep settings.json + skills/ + CLAUDE.md tracked; ignore session state
+.claude/settings.local.json
+.claude/projects/
+.claude/todos/
+.claude/statsig/
+.claude/shell-snapshots/
+.claude/ide/
+.claude/.credentials.json

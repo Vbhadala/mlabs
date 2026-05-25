@@ -121,6 +121,57 @@ first-boot smoke test.
 Per-client handover (secret rotation, accounts, pre-launch gates) lives
 in [HANDOVER.md.template](./HANDOVER.md.template).
 
+## Working with Claude Code
+
+Claude Code is installed as a workspace devDependency, so `pnpm install`
+gives every fork a repo-local CLI — no global install needed (important on
+Replit, where workspaces are self-contained VMs).
+
+```bash
+pnpm install          # installs Claude Code into node_modules/.bin
+pnpm claude           # launches Claude Code at the repo root
+```
+
+### Authentication (pick one)
+
+Order is: `CLAUDE_CODE_OAUTH_TOKEN` → `ANTHROPIC_API_KEY` → interactive login.
+
+1. **Long-lived OAuth token (recommended for Replit + subscriptions).**
+   On any machine where you're already logged in, run `claude setup-token`,
+   then paste the result into Replit Secrets as `CLAUDE_CODE_OAUTH_TOKEN`.
+   Valid ~1 year, bills against your Claude Pro/Max plan, zero login friction
+   on every fork.
+2. **API key.** Set `ANTHROPIC_API_KEY` in Replit Secrets. Pay-per-token.
+3. **Interactive login.** Set nothing — `pnpm claude` opens a browser the
+   first time and caches credentials in `~/.claude/.credentials.json` on the
+   workspace VM.
+
+See the Claude Code section of [.env.example](./.env.example) for the same
+guidance inline.
+
+### What ships with the template
+
+- **[CLAUDE.md](./CLAUDE.md)** — project memory Claude auto-loads every session
+  (layout, conventions, scripts, brand rule, mstack workflow).
+- **[.claude/settings.json](./.claude/settings.json)** — permission allowlist
+  for routine pnpm/turbo/git/gh-read commands so forkers aren't prompted for
+  every benign action.
+- **[.claude/skills/](./.claude/skills/)** — the mstack skill suite (committed).
+
+### mstack slash commands
+
+| Command | When to reach for it |
+|---|---|
+| `/mlabs-plan` | Plan a new feature (interactive, writes a plan doc) |
+| `/mlabs-review` | Critique a plan and lock decisions before code |
+| `/mlabs-code` | Execute an approved review, atomic commit per task |
+| `/mlabs-qa` | Playwright-driven QA against a scenario + bug report |
+| `/mlabs-debug` | Root-cause a specific failure |
+| `/mlabs-mockup` | Generate static HTML design variants |
+| `/mlabs-design-system` · `/mlabs-ux-audit` · `/mlabs-research` · `/mlabs-auto` | (see `.claude/skills/`) |
+
+Full skill descriptions live in `.claude/skills/<name>/SKILL.md`.
+
 ## Learn more
 
 - [docs/forking-guide.md](./docs/forking-guide.md) — three tiers of change (safe / extend / don't touch)
