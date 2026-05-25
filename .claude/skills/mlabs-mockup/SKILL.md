@@ -52,15 +52,24 @@ Two intake paths:
 
 In parallel:
 
-- `src/config/design.ts` — semantic tokens + scales
-- `src/config/brand.ts` — name, tagline, support email
-- `src/app/globals.css` — CSS variables (HSL triplets, light + dark)
-- `tailwind.config.*` if present
+- `packages/config/src/design.ts` (or legacy `src/config/design.ts`) —
+  semantic tokens + scales
+- `packages/config/src/brand.ts` (or legacy `src/config/brand.ts`) —
+  name, tagline, support email
+- `apps/web/src/app/globals.css` (or legacy `src/app/globals.css`) — CSS
+  variables (OKLCH, light + dark)
+- `apps/mobile/tailwind.config.js` (generated; read for reference only)
 - `components.json` (shadcn) and any existing screens that solve a similar
-  problem (`src/features/*/`, `src/app/(app)/*/page.tsx`)
+  problem (`apps/web/src/features/*/`, `apps/web/src/app/(app)/*/page.tsx`)
+- `.mstack/design-system/DESIGN.md` if present — the locked design system
 
 The mockups must use the actual brand tokens. No fake colours, no fake
 typefaces.
+
+**Missing design system?** If `brand.name` is still `"MLabs Template"`
+AND no `DESIGN.md` exists, pause and suggest the user run
+`/mlabs-design-system` first. Generating mockups against the template
+defaults wastes a round.
 
 ## Phase 3 — Generate
 
