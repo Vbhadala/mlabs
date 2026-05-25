@@ -21,9 +21,11 @@
     "check-contrast": "tsx scripts/check-contrast.ts",
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
-    "rename": "tsx scripts/rename.ts"
+    "rename": "tsx scripts/rename.ts",
+    "claude": "claude"
   },
   "devDependencies": {
+    "@anthropic-ai/claude-code": "^2.1.150",
     "@mlabs/config": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "lefthook": "^2.1.6",
@@ -34,6 +36,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@anthropic-ai/claude-code",
       "esbuild",
       "lefthook",
       "msw",
