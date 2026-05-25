@@ -97,9 +97,12 @@ describe("signAccessToken / verifyAccessToken", () => {
 
   it("rejects a tampered signature", async () => {
     const { token } = await signAccessToken(user)
-    // Flip a character in the signature section.
     const [h, p, sig] = token.split(".")
-    const tampered = `${h}.${p}.${sig.slice(0, -1)}A`
+    // Flip the FIRST sig char (not the last): the trailing base64url char of an
+    // HS256 sig only encodes 4 meaningful bits, so a last-char swap can decode
+    // to an identical byte sequence and pass verification (~1/16 flake rate).
+    const swap = sig[0] === "A" ? "B" : "A"
+    const tampered = `${h}.${p}.${swap}${sig.slice(1)}`
     const payload = await verifyAccessToken(tampered)
     expect(payload).toBeNull()
   })
