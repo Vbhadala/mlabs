@@ -10,6 +10,7 @@ import {
   sendVerifyEmail,
 } from "@/lib/email"
 import { createAuth } from "@mlabs/auth/server"
+import { buildTrustedOrigins } from "@/lib/auth/origins"
 
 // baseUrl fallback chain (Replit-aware):
 //   1. BETTER_AUTH_URL (explicit override — production, CI, e2e)
@@ -32,6 +33,9 @@ export const auth = createAuth({
   baseUrl,
   initialAdminEmail: env.INITIAL_ADMIN_EMAIL,
   isProduction: env.NODE_ENV === "production",
+  trustedOrigins: buildTrustedOrigins({
+    replitDevDomain: env.REPLIT_DEV_DOMAIN,
+  }),
   email: {
     sendVerifyEmail: ({ to, name, verifyUrl }) =>
       sendVerifyEmail({ to, name, verifyUrl }),

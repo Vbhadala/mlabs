@@ -48,6 +48,13 @@ export interface CreateAuthOptions {
   email: AuthEmailSender
   /** Optional logger. Defaults to console. */
   logger?: AuthLogger
+  /** Optional. Additional allowed Origin headers for /api/auth/*. Better Auth
+   *  already auto-trusts `new URL(baseURL).origin`; supply this for cross-port
+   *  localhost (dev) or Replit preview (browser hits *.replit.dev while the
+   *  server runs at localhost:5000 → "Invalid origin" 403). Better Auth also
+   *  reads BETTER_AUTH_TRUSTED_ORIGINS env (comma-separated) natively — see
+   *  .env.example for the fork escape hatch. */
+  trustedOrigins?: string[]
 }
 
 export function createAuth({
@@ -58,6 +65,7 @@ export function createAuth({
   isProduction = false,
   email,
   logger,
+  trustedOrigins,
 }: CreateAuthOptions) {
   const log: AuthLogger =
     logger ??
@@ -77,6 +85,7 @@ export function createAuth({
     database: drizzleAdapter(db, { provider: "pg" }),
     secret,
     baseURL: baseUrl,
+    trustedOrigins,
 
     // Phase 5.5: enable `Authorization: Bearer <session-token>` transport.
     // Mobile (Expo) cannot use cookies, so it sends the session token in the
