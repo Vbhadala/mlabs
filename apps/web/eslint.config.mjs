@@ -22,9 +22,10 @@ const eslintConfig = defineConfig([
     files: ["src/config/env.ts"],
     rules: { "no-restricted-syntax": "off" },
   },
-  // next config needs process.env at boot
+  // next config needs process.env at boot (file is .mjs — see the header
+  // comment in next.config.mjs for why)
   {
-    files: ["next.config.ts"],
+    files: ["next.config.{ts,mjs}"],
     rules: { "no-restricted-syntax": "off" },
   },
   // Build/test/CI scripts that legitimately need process.env. The t3-env
