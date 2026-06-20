@@ -4,25 +4,25 @@
 
 const steps = [
   {
-    cmd: "/mlabs-plan",
+    cmd: "/mstack:mstack-plan",
     title: "Plan",
     body:
       "Interactive consultation. Reads the codebase, asks about persona, wedge, and scope, then writes a structured plan to .mstack/plans/. No code edits.",
   },
   {
-    cmd: "/mlabs-review",
+    cmd: "/mstack:mstack-review",
     title: "Review",
     body:
       "Critiques the plan against MLabs conventions and the existing code. Raises blockers, locks decisions with you, and writes an approved task list to .mstack/reviews/.",
   },
   {
-    cmd: "/mlabs-code",
+    cmd: "/mstack:mstack-code",
     title: "Code",
     body:
       "The only mstack skill that edits code. Executes the approved review autonomously — one atomic commit per task — and pauses on ambiguity (migrations, brand changes, new deps).",
   },
   {
-    cmd: "/mlabs-qa",
+    cmd: "/mstack:mstack-qa",
     title: "QA",
     body:
       "Scenario-driven testing. Drives Playwright through the flows you care about, captures screenshots + console errors, writes a bug report, then fixes + re-verifies after your approval.",
@@ -42,11 +42,11 @@ export function Testimonial() {
             review → code → qa
           </h2>
           <p className="mx-auto mt-5 text-[16px] leading-relaxed text-muted-foreground">
-            Four custom Claude Code skills that live under{" "}
+            Four custom Claude Code skills that ship as the{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px]">
-              .claude/skills/
-            </code>
-            . Each one writes its outputs to{" "}
+              mstack
+            </code>{" "}
+            Claude Code plugin. Each one writes its outputs to{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px]">
               .mstack/
             </code>{" "}
@@ -81,15 +81,15 @@ export function Testimonial() {
         <p className="mx-auto mt-10 max-w-2xl text-center text-[13px] text-muted-foreground">
           There&apos;s also{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mlabs-mockup
+            /mstack:mstack-mockup
           </code>
           ,{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mlabs-design-review
+            /mstack:mstack-design-system
           </code>
           , and{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mlabs-auto
+            /mstack:mstack-auto
           </code>{" "}
           for design + autopilot workflows.
         </p>

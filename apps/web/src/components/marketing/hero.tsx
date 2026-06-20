@@ -30,19 +30,19 @@ export function Hero() {
           <span className="font-semibold text-foreground">mstack</span> is
           four Claude Code skills —{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
-            /mlabs-plan
+            /mstack:mstack-plan
           </code>{" "}
           →{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
-            /mlabs-review
+            /mstack:mstack-review
           </code>{" "}
           →{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
-            /mlabs-code
+            /mstack:mstack-code
           </code>{" "}
           →{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
-            /mlabs-qa
+            /mstack:mstack-qa
           </code>{" "}
           — that take a feature from idea to shipped code without
           vibe-coding it. They run against this template, so every MVP we

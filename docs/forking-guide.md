@@ -18,6 +18,15 @@ For "why is the codebase laid out like this," see:
 - [docs/decisions/0006-monorepo.md](decisions/0006-monorepo.md) — monorepo + pnpm + Turborepo
 - [docs/decisions/0007-service-layer.md](decisions/0007-service-layer.md) — service + defineOperation pattern
 
+## Agent workflow (mstack plugin)
+
+The mstack agent workflow now ships as a versioned **mstack** plugin
+(`vbhadala/mstack`) rather than vendored `.claude/skills/` files, so it
+auto-updates via `/plugin`. It's declared in `.claude/settings.json`, so when
+you trust the fork's folder Claude Code prompts you to install it — accept it,
+or run `/plugin install mstack@mstack`. The skills are namespaced `/mstack:*`.
+Source: [github.com/Vbhadala/mstack](https://github.com/Vbhadala/mstack).
+
 ---
 
 ## Tier 1 — Safe to override
