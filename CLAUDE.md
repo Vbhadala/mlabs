@@ -71,31 +71,35 @@ caching + workspace filters apply.
   installed automatically on `pnpm install`. Don't bypass with `--no-verify`
   unless explicitly asked.
 
-## mstack workflow (skills under `.claude/skills/`)
+## mstack workflow (the mstack plugin)
 
-This template ships an opinionated agent workflow. Prefer these over freelancing:
+This template's opinionated agent workflow ships as the **mstack plugin**
+(`vbhadala/mstack`), declared in `.claude/settings.json`. When you trust this
+repo folder, Claude Code prompts you to install it — accept the prompt, or run
+`/plugin install mstack@mstack`. Its skills are namespaced `/mstack:*`. Prefer
+these over freelancing:
 
 | Skill | When to use |
 |---|---|
-| `/mlabs-plan` | New feature — interactive consultation, writes `.mstack/plans/<slug>.md` |
-| `/mlabs-review` | Critique a plan, lock decisions, produces approved review doc |
-| `/mlabs-code` | Execute an approved review, atomic commit per task |
-| `/mlabs-qa` | Scenario-driven Playwright QA + structured bug report |
-| `/mlabs-debug` | Root-cause investigation for a specific failure |
-| `/mlabs-mockup` | Generate static HTML design variants under `.mstack/mockups/` |
-| `/mlabs-design-system` | Design system inspection / tweaks |
-| `/mlabs-ux-audit` | UX review against the design system |
-| `/mlabs-research` | Background research for planning |
-| `/mlabs-auto` | End-to-end auto pipeline (plan → review → code) |
+| `/mstack:mstack-plan` | New feature — interactive consultation, writes `.mstack/plans/<slug>.md` |
+| `/mstack:mstack-review` | Critique a plan, lock decisions, produces approved review doc |
+| `/mstack:mstack-code` | Execute an approved review, atomic commit per task |
+| `/mstack:mstack-qa` | Scenario-driven Playwright QA + structured bug report |
+| `/mstack:mstack-debug` | Root-cause investigation for a specific failure |
+| `/mstack:mstack-mockup` | Generate static HTML design variants under `.mstack/mockups/` |
+| `/mstack:mstack-design-system` | Design system inspection / tweaks |
+| `/mstack:mstack-ux-audit` | UX review against the design system |
+| `/mstack:mstack-research` | Background research for planning |
+| `/mstack:mstack-auto` | End-to-end auto pipeline (plan → review → code) |
 
 `.mstack/` is the workflow's working directory (plans, reviews, code ledgers,
 QA reports). Treat its files as durable artifacts — don't delete without reason.
 
 ## When in doubt
 
-- New feature → `/mlabs-plan`, not direct edits to `apps/` or `packages/`.
-- Bug report → `/mlabs-debug` to root-cause, then plan/review/code if non-trivial.
-- Design change → `/mlabs-mockup` first to explore visually before touching `src/`.
+- New feature → `/mstack:mstack-plan`, not direct edits to `apps/` or `packages/`.
+- Bug report → `/mstack:mstack-debug` to root-cause, then plan/review/code if non-trivial.
+- Design change → `/mstack:mstack-mockup` first to explore visually before touching `src/`.
 - Anything touching brand colors or copy → check `packages/config` is the source.
 
 ## Don't

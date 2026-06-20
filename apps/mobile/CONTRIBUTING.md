@@ -73,6 +73,14 @@ Production build profiles are deliberately omitted in v1 (per Architecture
 decision #6); add them per-fork when ready to submit. The HANDOVER.md
 template carries the full submission checklist.
 
+**Upload trimming.** EAS archives the whole pnpm workspace from the repo
+root. A root-level `.easignore` keeps that archive lean (drops `docs/`,
+`.mstack/`, web build output, test artifacts, etc.). ⚠️ When present,
+`.easignore` *replaces* `.gitignore` for EAS uploads rather than merging —
+so it re-lists every critical exclusion (notably `.env*`) itself. Never
+exclude a `package.json` or the lockfile: EAS runs `pnpm install` and needs
+the full workspace graph to resolve `workspace:*` deps.
+
 ## When bumping the Expo SDK in production
 
 OTA updates only land on users whose installed binary has a matching

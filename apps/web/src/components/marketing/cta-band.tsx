@@ -16,7 +16,7 @@ export function CtaBand() {
               Adding a feature?
               <br />
               Start with{" "}
-              <span className="font-mono text-primary">/mlabs-plan</span>.
+              <span className="font-mono text-primary">/mstack:mstack-plan</span>.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-[16px] text-background/70">
               The plan lands in{" "}
@@ -25,15 +25,15 @@ export function CtaBand() {
               </code>
               . Pass it through{" "}
               <code className="rounded bg-background/10 px-1.5 py-0.5 font-mono text-[14px] text-background">
-                /mlabs-review
+                /mstack:mstack-review
               </code>{" "}
               and{" "}
               <code className="rounded bg-background/10 px-1.5 py-0.5 font-mono text-[14px] text-background">
-                /mlabs-code
+                /mstack:mstack-code
               </code>{" "}
               to ship. End with{" "}
               <code className="rounded bg-background/10 px-1.5 py-0.5 font-mono text-[14px] text-background">
-                /mlabs-qa
+                /mstack:mstack-qa
               </code>
               .
             </p>
@@ -42,10 +42,10 @@ export function CtaBand() {
                 Run in this repo
               </div>
               <pre className="overflow-x-auto font-mono text-[13px] leading-relaxed text-background">
-                <code>{`/mlabs-plan
-/mlabs-review
-/mlabs-code
-/mlabs-qa`}</code>
+                <code>{`/mstack:mstack-plan
+/mstack:mstack-review
+/mstack:mstack-code
+/mstack:mstack-qa`}</code>
               </pre>
             </div>
           </div>

@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Tailwind v4 excludes node_modules from auto-scan, which means pnpm-symlinked
+   workspace packages (e.g. @mlabs/ui-web) are invisible to the class scanner.
+   Without this @source, classes used only in packages/*\/src/**\/*.tsx are
+   silently purged from the build. */
+@source "../../../../packages/*/src/**/*.{ts,tsx}";
+
 @custom-variant dark (&:is(.dark *));
 
 /*

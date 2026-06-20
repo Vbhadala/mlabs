@@ -105,7 +105,7 @@ export function FeatureGrid() {
               S3-style storage driver, and a{" "}
               <span className="font-semibold text-foreground">Sentry</span>{" "}
               hookup. Pick a vendor when the first feature actually needs
-              one — surfaced naturally in /mlabs-plan.
+              one — surfaced naturally in /mstack:mstack-plan.
             </p>
           </div>
         </div>

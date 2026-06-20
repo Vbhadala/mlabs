@@ -1,0 +1,68 @@
+# .easignore — controls which files are uploaded to EAS Build.
+#
+# ⚠️  IMPORTANT: when this file exists, EAS uses it INSTEAD OF .gitignore
+# (it does NOT merge the two). So this file must re-list every critical
+# exclusion from .gitignore — especially `.env*`, or secrets would be
+# uploaded — and then add monorepo-specific trimming on top.
+#
+# Placed at the monorepo root because EAS archives a pnpm workspace from
+# the root (where pnpm-workspace.yaml + pnpm-lock.yaml live). Do NOT exclude
+# any package.json or the lockfile: EAS runs `pnpm install` on its build
+# servers and needs the full workspace graph to resolve `workspace:*` deps.
+
+# ── dependencies (EAS reinstalls these) ─────────────────────────────
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ── secrets / env (NEVER upload) ────────────────────────────────────
+.env*
+!.env.example
+
+# ── build output & caches ───────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+web-build/
+.turbo/
+.vercel/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Expo / native (EAS regenerates via prebuild) ────────────────────
+.expo/
+.expo-shared/
+expo-env.d.ts
+ios/
+android/
+
+# ── test / QA artifacts (not needed to build the binary) ────────────
+test-results/
+playwright-report/
+playwright/.cache/
+.maestro-runs/
+.maestro/
+
+# ── misc ────────────────────────────────────────────────────────────
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── monorepo: directories a native build never needs ────────────────
+# (kept separate so it's obvious these are uploads-trimming, not safety)
+docs/
+.mstack/
+.context/
+.github/
+.claude/

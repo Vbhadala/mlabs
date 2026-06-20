@@ -15,6 +15,15 @@ deploys on Replit. It documents every friction point hit on the first fork
 already handles them. Skim the "Quick start (post-template-hardening)" section
 at the bottom for the happy-path flow.
 
+## Agent workflow (mstack plugin)
+
+- [ ] Install the **mstack** agent workflow. It's a Claude Code plugin already
+  declared in `.claude/settings.json` (`vbhadala/mstack`). When you open the
+  repo and trust the folder, Claude Code prompts you to install `mstack@mstack`
+  — accept it, or run `/plugin install mstack@mstack`. It provides the
+  `/mstack:*` skills (plan → review → code, qa, debug, mockup, design-system,
+  ux-audit, research, auto).
+
 ## Required before first deploy
 
 - [ ] Create Neon project + branch for `{{SLUG}}`.
