@@ -19,7 +19,7 @@ steps unnecessary on the next fork.
 | 6 | (Optional) `.env.local` from `.env.example` | repo root | Most env vars are `.optional()` in `apps/web/src/config/env.ts`, so the app boots without them. They're required for actual feature use (DB, auth, email, uploads). |
 | 7 | Run DB migrations against production Neon | `pnpm db:migrate` w/ prod `DATABASE_URL` | Production runtime hits `relation "error_log" does not exist`. Migrations are not auto-applied on first deploy. |
 | 8 | Replace `@mlabs/web` with `@<new-scope>/web` in `.replit` `[workflows]` | `.replit` | Surfaced on the BetFrnd fork. `pnpm rename` correctly updates the `[deployment]` block but **leaves `[[workflows.workflow.tasks]] args` untouched**, because `scripts/rename.ts` walks the repo via a `TEXT_EXTENSIONS` allowlist and short-circuits on extensionless files. Result: Replit preview URL returns 500 because `pnpm --filter @mlabs/web` matches no workspace. |
-| 9 | Add Chromium runtime libs to `replit.nix` | `replit.nix` | Surfaced on the BetFrnd fork. mstack's `/mstack:mstack-qa` skill drives Playwright, but `chrome-headless-shell` fails on launch (`error while loading shared libraries: libglib-2.0.so.0`) because the Replit Nix env ships only `pkgs.unzip`. `ldd` confirms ~14 system libs are missing. `/mstack:mstack-qa` cannot run on Replit until these are added. |
+| 9 | Add Chromium runtime libs to `replit.nix` | `replit.nix` | Surfaced on the BetFrnd fork. mstack's `/mstack-qa` skill drives Playwright, but `chrome-headless-shell` fails on launch (`error while loading shared libraries: libglib-2.0.so.0`) because the Replit Nix env ships only `pkgs.unzip`. `ldd` confirms ~14 system libs are missing. `/mstack-qa` cannot run on Replit until these are added. |
 | 10 | Switch **both** migration script and app runtime DB client from Neon HTTP driver to WebSocket (`Pool`) driver | `packages/db/scripts/migrate.ts`, `packages/db/src/client.ts` | Surfaced on the BetFrnd fork. The template originally used `neon-http` everywhere. Drizzle's migrator needs multi-statement transactions — HTTP returns `null` rows and crashes mid-migration. **Also**, the HTTP driver returns `rows: null` (instead of `rows: []`) for zero-row queries against real tables, which crashes drizzle's adapter (`Cannot read properties of null (reading 'map')`) — surfaced when BetterAuth's signup did its "does this email exist?" lookup. `neon-http` is only correct for true edge runtimes (Cloudflare Workers, Vercel Edge); on Replit / VPS / any long-lived Node server, use `neon-serverless` + `Pool` for everything. Always call `pool.end()` in `finally` (migrate script only — long-lived app should keep the Pool). |
 | 11 | Switch deploy to **Next.js standalone output** + prune the workspace before image upload | `apps/web/next.config.mjs`, `.replit` `[deployment]`, new `scripts/deploy-prune.cjs` | Surfaced on the BetFrnd fork. First production deploy failed with `error: image size is over the limit of 8 GiB`. Default `next start` needs the full `node_modules` graph (~2 GB once all workspace devDeps land — Playwright, vitest, drizzle-kit, eslint, the Claude Code CLI in root devDeps, etc.), and the Replit Reserved VM image bundles **the entire workspace tree** — including a stale 582 MB `apps/web/.next/dev` Turbopack cache, `apps/mobile`, `attached_assets/`, `.mstack/`, and `zipFile.zip`. `.replit hidden = [...]` is an IDE-only file-tree setting, **not** a deploy exclusion, and the Replit deploy bundler ignores `.gitignore`. Fix: emit a self-contained `.next/standalone/` runtime, copy `public/` + `.next/static/` back into it, delete everything else not on the runtime path, and run the standalone server instead of `next start`. Target image size after these changes is 150–300 MB. |
 | 12 | **Bundle a portable Node.js binary into the standalone artifact and exec it via relative path at runtime** | `.replit` `[deployment].build` + `run` (via `deployConfig`) | Surfaced on the BetFrnd fork right after #11 worked. Standalone-output Reserved-VM deploys crash-loop on startup with `sh: line 1: node: command not found` — and the same for `pnpm` and `pnpm exec node`. Replit's Reserved VM **run** image is a slim container that does NOT inherit the Nix toolchain from the build container: `modules = ["nodejs-20"]` puts `node` on PATH during build, but the run image has no `node`, no `pnpm`, not even under `bash -lc` (login shell). Copying the Nix node binary into the artifact also fails (`cannot execute: required file not found` — the ELF interpreter `/nix/store/.../ld-linux-x86-64.so.2` isn't mounted at runtime either). **Fix:** during build, `curl` the official portable `linux-x64` Node tarball from nodejs.org, copy `bin/node` into `apps/web/.next/standalone/node-runtime`, and exec that relative path at run. The nodejs.org binary links only against standard glibc (universally available), so it has no Nix/PATH dependency. Adds ~85 MB to the image — still well under the 8 GiB cap. |
@@ -29,7 +29,7 @@ steps unnecessary on the next fork.
 After changes 1–4, `pnpm install` + the configured workflow boot the
 Next.js 16 web app cleanly and the home page renders in the Replit
 preview. Changes 5–14 are required before / after the first **Publish**
-or before running `/mstack:mstack-qa`.
+or before running `/mstack-qa`.
 
 ---
 
@@ -232,12 +232,12 @@ or before running `/mstack:mstack-qa`.
   non-edge deployment.** Add a `globalThis` HMR guard in the runtime client
   to avoid leaking a Pool per hot-reload in `next dev`.
 
-### 9. Hit the `/mstack:mstack-qa` env blocker
+### 9. Hit the `/mstack-qa` env blocker
 
 (Added by the BetFrnd fork, 2026-05-13.)
 
-- After `/mstack:mstack-code` finished the v3 landing rewrite, the next step in
-  the mstack workflow is `/mstack:mstack-qa`, which drives Playwright.
+- After `/mstack-code` finished the v3 landing rewrite, the next step in
+  the mstack workflow is `/mstack-qa`, which drives Playwright.
 - `npx playwright install chromium` downloaded `chrome-headless-shell`
   successfully (~113 MiB).
 - First test launch failed:
@@ -260,7 +260,7 @@ or before running `/mstack:mstack-qa`.
   `pkgs.expat`, `pkgs.libxkbcommon`, `pkgs.libdrm`, `pkgs.mesa`,
   `pkgs.cairo`, `pkgs.pango`, `pkgs.alsa-lib`, `pkgs.gtk3`,
   `pkgs.xorg.libX11/.libXcomposite/.libXdamage/.libXext/.libXfixes/.libXrandr/.libxcb`).
-  Replit rebuilds the Nix profile on next workspace start; `/mstack:mstack-qa`
+  Replit rebuilds the Nix profile on next workspace start; `/mstack-qa`
   should succeed after that.
 
 ### 11. Hit the deploy image size cap
@@ -546,15 +546,15 @@ deployment block") with more specific gaps observed mid-fork.
     rationale.
 
 15. **Pre-include Chromium runtime deps in the shipped `replit.nix`.**
-    mstack's `/mstack:mstack-qa` is a first-class part of the template
+    mstack's `/mstack-qa` is a first-class part of the template
     (`AGENTS.md` documents it as part of the plan → review → code → qa
     pipeline). It cannot run on Replit out of the box because
     `replit.nix` ships only `pkgs.unzip`. Two options:
     - **Bake them in:** ship `replit.nix` with the ~22 Chromium runtime
       packages already declared. Cost: bigger Nix profile + slower
       first-boot rebuild on every fork that doesn't run QA. Benefit:
-      `/mstack:mstack-qa` "just works" on first try.
-    - **Document them:** add a "Before first `/mstack:mstack-qa`, extend
+      `/mstack-qa` "just works" on first try.
+    - **Document them:** add a "Before first `/mstack-qa`, extend
       `replit.nix` with Playwright deps" step in
       `FORK_CHECKLIST.md.template`. Cost: every fork hits the same
       abort-and-fix loop the BetFrnd fork did. Benefit: smaller
@@ -565,7 +565,7 @@ deployment block") with more specific gaps observed mid-fork.
 
 16. **Also cache the Chromium binary in a Replit workflow.** Even with
     the Nix libs in place, `npx playwright install chromium` is a
-    ~113 MiB download on first `/mstack:mstack-qa` run. Adding a one-time
+    ~113 MiB download on first `/mstack-qa` run. Adding a one-time
     `pnpm exec playwright install chromium` step (gated by a
     `.cache/ms-playwright` check) to either the first-boot workflow or
     a dedicated "QA setup" workflow would shave a chunk off the first

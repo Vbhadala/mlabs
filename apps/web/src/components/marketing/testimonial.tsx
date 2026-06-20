@@ -4,25 +4,25 @@
 
 const steps = [
   {
-    cmd: "/mstack:mstack-plan",
+    cmd: "/mstack-plan",
     title: "Plan",
     body:
       "Interactive consultation. Reads the codebase, asks about persona, wedge, and scope, then writes a structured plan to .mstack/plans/. No code edits.",
   },
   {
-    cmd: "/mstack:mstack-review",
+    cmd: "/mstack-review",
     title: "Review",
     body:
       "Critiques the plan against MLabs conventions and the existing code. Raises blockers, locks decisions with you, and writes an approved task list to .mstack/reviews/.",
   },
   {
-    cmd: "/mstack:mstack-code",
+    cmd: "/mstack-code",
     title: "Code",
     body:
       "The only mstack skill that edits code. Executes the approved review autonomously — one atomic commit per task — and pauses on ambiguity (migrations, brand changes, new deps).",
   },
   {
-    cmd: "/mstack:mstack-qa",
+    cmd: "/mstack-qa",
     title: "QA",
     body:
       "Scenario-driven testing. Drives Playwright through the flows you care about, captures screenshots + console errors, writes a bug report, then fixes + re-verifies after your approval.",
@@ -81,15 +81,15 @@ export function Testimonial() {
         <p className="mx-auto mt-10 max-w-2xl text-center text-[13px] text-muted-foreground">
           There&apos;s also{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mstack:mstack-mockup
+            /mstack-mockup
           </code>
           ,{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mstack:mstack-design-system
+            /mstack-design-system
           </code>
           , and{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono">
-            /mstack:mstack-auto
+            /mstack-auto
           </code>{" "}
           for design + autopilot workflows.
         </p>
