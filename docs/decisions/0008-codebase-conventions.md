@@ -9,7 +9,7 @@
 ## Context
 
 The first MLabs fork (BetFrnd, 2026-05-13 → 2026-05-23) ran 6 sprints
-through the mstack `/mstack:mstack-plan → /mstack:mstack-review → /mstack:mstack-code → /mstack:mstack-qa`
+through the mstack `/mstack-plan → /mstack-review → /mstack-code → /mstack-qa`
 pipeline. Over those sprints, ~70 non-obvious conventions surfaced as
 patterns that worked + anti-patterns that didn't. Most don't fit cleanly
 into the existing CLAUDE.md / AGENTS.md surfaces (CLAUDE.md is per-fork
@@ -17,7 +17,7 @@ overrides; AGENTS.md is hard rules), but they're load-bearing enough
 that the next fork should not have to rediscover them.
 
 This ADR records the 11 most-cited conventions so future plan reviewers
-+ /mstack:mstack-code runs can reference a single source of truth.
++ /mstack-code runs can reference a single source of truth.
 
 The "BetFrnd" attribution is historical, not normative — these apply to
 every MVP forked from this template.
@@ -131,10 +131,10 @@ Cheap to mis-state, cheap to verify; verify.
 - **Unit tests** in `__tests__/` cover pre-transaction validation,
   authorization checks, input-shape parsing, and any branch that doesn't
   touch a real DB transaction. Mock-friendly. Run via `pnpm test`.
-- **`/mstack:mstack-qa`** runs the in-transaction success paths and any spec
+- **`/mstack-qa`** runs the in-transaction success paths and any spec
   that requires real Postgres (FOR UPDATE timing, partial UNIQUE INDEX
   contention, raw SQL semantics). Mark these in service tests with a
-  `describe.skip("[deferred to /mstack:mstack-qa]", ...)` block enumerating
+  `describe.skip("[deferred to /mstack-qa]", ...)` block enumerating
   scenario names — they're documentation of the test surface even when
   unit-skipped.
 

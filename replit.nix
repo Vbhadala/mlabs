@@ -5,12 +5,12 @@
     #
     # Without these, `chrome-headless-shell` fails to launch with
     # "error while loading shared libraries: libglib-2.0.so.0".
-    # /mstack:mstack-qa drives Playwright as part of the standard mstack
+    # /mstack-qa drives Playwright as part of the standard mstack
     # workflow, so the template ships these by default — first-fork
     # QA "just works" without a replit.nix edit.
     #
     # Adds ~one-time Nix profile rebuild cost on first workspace start
-    # (~5–10 min). Forks that don't run /mstack:mstack-qa can trim the list,
+    # (~5–10 min). Forks that don't run /mstack-qa can trim the list,
     # but the saving is small relative to other workspace deps.
     #
     # See docs/template/TEMPLATE.md recommendation #15 + lesson #9.

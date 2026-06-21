@@ -164,13 +164,13 @@ guidance inline.
 
 | Command | When to reach for it |
 |---|---|
-| `/mstack:mstack-plan` | Plan a new feature (interactive, writes a plan doc) |
-| `/mstack:mstack-review` | Critique a plan and lock decisions before code |
-| `/mstack:mstack-code` | Execute an approved review, atomic commit per task |
-| `/mstack:mstack-qa` | Playwright-driven QA against a scenario + bug report |
-| `/mstack:mstack-debug` | Root-cause a specific failure |
-| `/mstack:mstack-mockup` | Generate static HTML design variants |
-| `/mstack:mstack-design-system` · `/mstack:mstack-ux-audit` · `/mstack:mstack-research` · `/mstack:mstack-auto` | (see the plugin) |
+| `/mstack-plan` | Plan a new feature (interactive, writes a plan doc) |
+| `/mstack-review` | Critique a plan and lock decisions before code |
+| `/mstack-code` | Execute an approved review, atomic commit per task |
+| `/mstack-qa` | Playwright-driven QA against a scenario + bug report |
+| `/mstack-debug` | Root-cause a specific failure |
+| `/mstack-mockup` | Generate static HTML design variants |
+| `/mstack-design-system` · `/mstack-ux-audit` · `/mstack-research` · `/mstack-auto` | (see the plugin) |
 
 Full skill descriptions live in the plugin (`/plugin` → mstack), or at
 [github.com/Vbhadala/mstack](https://github.com/Vbhadala/mstack).
