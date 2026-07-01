@@ -10,7 +10,8 @@
     "./schema": "./src/schema/index.ts",
     "./client": "./src/client.ts",
     "./audit": "./src/audit.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./status": "./src/status.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
