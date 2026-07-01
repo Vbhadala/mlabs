@@ -40,9 +40,10 @@ at the bottom for the happy-path flow.
   - [ ] Replace `{{ANDROID_PACKAGE}}` with the Android package set above.
   - [ ] Replace `{{ANDROID_CERT_SHA256}}` with the Play Console signing cert fingerprint.
 - [ ] `eas init` to bind this fork to a new EAS project.
-- [ ] Set GitHub repo secrets: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `POSTMARK_API_KEY`, `INITIAL_ADMIN_EMAIL`.
+- [ ] Set GitHub repo secrets: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `POSTMARK_API_KEY`.
 - [ ] `pnpm db:migrate` against the new Neon database.
 - [ ] First-boot smoke: `pnpm dev`, sign up, verify email lands.
+- [ ] Grant yourself admin: `pnpm make-admin you@example.com` (or `pnpm make-admin` to promote the first signup).
 
 ## Verify the rename worked
 

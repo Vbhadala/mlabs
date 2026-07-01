@@ -15,6 +15,7 @@
     "db:generate": "pnpm --filter @mlabs/db generate",
     "db:migrate": "pnpm --filter @mlabs/db migrate",
     "db:studio": "pnpm --filter @mlabs/db studio",
+    "make-admin": "pnpm --filter @mlabs/db make-admin --",
     "verify:deeplinks": "tsx scripts/verify-deeplinks.ts",
     "email:smoke": "tsx scripts/email-smoke.ts",
     "stripe:webhook-setup": "tsx scripts/stripe-webhook-setup.ts",

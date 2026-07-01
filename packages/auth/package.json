@@ -9,7 +9,6 @@
     ".": "./src/index.ts",
     "./server": "./src/server.ts",
     "./jwt": "./src/jwt.ts",
-    "./hooks/admin-bootstrap": "./src/hooks/admin-bootstrap.ts",
     "./hooks/ban-check": "./src/hooks/ban-check.ts"
   },
   "scripts": {

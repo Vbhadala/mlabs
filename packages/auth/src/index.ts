@@ -3,7 +3,6 @@
 // Subpath imports:
 //   - @mlabs/auth/server                 — createAuth({ db, secret, ... }) (server-only)
 //   - @mlabs/auth/jwt                    — createJwt({ secret }) (server-only)
-//   - @mlabs/auth/hooks/admin-bootstrap  — first-signup admin promotion
 //   - @mlabs/auth/hooks/ban-check        — pre-session ban gate
 //
 // The barrel re-exports the universal types so callers can destructure
@@ -17,6 +16,5 @@ export type {
 export type {
   CreateAuthOptions,
   AuthEmailSender,
-  AuthLogger,
   Auth,
 } from "./server"
