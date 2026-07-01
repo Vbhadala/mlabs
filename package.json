@@ -26,6 +26,7 @@
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
     "rename": "tsx scripts/rename.ts",
+    "setup": "tsx scripts/setup.ts",
     "doctor": "tsx scripts/doctor.ts",
     "claude": "claude"
   },
