@@ -24,6 +24,12 @@ at the bottom for the happy-path flow.
   `/mstack:*` skills (plan → review → code, qa, debug, mockup, design-system,
   ux-audit, research, auto).
 
+## Local dev sanity
+
+- [ ] Run `pnpm setup` to generate `.env.local` (auth secret + `DATABASE_URL`),
+  then `pnpm db:migrate`, then `pnpm doctor` to confirm config + database +
+  migrations are green before you build or deploy.
+
 ## Required before first deploy
 
 - [ ] Create Neon project + branch for `{{SLUG}}`.
