@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-01
 **Slug:** first-run-dx
-**Status:** reviewed
+**Status:** implemented
 **Author:** Claude (via /mstack-plan)
 
 ---
