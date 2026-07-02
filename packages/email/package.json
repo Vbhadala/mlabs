@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@mlabs/config": "workspace:*",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.8",
     "postmark": "^4.0.7",

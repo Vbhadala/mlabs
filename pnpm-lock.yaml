@@ -132,6 +132,9 @@ importers:
       '@babel/core':
         specifier: ^7.25.2
         version: 7.29.0
+      '@mlabs/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint-config
       '@types/react':
         specifier: ~19.2.14
         version: 19.2.14
@@ -394,6 +397,9 @@ importers:
 
   packages/email:
     dependencies:
+      '@mlabs/config':
+        specifier: workspace:*
+        version: link:../config
       '@react-email/components':
         specifier: ^1.0.12
         version: 1.0.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -468,6 +474,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-react:
+        specifier: ^1.14.0
+        version: 1.14.0(react@19.2.4)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
