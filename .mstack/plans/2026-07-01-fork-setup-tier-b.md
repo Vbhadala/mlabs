@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-01
 **Slug:** fork-setup-tier-b
-**Status:** reviewed
+**Status:** implemented
 **Author:** Claude (via /mstack-plan)
 
 ---
