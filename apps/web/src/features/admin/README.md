@@ -21,13 +21,18 @@ All gated by `(admin)/layout.tsx` which calls `requireAdmin()`.
 
 ## Bootstrap
 
-Set `INITIAL_ADMIN_EMAIL` in env. The next user who signs up with that
-email is auto-promoted to admin via Better Auth's `user.create.after`
-hook. After the first admin exists, subsequent promotions happen
-in-app on the user detail page.
+Sign up normally, then promote yourself with the CLI script:
 
-If `INITIAL_ADMIN_EMAIL` is unset in production, auth boot logs a warning
-so the missing config doesn't silently brick admin access.
+```bash
+pnpm make-admin you@example.com   # promote a specific user by email
+pnpm make-admin                   # no arg → promote the earliest-created user
+```
+
+The script (`packages/db/scripts/make-admin.ts`) sets `role='admin'`
+directly against `DATABASE_URL`. It's idempotent and re-runnable — no
+deploy-time env ordering, no lockout if you sign up before configuring
+anything. After the first admin exists, subsequent promotions happen
+in-app on the user detail page.
 
 ## Action semantics (audit BEFORE mutation)
 
@@ -60,4 +65,5 @@ rm -rf 'src/app/(admin)'
 #   coordinated changes across audit_log rows.
 ```
 
-No env var is required for v1 functionality (`INITIAL_ADMIN_EMAIL` is optional).
+No env var is required for v1 functionality — admin bootstrap is a manual
+`pnpm make-admin` step.

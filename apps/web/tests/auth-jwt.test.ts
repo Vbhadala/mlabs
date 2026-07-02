@@ -19,7 +19,6 @@ vi.mock("@/config/env", () => ({
     BETTER_AUTH_SECRET: "test-secret-32-bytes-long-enough!!",
     BETTER_AUTH_URL: "http://localhost:3000",
     NODE_ENV: "test",
-    INITIAL_ADMIN_EMAIL: undefined,
   },
 }))
 

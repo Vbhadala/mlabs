@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.26.1",
+  "engines": {
+    "node": ">=22 <23"
+  },
   "scripts": {
     "dev": "pnpm --filter @mlabs/web dev",
     "build": "turbo run build",
@@ -15,6 +18,7 @@
     "db:generate": "pnpm --filter @mlabs/db generate",
     "db:migrate": "pnpm --filter @mlabs/db migrate",
     "db:studio": "pnpm --filter @mlabs/db studio",
+    "make-admin": "pnpm --filter @mlabs/db make-admin --",
     "verify:deeplinks": "tsx scripts/verify-deeplinks.ts",
     "email:smoke": "tsx scripts/email-smoke.ts",
     "stripe:webhook-setup": "tsx scripts/stripe-webhook-setup.ts",
@@ -22,11 +26,15 @@
     "gen:mobile-tw": "tsx scripts/gen-mobile-tailwind.ts",
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
     "rename": "tsx scripts/rename.ts",
+    "setup": "tsx scripts/setup.ts",
+    "setup-deeplinks": "tsx scripts/setup-deeplinks.ts",
+    "doctor": "tsx scripts/doctor.ts",
     "claude": "claude"
   },
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.1.150",
     "@mlabs/config": "workspace:*",
+    "@mlabs/db": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "lefthook": "^2.1.6",
     "syncpack": "15.1.2",

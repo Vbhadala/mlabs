@@ -23,12 +23,6 @@ export const env = createEnv({
     // Replit Object Storage — added in W4
     REPLIT_OBJECT_STORAGE_BUCKET_ID: z.string().optional(),
 
-    // Admin bootstrap — added in W8. When this email signs up (Better Auth
-    // user.create.after hook), role auto-promotes to "admin". Set once per
-    // fork in the deploy env; ignored if unset. Treat as a write-once value:
-    // after the first admin exists, subsequent promotions use the admin UI.
-    INITIAL_ADMIN_EMAIL: z.string().email().optional(),
-
     // Phase 5.5 — Expo custom URL scheme for in-email deep links. When set,
     // emails surface `scheme://path` links so a tap from Mail opens the
     // installed Expo app directly. When unset (web-only fork), buildAppLinkUrl
@@ -62,7 +56,6 @@ export const env = createEnv({
     POSTMARK_SERVER_TOKEN: process.env.POSTMARK_SERVER_TOKEN,
     POSTMARK_FROM_EMAIL: process.env.POSTMARK_FROM_EMAIL,
     REPLIT_OBJECT_STORAGE_BUCKET_ID: process.env.REPLIT_OBJECT_STORAGE_BUCKET_ID,
-    INITIAL_ADMIN_EMAIL: process.env.INITIAL_ADMIN_EMAIL,
     EXPO_SCHEME: process.env.EXPO_SCHEME,
     REPLIT_DEV_DOMAIN: process.env.REPLIT_DEV_DOMAIN,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

@@ -137,8 +137,9 @@ or before running `/mstack-qa`.
   - `relation "error_log" does not exist` — production Neon DB has no
     schema yet. Run `DATABASE_URL=<prod-url> pnpm db:migrate` before
     relying on the deploy.
-  - `INITIAL_ADMIN_EMAIL is not set` — first signup will be a regular
-    user; promote manually or set the secret.
+  - New signups are regular users. Grant the first admin with
+    `pnpm make-admin you@example.com` (or `pnpm make-admin` to promote
+    the earliest signup) after the DB is migrated.
 
 ### 8. Hit the rename-script gaps in `.replit`
 

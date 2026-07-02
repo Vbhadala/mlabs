@@ -4,7 +4,6 @@
 
 import { db } from "@/lib/db"
 import { env } from "@/config/env"
-import { logger } from "@/lib/logger"
 import {
   sendPasswordResetEmail,
   sendVerifyEmail,
@@ -31,8 +30,6 @@ export const auth = createAuth({
   db,
   secret: env.BETTER_AUTH_SECRET,
   baseUrl,
-  initialAdminEmail: env.INITIAL_ADMIN_EMAIL,
-  isProduction: env.NODE_ENV === "production",
   trustedOrigins: buildTrustedOrigins({
     replitDevDomain: env.REPLIT_DEV_DOMAIN,
   }),
@@ -41,10 +38,6 @@ export const auth = createAuth({
       sendVerifyEmail({ to, name, verifyUrl }),
     sendPasswordResetEmail: ({ to, name, resetUrl }) =>
       sendPasswordResetEmail({ to, name, resetUrl }),
-  },
-  logger: {
-    info: (m, meta) => logger.info(m, meta),
-    warn: (m, meta) => logger.warn(m, meta),
   },
 })
 

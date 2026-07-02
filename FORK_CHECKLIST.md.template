@@ -24,25 +24,30 @@ at the bottom for the happy-path flow.
   `/mstack:*` skills (plan → review → code, qa, debug, mockup, design-system,
   ux-audit, research, auto).
 
+## Local dev sanity
+
+- [ ] Run `pnpm setup` to generate `.env.local` (auth secret + `DATABASE_URL`),
+  then `pnpm db:migrate`, then `pnpm doctor` to confirm config + database +
+  migrations are green before you build or deploy.
+
 ## Required before first deploy
 
 - [ ] Create Neon project + branch for `{{SLUG}}`.
 - [ ] Create Postmark server + sender signature.
 - [ ] Set up OAuth apps (Google, Apple, if used by the fork).
-- [ ] Edit `apps/mobile/app.config.ts`:
-  - [ ] `ios.bundleIdentifier`: replace `com.example.mlabs` with the real reverse-domain ID.
-  - [ ] `android.package`: same value as above (Android convention).
-  - [ ] `ios.associatedDomains`: verify `applinks:{{DEEPLINK_HOST}}` matches the deployed host.
-- [ ] Edit `apps/web/public/.well-known/apple-app-site-association`:
-  - [ ] Replace `{{APPLE_TEAM_ID}}` with the Apple Developer Team ID.
-  - [ ] Replace `{{IOS_BUNDLE_ID}}` with the iOS bundle ID set above.
-- [ ] Edit `apps/web/public/.well-known/assetlinks.json`:
-  - [ ] Replace `{{ANDROID_PACKAGE}}` with the Android package set above.
-  - [ ] Replace `{{ANDROID_CERT_SHA256}}` with the Play Console signing cert fingerprint.
+- [ ] Substitute the mobile universal-link values in one shot: **`pnpm setup-deeplinks`**.
+  It prompts for Apple Team ID, iOS bundle, Android package, the **app-signing**
+  SHA-256 (not the upload key), and the deep-link host, then rewrites
+  `apps/mobile/app.config.ts` + `apps/web/public/.well-known/*` with validation.
+  Prefer editing by hand? See [docs/fork-setup.md](./docs/fork-setup.md).
 - [ ] `eas init` to bind this fork to a new EAS project.
-- [ ] Set GitHub repo secrets: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `POSTMARK_API_KEY`, `INITIAL_ADMIN_EMAIL`.
+- [ ] Configure **deploy** secrets — for a Replit deploy, add them in Replit
+  Secrets (not `.env.local`). The shipped CI needs no secrets; add GitHub repo
+  secrets only if you add a workflow that hits real services. Full map:
+  [docs/fork-setup.md](./docs/fork-setup.md).
 - [ ] `pnpm db:migrate` against the new Neon database.
 - [ ] First-boot smoke: `pnpm dev`, sign up, verify email lands.
+- [ ] Grant yourself admin: `pnpm make-admin you@example.com` (or `pnpm make-admin` to promote the first signup).
 
 ## Verify the rename worked
 

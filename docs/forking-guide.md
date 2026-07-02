@@ -90,8 +90,9 @@ Add to these; don't rewrite existing logic.
 Load-bearing. Breaking these breaks every fork.
 
 - **`packages/auth/*` core flow** — Better Auth config, bearer plugin,
-  oAuthProxy setup, admin-bootstrap hook. The mobile JWT refresh flow,
+  oAuthProxy setup, ban-check hook. The mobile JWT refresh flow,
   email verification, and admin enforcement are wired through here.
+  (Admin bootstrap is a manual `pnpm make-admin` step, not an auth hook.)
   Per-fork OAuth provider config goes in `apps/web` env, not the auth
   package
 - **`packages/api/src/operation.ts`** — the `defineOperation` adapter.
