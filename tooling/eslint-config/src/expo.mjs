@@ -9,38 +9,7 @@
 // packages — defense in depth on top of package.json deps + bundle-scan CI.
 
 import baseConfig from "./base.mjs";
-
-/**
- * Forbid mobile from importing server-side workspace packages. Last line of
- * defense against accidentally shipping DATABASE_URL or BETTER_AUTH_SECRET
- * to the mobile bundle.
- */
-const noServerImports = {
-  rules: {
-    "no-restricted-imports": [
-      "error",
-      {
-        patterns: [
-          {
-            group: [
-              "@mlabs/db",
-              "@mlabs/db/*",
-              "@mlabs/auth/server",
-              "@mlabs/auth/server/*",
-              "@mlabs/services",
-              "@mlabs/services/*",
-              "@mlabs/email",
-              "@mlabs/email/*",
-              "server-only",
-            ],
-            message:
-              "Server-side package — not allowed in mobile. Import shared schemas/types from @mlabs/validators or @mlabs/api instead.",
-          },
-        ],
-      },
-    ],
-  },
-};
+import noServerImports from "./no-server-imports.mjs";
 
 const expoConfig = [...baseConfig, noServerImports];
 

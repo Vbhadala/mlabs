@@ -8,6 +8,7 @@
     "./base": "./src/base.mjs",
     "./next": "./src/next.mjs",
     "./expo": "./src/expo.mjs",
+    "./no-server-imports": "./src/no-server-imports.mjs",
     "./library": "./src/library.mjs",
     "./rules/no-brand-string-literal": "./src/rules/no-brand-string-literal.mjs",
     "./rules/no-drizzle-in-schemas": "./src/rules/no-drizzle-in-schemas.mjs"

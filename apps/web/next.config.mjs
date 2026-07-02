@@ -44,6 +44,13 @@ const nextConfig = {
     ...(process.env.REPLIT_DEV_DOMAIN ? [process.env.REPLIT_DEV_DOMAIN] : []),
   ],
 
+  // Type-checking and linting are owned by dedicated CI jobs (`turbo run
+  // typecheck` / `turbo run lint`) and the pre-commit hook — so `next build`
+  // shouldn't re-run them. Skipping here cuts the production/deploy build time
+  // (main is always green before it's built, because CI gates every merge).
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
+
   // Workspace packages ship TS source from packages/* — Next needs to run
   // them through its compiler instead of trying to load them as pre-built JS.
   transpilePackages: [
