@@ -59,7 +59,7 @@ packages/
   validators/  Pure-Zod schemas (shared web + mobile)
   db/          Drizzle + migrations + advisory-lock migrate script
   email/       Postmark templates + URL builders
-  auth/        Better Auth + bearer + oAuthProxy + admin bootstrap
+  auth/        Better Auth + bearer + oAuthProxy (admin via `pnpm make-admin`)
   config/      Design tokens (+ tailwind preset, env factory)
   api/         defineOperation adapter + ApiError + typed fetch client + CallerContext
   services/    Business logic (pure functions)
