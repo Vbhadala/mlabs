@@ -12,6 +12,12 @@ concurrency:
 env:
   TURBO_TELEMETRY_DISABLED: 1
   DO_NOT_TRACK: 1
+  # Turborepo Remote Cache — opt-in and inert until configured. Add repo secret
+  # TURBO_TOKEN + repo variable TURBO_TEAM (Vercel Remote Cache or self-hosted)
+  # and every job shares one cache across runners and PRs — the biggest CI-time
+  # lever. Left empty, turbo falls back to the per-job local .turbo cache below.
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
   typecheck:
@@ -28,9 +34,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .turbo
-          key: turbo-typecheck-${{ runner.os }}-${{ github.sha }}
+          key: turbo-${{ runner.os }}-typecheck-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
           restore-keys: |
-            turbo-typecheck-${{ runner.os }}-
+            turbo-${{ runner.os }}-typecheck-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-${{ runner.os }}-typecheck-
       - run: pnpm turbo run typecheck
 
   lint:
@@ -47,9 +54,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .turbo
-          key: turbo-lint-${{ runner.os }}-${{ github.sha }}
+          key: turbo-${{ runner.os }}-lint-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
           restore-keys: |
-            turbo-lint-${{ runner.os }}-
+            turbo-${{ runner.os }}-lint-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-${{ runner.os }}-lint-
       - run: pnpm turbo run lint
 
   test:
@@ -66,18 +74,22 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .turbo
-          key: turbo-test-${{ runner.os }}-${{ github.sha }}
+          key: turbo-${{ runner.os }}-test-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
           restore-keys: |
-            turbo-test-${{ runner.os }}-
+            turbo-${{ runner.os }}-test-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-${{ runner.os }}-test-
       - run: pnpm turbo run test
 
-  syncpack:
-    # Enforces consistent dependency versions across the workspace. The
-    # config in .syncpackrc.json carves out the deliberate divergences
-    # (React 18/19 split, mobile's pinned TS 5.3 / eslint 8 / tailwind 3
-    # during the Phase 6 SDK upgrade window). Any other mismatch is a
-    # bug — most often a fresh dep that landed in only one package.
-    name: syncpack
+  lockfile-checks:
+    # Dependency-version consistency (syncpack) + no-collapsible-duplicates
+    # (pnpm dedupe --check). Both are lockfile / package.json lints, so they
+    # share one workspace install instead of paying for it in two jobs.
+    #
+    # syncpack config in .syncpackrc.json carves out the deliberate divergences
+    # (React 18/19 split, mobile's pinned TS 5.3 / eslint 8 / tailwind 3 during
+    # the Phase 6 SDK upgrade window). dedupe --check fails when a dep resolved
+    # at multiple compatible versions could collapse to one.
+    name: lockfile-checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -88,22 +100,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm syncpack lint
-
-  dedupe-check:
-    # Fails when pnpm dedupe would change the lockfile — i.e., when a
-    # dep is resolved at multiple compatible versions and could collapse
-    # to one. Catches accidental bloat introduced by transitive peer
-    # mismatches before it lands.
-    name: dedupe-check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
       - run: pnpm dedupe --check
 
   bundle-scan:
