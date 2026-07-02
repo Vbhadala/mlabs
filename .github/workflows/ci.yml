@@ -128,7 +128,7 @@ jobs:
       - name: Scan bundle for forbidden server-only references
         run: |
           set -euo pipefail
-          PATTERN='DATABASE_URL|BETTER_AUTH_SECRET|postmark|@mlabs/db|@mlabs/services|@mlabs/auth/server'
+          PATTERN='DATABASE_URL|BETTER_AUTH_SECRET|STRIPE_SECRET_KEY|POSTMARK_SERVER_TOKEN|postmark|@mlabs/db|@mlabs/services|@mlabs/email|@mlabs/auth/server|@mlabs/auth/jwt|@mlabs/api/server'
           if grep -rlE "$PATTERN" /tmp/expo-bundle/_expo; then
             echo "::error::Forbidden server-only references found in mobile bundle output (see matched files above)."
             exit 1
