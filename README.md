@@ -44,6 +44,10 @@ pending migrations.
 Web: <http://localhost:3000>
 Mobile: scan the Expo QR code (Expo Go) or press `i` / `a` for simulator.
 
+**Going further** — services, secrets, and where each value lives (`.env.local` /
+Replit Secrets / EAS) are mapped in [docs/fork-setup.md](./docs/fork-setup.md).
+For mobile universal links, run `pnpm setup-deeplinks`.
+
 ## Layout
 
 ```text
