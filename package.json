@@ -27,6 +27,7 @@
     "gen:mobile-tw:check": "tsx scripts/gen-mobile-tailwind.ts --check",
     "rename": "tsx scripts/rename.ts",
     "setup": "tsx scripts/setup.ts",
+    "setup-deeplinks": "tsx scripts/setup-deeplinks.ts",
     "doctor": "tsx scripts/doctor.ts",
     "claude": "claude"
   },
